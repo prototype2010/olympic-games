@@ -1,5 +1,3 @@
-export type IndexedObject = {[index: string] : string}
-
 export type Primitives = number | string | boolean
 
 export type Specials = null | undefined
@@ -8,29 +6,45 @@ export type CSVValue = Primitives | Specials
 
 export type Nullable<T> = T | null;
 
-export enum Sex {
-    M = 'M',
-    F = 'F',
+export interface RawCSVRecord {
+    ID: CSVValue,
+    Name: CSVValue,
+    Sex: CSVValue,
+    Age: CSVValue,
+    Height: CSVValue,
+    Weight: CSVValue,
+   Team: CSVValue,
+    NOC: CSVValue,
+    Games: CSVValue,
+    Year: CSVValue,
+    Season: CSVValue,
+    City: CSVValue,
+    Sport: CSVValue,
+    Event: CSVValue,
+   Medal: CSVValue,
 }
 
-export interface RawCSVRecord {
-    id: CSVValue,
-    name: CSVValue,
-    sex:  CSVValue,
-    age:  CSVValue,
-    height:  CSVValue,
-    weight: CSVValue,
-    team:  CSVValue,
-    noc:  CSVValue,
-    games:  CSVValue,
-    year:  CSVValue,
-    season:  CSVValue,
-    city:  CSVValue,
-    sport:  CSVValue,
-    event:  CSVValue,
-    medal:  CSVValue,
+export interface SanitizedCSVRecord {
+    id : number,
+    name : string,
+    sex : Nullable<string>,
+    age : number,
+    height: Nullable<number>,
+    weight : Nullable<number>,
+    team : string,
+    NOC : string,
+    games : string,
+    year : number,
+    season : string,
+    city : string,
+    sport :string,
+    event : string,
+    medal : string,
 }
 
-export interface RawCSVRecord {
-    [index : string] : CSVValue
+export enum Medal {
+    NA = "N/A",
+    Gold="Gold",
+    Silver="Silver",
+    Bronze="Bronze",
 }
