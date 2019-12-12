@@ -1,10 +1,13 @@
 import {DatabaseConnection} from './app/Database/Database';
 import { CSV_FILE_PATH} from './app/config';
 import {CSVParser} from "./app/utils/CSVParser";
+import {CSVSanitizer} from './app/utils/CSVSanitizer';
 
-const data = CSVParser.parse(CSV_FILE_PATH);
+const document = CSVParser.parse(CSV_FILE_PATH);
 
-// console.log(data);
+const sanitizedCSV = CSVSanitizer.sanitizeArray(document);
+
+console.log(sanitizedCSV);
 
 const DB = DatabaseConnection.getInstance();
 

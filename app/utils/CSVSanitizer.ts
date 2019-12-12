@@ -1,51 +1,55 @@
-import {CSVValue, Medal, RawCSVRecord, SanitizedCSVRecord} from "../../types";
+import {CSVValue, Medal, RawCSVRecord, SanitizedCSVRecord} from "../types";
 
-class CSVSanitizer {
+export class CSVSanitizer {
 
     static sanitizeArray(csvRowsArray : Array<RawCSVRecord> = []) {
 
-        return  csvRowsArray.map(csvRow => this.sanitize(csvRow));
+        return  csvRowsArray.map(csvRow => CSVSanitizer.sanitize(csvRow));
     }
 
     static sanitize(csvRow : RawCSVRecord) : SanitizedCSVRecord {
 
         const {Age,City,Event,Games,Height,ID,Medal,Name,NOC,Season,Sex,Sport,Team,Weight,Year} = csvRow;
+        const {parseInt,sanitizeFullName,sanitizeMedal,sanitizeSex,sanitizeTeamName, sanitizeAsString} = CSVSanitizer;
 
-
-        // return {
-        //     age :
-        //
-        //
-        // }
-
+        return {
+            age : parseInt(Age),
+            city: sanitizeAsString(City),
+            event: sanitizeAsString(Event),
+            games: sanitizeAsString(Games),
+            height: parseInt(Height),
+            id: parseInt(ID),
+            medal : sanitizeMedal(Medal),
+            name: sanitizeFullName(Name),
+            NOC: sanitizeAsString(NOC),
+            season: sanitizeAsString(Season),
+            sex: sanitizeSex(Sex),
+            sport: sanitizeAsString(Sport),
+            team: sanitizeTeamName(Team),
+            weight: parseInt(Weight),
+            year: parseInt(Year),
+        }
     }
 
-    static sanitizeFullName(value : CSVValue) {
-        const noRoundBrackets = (<string>value).replace(/\(.*,.*\)/, () => '' );
-        const noDoubleQuotes = noRoundBrackets.replace(/"/, () => '' );
-
-        return noDoubleQuotes;
+    private static sanitizeAsString(value : any) {
+        return typeof value === 'string' ? value : String(value);
     }
 
-    static sanitizeSex(value : CSVValue) {
-        return value ? value : null;
+    private static sanitizeFullName(value : CSVValue) {
+
+        const sanitizedAsString = CSVSanitizer.sanitizeAsString(value);
+        const noRoundBrackets = sanitizedAsString.replace(/\(.*\)/, () => '' );
+        return noRoundBrackets.replace(/"/, () => '' );
     }
 
-    static sanitizeYear(value : CSVValue) {
-        return this.parseInt(value);
+    private static sanitizeSex(value : CSVValue) {
+
+        const sanitizedString = CSVSanitizer.sanitizeAsString(value);
+
+        return  sanitizedString ? sanitizedString : null;
     }
 
-    static sanitizeHeight(value : CSVValue) {
-        return this.parseInt(value);
-    }
-
-    static sanitizeWeight(value: CSVValue) {
-        return this.parseInt(value);
-    }
-
-
-    static parseInt(value : CSVValue) {
-
+    private static parseInt(value : CSVValue) {
         const parsed = Number.parseInt(<string>value);
 
         if(!Number.isNaN(parsed) && Number.isFinite(parsed)) {
@@ -55,17 +59,21 @@ class CSVSanitizer {
         }
     }
 
-    static sanitizeTeamName(value : CSVValue) {
-        const noLastDigits = (<string> value).replace(/\d+$/, () => '');
-        const noDash = noLastDigits.replace(/-$/,() => '');
+    private static sanitizeTeamName(value : CSVValue) : string {
 
-        return noDash;
+        const sanitizedString = CSVSanitizer.sanitizeAsString(value);
+
+        const noLastDigits = sanitizedString.replace(/\d+$/, () => '');
+        return noLastDigits.replace(/-$/,() => '');
     }
 
-    static sanitizeMedal(value : CSVValue) {
-        if(Object.values(Medal).includes(<Medal>value)) {
-            return value
+    private static sanitizeMedal(value : CSVValue) {
+        const sanitizedString = CSVSanitizer.sanitizeAsString(value);
+
+        if([Medal.Bronze,Medal.Silver,Medal.Gold].includes(<Medal>sanitizedString)) {
+            return sanitizedString;
+        } else {
+            return Medal.NA
         }
     }
-
 }

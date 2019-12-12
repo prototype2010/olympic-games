@@ -1,3 +1,10 @@
+export enum Medal {
+    NA = "N/A",
+    Gold="Gold",
+    Silver="Silver",
+    Bronze="Bronze",
+}
+
 export type Primitives = number | string | boolean
 
 export type Specials = null | undefined
@@ -13,7 +20,7 @@ export interface RawCSVRecord {
     Age: CSVValue,
     Height: CSVValue,
     Weight: CSVValue,
-   Team: CSVValue,
+    Team: CSVValue,
     NOC: CSVValue,
     Games: CSVValue,
     Year: CSVValue,
@@ -21,30 +28,23 @@ export interface RawCSVRecord {
     City: CSVValue,
     Sport: CSVValue,
     Event: CSVValue,
-   Medal: CSVValue,
+    Medal: CSVValue,
 }
 
 export interface SanitizedCSVRecord {
-    id : number,
+    id : Nullable<number>,
     name : string,
     sex : Nullable<string>,
-    age : number,
+    age : Nullable<number>,
     height: Nullable<number>,
     weight : Nullable<number>,
     team : string,
     NOC : string,
     games : string,
-    year : number,
+    year : Nullable<number>,
     season : string,
     city : string,
     sport :string,
     event : string,
     medal : string,
-}
-
-export enum Medal {
-    NA = "N/A",
-    Gold="Gold",
-    Silver="Silver",
-    Bronze="Bronze",
 }
