@@ -3,7 +3,6 @@ import {CSVValue, Medal, RawCSVRecord, SanitizedCSVRecord} from "../types";
 export class CSVSanitizer {
 
     static sanitizeArray(csvRowsArray : Array<RawCSVRecord> = []) {
-
         return  csvRowsArray.map(csvRow => CSVSanitizer.sanitize(csvRow));
     }
 
