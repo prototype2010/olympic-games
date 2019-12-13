@@ -8,7 +8,7 @@ export class Sport implements Writable {
     }
 
     formQuery (tableName : Table) {
-        return ``;
+        return `INSERT `;
     }
 
     get name(): string {
