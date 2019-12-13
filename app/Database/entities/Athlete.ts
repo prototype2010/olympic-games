@@ -1,25 +1,41 @@
-import {Nullable, SanitizedCSVRecord} from "../../types";
+import {Nullable, SanitizedCSVRecord, Table, Writable} from "../../types";
 
-class Athlete {
+interface AthleteParams {
+    height? : number;
+    weight? : number;
+}
+
+export class Athlete implements Writable {
     private _fullName : string;
     private _sex : Nullable<string>;
     private _birthYear : Nullable<number>;
-    private _params : {
-        height? : number;
-        weight? : number;
-    };
-    private _teamId: number;
-
+    private _params : AthleteParams;
+    private _teamId: Nullable<number>;
 
     constructor(csvRecord : SanitizedCSVRecord) {
 
-        const {fullName, sex,year,weight, height, } = csvRecord;
+        const { name, sex,year,weight, height,  } = csvRecord;
 
-        this._fullName = fullName;
+        this._fullName = name;
         this._sex = sex;
-        this._birthYear = birthYear;
-        this._params = {};
-        this._teamId = -1;
+        this._birthYear = year;
+        this._teamId = null;
+
+        const params : AthleteParams = {};
+
+        if(weight) {
+            params.weight = weight;
+        }
+
+        if(height) {
+            params.height = height;
+        }
+
+        this._params = params;
+    }
+
+    formQuery (tableName : Table) {
+        return ``;
     }
 
     get fullName(): string {
@@ -47,6 +63,7 @@ class Athlete {
     }
 
     get params(): { height?: number; weight?: number } {
+
         return this._params;
     }
 
@@ -54,11 +71,11 @@ class Athlete {
         this._params = value;
     }
 
-    get teamId(): number {
+    get teamId(): Nullable<number> {
         return this._teamId;
     }
 
-    set teamId(value: number) {
+    set teamId(value: Nullable<number>) {
         this._teamId = value;
     }
 }

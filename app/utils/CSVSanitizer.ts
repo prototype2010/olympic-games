@@ -1,4 +1,4 @@
-import {CSVValue, Medal, RawCSVRecord, SanitizedCSVRecord} from "../types";
+import {CSVValue, Medal, Nullable, RawCSVRecord, SanitizedCSVRecord, Season} from "../types";
 
 export class CSVSanitizer {
 
@@ -9,7 +9,7 @@ export class CSVSanitizer {
     static sanitize(csvRow : RawCSVRecord) : SanitizedCSVRecord {
 
         const {Age,City,Event,Games,Height,ID,Medal,Name,NOC,Season,Sex,Sport,Team,Weight,Year} = csvRow;
-        const {parseInt,sanitizeFullName,sanitizeMedal,sanitizeSex,sanitizeTeamName, sanitizeAsString} = CSVSanitizer;
+        const {parseInt,sanitizeFullName,sanitizeMedal,sanitizeSex,sanitizeTeamName,sanitizeSeason, sanitizeAsString} = CSVSanitizer;
 
         return {
             age : parseInt(Age),
@@ -21,7 +21,7 @@ export class CSVSanitizer {
             medal : sanitizeMedal(Medal),
             name: sanitizeFullName(Name),
             NOC: sanitizeAsString(NOC),
-            season: sanitizeAsString(Season),
+            season: sanitizeSeason(Season),
             sex: sanitizeSex(Sex),
             sport: sanitizeAsString(Sport),
             team: sanitizeTeamName(Team),
@@ -32,6 +32,17 @@ export class CSVSanitizer {
 
     private static sanitizeAsString(value : any) {
         return typeof value === 'string' ? value : String(value);
+    }
+
+    private static sanitizeSeason(value : any) : Nullable<Season> {
+
+        const sanitizedAsString = CSVSanitizer.sanitizeAsString(value);
+
+        if([Season.WINTER,Season.SUMMER].includes(<Season>sanitizedAsString)) {
+            return value as Season;
+        } else {
+            return null;
+        }
     }
 
     private static sanitizeFullName(value : CSVValue) {
@@ -70,7 +81,7 @@ export class CSVSanitizer {
         const sanitizedString = CSVSanitizer.sanitizeAsString(value);
 
         if([Medal.Bronze,Medal.Silver,Medal.Gold].includes(<Medal>sanitizedString)) {
-            return sanitizedString;
+            return sanitizedString as Medal;
         } else {
             return Medal.NA
         }

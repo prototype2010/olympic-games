@@ -1,3 +1,5 @@
+import {Athlete, Event, Game, Result, Sport, Team} from "../Database/entities";
+
 export enum Medal {
     NA = "N/A",
     Gold="Gold",
@@ -42,9 +44,27 @@ export interface SanitizedCSVRecord {
     NOC : string,
     games : string,
     year : Nullable<number>,
-    season : string,
+    season : Nullable<Season>,
     city : string,
     sport :string,
     event : string,
-    medal : string,
+    medal : Medal,
+}
+
+export interface Writable {
+    formQuery : (tableName : Table) => string;
+}
+
+export enum Season {
+    SUMMER = 'summer',
+    WINTER = 'winter'
+}
+
+export enum Table {
+    GAMES = 'games',
+    RESULTS = 'results',
+    TEAMS = 'teams',
+    SPORTS = 'sports',
+    EVENTS = 'events',
+    ATHLETES = 'athletes',
 }
