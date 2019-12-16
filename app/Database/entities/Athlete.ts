@@ -1,31 +1,49 @@
-import {Nullable, RawCSVRecord} from "../../../types";
+import {Nullable, SanitizedCSVRecord, Table, Writable} from "../../types";
 
-class Athlete {
+interface AthleteParams {
+    height? : number;
+    weight? : number;
+}
 
+export class Athlete implements Writable {
     private _fullName : string;
     private _sex : Nullable<string>;
-    private _yearOfBirth : number;
-    private _params  : {
-        height?: number,
-        weight?: number
-    };
-    private _teamId?: number;
+    private _birthYear : Nullable<number>;
+    private _params : AthleteParams;
+    private _teamId: Nullable<number>;
 
+    constructor(csvRecord : SanitizedCSVRecord) {
 
-    constructor(csvRow : RawCSVRecord) {
+        const { name, sex,year,weight, height,  } = csvRecord;
+
+        this._fullName = name;
+        this._sex = sex;
+        this._birthYear = year;
+        this._teamId = null;
+
+        const params : AthleteParams = {};
+
+        if(weight) {
+            params.weight = weight;
+        }
+
+        if(height) {
+            params.height = height;
+        }
+
+        this._params = params;
     }
 
+    formQuery (tableName : Table) {
+        return ``;
+    }
 
     get fullName(): string {
         return this._fullName;
     }
 
     set fullName(value: string) {
-
-        const noRoundBrackets = value.replace(/\(.*,.*\)/, () => '' );
-        const noDoubleQuotes = noRoundBrackets.replace(/\(.*,.*\)/, () => '' );
-
-        this._fullName = noDoubleQuotes
+        this._fullName = value;
     }
 
     get sex(): Nullable<string> {
@@ -33,21 +51,19 @@ class Athlete {
     }
 
     set sex(value: Nullable<string>) {
-
-        if(!value) {
-            this._sex = null;
-        }
+        this._sex = value;
     }
 
-    get yearOfBirth(): number {
-        return this._yearOfBirth;
+    get birthYear(): Nullable<number> {
+        return this._birthYear;
     }
 
-    set yearOfBirth(value: number | string) {
-        this._yearOfBirth = value;
+    set birthYear(value: Nullable<number>) {
+        this._birthYear = value;
     }
 
     get params(): { height?: number; weight?: number } {
+
         return this._params;
     }
 
@@ -55,12 +71,11 @@ class Athlete {
         this._params = value;
     }
 
-    get teamId(): number {
+    get teamId(): Nullable<number> {
         return this._teamId;
     }
 
-    set teamId(value: number) {
+    set teamId(value: Nullable<number>) {
         this._teamId = value;
     }
-
 }
