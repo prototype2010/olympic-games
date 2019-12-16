@@ -10,7 +10,7 @@ export class Team  implements Writable {
     }
 
     formQuery (tableName : Table) {
-        return ``;
+        return `INSERT INTO ${tableName} VALUES ()`;
     }
 
     get name(): string {
