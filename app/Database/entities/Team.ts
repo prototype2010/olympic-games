@@ -10,7 +10,9 @@ export class Team  implements Writable {
     }
 
     formQuery (tableName : Table) {
-        return `INSERT INTO ${tableName} VALUES ()`;
+        const {name,NOCName} = this;
+
+        return `INSERT INTO ${tableName} VALUES (null, ${name} , ${NOCName})`;
     }
 
     get name(): string {
