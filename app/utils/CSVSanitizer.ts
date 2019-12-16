@@ -8,25 +8,25 @@ export class CSVSanitizer {
 
     static sanitize(csvRow : RawCSVRecord) : SanitizedCSVRecord {
 
-        const {Age,City,Event,Games,Height,ID,Medal,Name,NOC,Season,Sex,Sport,Team,Weight,Year} = csvRow;
+        const {age,city,event,games,height,id,medal,name,noc,season,sex,sport,team,weight,year} = csvRow;
         const {parseInt,sanitizeFullName,sanitizeMedal,sanitizeSex,sanitizeTeamName,sanitizeSeason, sanitizeAsString} = CSVSanitizer;
 
         return {
-            age : parseInt(Age),
-            city: sanitizeAsString(City),
-            event: sanitizeAsString(Event),
-            games: sanitizeAsString(Games),
-            height: parseInt(Height),
-            id: parseInt(ID),
-            medal : sanitizeMedal(Medal),
-            name: sanitizeFullName(Name),
-            NOC: sanitizeAsString(NOC),
-            season: sanitizeSeason(Season),
-            sex: sanitizeSex(Sex),
-            sport: sanitizeAsString(Sport),
-            team: sanitizeTeamName(Team),
-            weight: parseInt(Weight),
-            year: parseInt(Year),
+            age : parseInt(age),
+            city: sanitizeAsString(city),
+            event: sanitizeAsString(event),
+            games: sanitizeAsString(games),
+            height: parseInt(height),
+            id: parseInt(id),
+            medal : sanitizeMedal(medal),
+            name: sanitizeFullName(name),
+            NOC: sanitizeAsString(noc),
+            season: sanitizeSeason(season),
+            sex: sanitizeSex(sex),
+            sport: sanitizeAsString(sport),
+            team: sanitizeTeamName(team),
+            weight: parseInt(weight),
+            year: parseInt(year),
         }
     }
 

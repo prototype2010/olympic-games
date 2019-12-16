@@ -4,21 +4,20 @@
   "description": "test task 1",
   "main": "index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start:dev": "ts-node index.ts"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.149",
     "@types/node": "^12.12.3",
-    "@types/papaparse": "^5.0.3",
     "@types/sqlite3": "^3.1.5",
     "ts-node": "^8.4.1",
     "typescript": "^3.7.2"
   },
   "dependencies": {
     "@types/dotenv": "^8.2.0",
+    "csv-parser": "^2.3.2",
     "dotenv": "^8.2.0",
     "lodash": "^4.17.15",
-    "papaparse": "^5.1.0",
     "sqlite3": "^4.1.1"
   },
   "author": "",

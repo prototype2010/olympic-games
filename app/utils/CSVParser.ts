@@ -1,19 +1,33 @@
-import PAPAPARSE from "papaparse";
-import {FileReader} from "./FileReader";
-import {PARSE_OPTIONS} from "../config";
+import csv from 'csv-parser';
+import {createReadStream} from 'fs';
+import {RawCSVRecord} from "../types";
+
 
 export class CSVParser {
 
-    static parse(filePath: string) {
+    static async parse(filePath: string) : Promise<Array<RawCSVRecord>>{
 
-        const fileContent = FileReader.read(filePath);
+        const parsedCsv = await new Promise((resolve) => {
 
-        const {data, errors} =  PAPAPARSE.parse(fileContent, PARSE_OPTIONS as Object);
+            const results : Array<string> = [];
 
-        if(errors) {
-            console.error(errors);
-        }
+            createReadStream(filePath)
+                .pipe(csv(
+                    {
+                        separator: ',',
+                        mapHeaders: ({ header }) => header.toLowerCase()
+                    }
+                ))
+                .on('data', (data) => results.push(data))
+                .on('end', () => resolve(results));
+        })
+            .catch(error => {
+                console.error(error);
 
-        return data;
+                return [];
+            });
+
+        return parsedCsv as Array<RawCSVRecord>;
+
     }
 }

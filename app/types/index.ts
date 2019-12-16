@@ -16,21 +16,21 @@ export type CSVValue = Primitives | Specials
 export type Nullable<T> = T | null;
 
 export interface RawCSVRecord {
-    ID: CSVValue,
-    Name: CSVValue,
-    Sex: CSVValue,
-    Age: CSVValue,
-    Height: CSVValue,
-    Weight: CSVValue,
-    Team: CSVValue,
-    NOC: CSVValue,
-    Games: CSVValue,
-    Year: CSVValue,
-    Season: CSVValue,
-    City: CSVValue,
-    Sport: CSVValue,
-    Event: CSVValue,
-    Medal: CSVValue,
+    id: CSVValue,
+    name: CSVValue,
+    sex: CSVValue,
+    age: CSVValue,
+    height: CSVValue,
+    weight: CSVValue,
+    team: CSVValue,
+    noc: CSVValue,
+    games: CSVValue,
+    year: CSVValue,
+    season: CSVValue,
+    city: CSVValue,
+    sport: CSVValue,
+    event: CSVValue,
+    medal: CSVValue,
 }
 
 export interface SanitizedCSVRecord {
