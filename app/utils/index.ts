@@ -1,6 +1,6 @@
 import {Athlete, Event, Game, Result, Sport, Team} from "../Database/entities";
 import {OlympicEvent} from "../Database/entities/OlympicEvent";
-import {Callable, IndexedObject, SanitizedCSVRecord, Season} from "../types";
+import {Callable, SanitizedCSVRecord } from "../types";
 
 export function makeHashKey(...args : any[]) {
 
@@ -31,59 +31,59 @@ function proceedHashFuncArguments(...args : any[]) {
 
 function getFromHashMap(map : Map<string,any>, instance : Callable) {
 
-    return function (...args : Array<any>) {
+    const checkHasMap =  function (hashKeyArgs : Array<any>, ...callNewArgs : Array<any>) {
 
-        const key = makeHashKey({...args});
-        console.log("map size", instance.name,  map.size);
+        const key = makeHashKey(hashKeyArgs);
+
         if(map.has(key)){
-
             return map.get(key);
-
         } else {
-
-            const newObject = new instance(...args);
-
+            const newObject = new instance(...callNewArgs);
             map.set(key, newObject);
 
             return newObject;
         }
-    }
+    };
 
+    checkHasMap.getMap = function () {
+        return map;
+    };
 
+    return checkHasMap;
 }
 
 export function mapToValidDBObjects(sanitizedSCV : Array<SanitizedCSVRecord>) {
 
     const athletes = getFromHashMap(new Map(),Athlete);
-    // const sports = getFromHashMap(new Map(),Sport);
-    // const events = getFromHashMap(new Map(),Event);
-    // const teams = getFromHashMap(new Map(),Team);
-    // const games = getFromHashMap(new Map(),Game);
+    const sports = getFromHashMap(new Map(),Sport);
+    const events = getFromHashMap(new Map(),Event);
+    const teams = getFromHashMap(new Map(),Team);
+    const games = getFromHashMap(new Map(),Game);
     // const result = getFromHashMap(new Map(),Result);
 
-    const x=  sanitizedSCV.map(sanitizedCSVRow => {
+    const x =  sanitizedSCV.map(sanitizedCSVRow => {
 
-        const {event, sport : sportName, medal, team, noc, year, city, season} = sanitizedCSVRow;
+        const {event, sport : sportName, medal, team, noc, year, city, season, id} = sanitizedCSVRow;
 
-        athletes(sanitizedCSVRow)
+        // athletes(sanitizedCSVRow)
 
-        // return new OlympicEvent(
-        //     athletes(sanitizedCSVRow),
-        //     events(event),
-        //     result(medal),
-        //     sports(sportName),
-        //     teams(team,noc),
-        //     games(year,season,city)
-        // );
+        return new OlympicEvent(
+            athletes([id],sanitizedCSVRow),
+            events([event],event),
+            new Result(medal),
+            sports([sportName],sportName),
+            teams([team,noc],team,noc),
+            games([year,season,city],year,season,city)
+        );
     });
 
 
-    console.log(athletes)
-    // console.log(sports)
-    // console.log(events)
-    // console.log(teams)
-    // console.log(games)
-    // console.log(result)
+    console.log(athletes.getMap().size)
+    console.log(sports.getMap().size)
+    console.log(events.getMap().size)
+    console.log(teams.getMap().size)
+    console.log(games.getMap().size)
+     console.log('total', x.length)
 
 
     return x;
