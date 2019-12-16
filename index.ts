@@ -16,7 +16,7 @@ const DB = DatabaseConnection.getInstance();
     const sanitizedCSV =  CSVSanitizer.sanitizeArray(readDocument);
     const olympicEvents = mapToValidDBObjects(sanitizedCSV);
 
-    console.log(olympicEvents);
+
 
 })();
 

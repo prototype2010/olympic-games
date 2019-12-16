@@ -20,7 +20,7 @@ export class CSVSanitizer {
             id: parseInt(id),
             medal : sanitizeMedal(medal),
             name: sanitizeFullName(name),
-            NOC: sanitizeAsString(noc),
+            noc: sanitizeAsString(noc),
             season: sanitizeSeason(season),
             sex: sanitizeSex(sex),
             sport: sanitizeAsString(sport),

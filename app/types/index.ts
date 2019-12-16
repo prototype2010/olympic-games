@@ -7,6 +7,10 @@ export enum Medal {
     Bronze="Bronze",
 }
 
+export interface IndexedObject {
+    [index : string] : CSVValue
+}
+
 export type Primitives = number | string | boolean
 
 export type Specials = null | undefined
@@ -41,7 +45,7 @@ export interface SanitizedCSVRecord {
     height: Nullable<number>,
     weight : Nullable<number>,
     team : string,
-    NOC : string,
+    noc : string,
     games : string,
     year : Nullable<number>,
     season : Nullable<Season>,
@@ -67,4 +71,8 @@ export enum Table {
     SPORTS = 'sports',
     EVENTS = 'events',
     ATHLETES = 'athletes',
+}
+
+export interface Callable {
+    new (...args : any[]) : any
 }

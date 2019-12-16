@@ -8,7 +8,6 @@ export class Result implements Writable {
     private _medal : Medal;
 
     constructor(medal : Medal) {
-
         this._athleteId = null;
         this._gameId = null;
         this._stortId = null;

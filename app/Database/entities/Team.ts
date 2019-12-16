@@ -1,6 +1,6 @@
 import {Table, Writable} from "../../types";
 
-export class Team  implements Writable {
+export class Team implements Writable {
     private _name : string;
     private _NOCName : string;
 

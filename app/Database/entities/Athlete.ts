@@ -5,7 +5,7 @@ interface AthleteParams {
     weight? : number;
 }
 
-export class Athlete implements Writable {
+export class Athlete  implements Writable {
     private _fullName : string;
     private _sex : Nullable<string>;
     private _birthYear : Nullable<number>;
@@ -13,7 +13,6 @@ export class Athlete implements Writable {
     private _teamId: Nullable<number>;
 
     constructor(csvRecord : SanitizedCSVRecord) {
-
         const { name, sex,year,weight, height,  } = csvRecord;
 
         this._fullName = name;
