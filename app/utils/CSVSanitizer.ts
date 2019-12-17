@@ -1,4 +1,4 @@
-import {CSVValue, Medal, Nullable, RawCSVRecord, SanitizedCSVRecord, Season} from "../types";
+import { Medal, Nullable, RawCSVRecord, SanitizedCSVRecord, Season, Sex} from "../types";
 
 export class CSVSanitizer {
 
@@ -8,25 +8,25 @@ export class CSVSanitizer {
 
     static sanitize(csvRow : RawCSVRecord) : SanitizedCSVRecord {
 
-        const {Age,City,Event,Games,Height,ID,Medal,Name,NOC,Season,Sex,Sport,Team,Weight,Year} = csvRow;
+        const {year,weight,team,sport,sex,season,noc,name,medal,id,height,games,event,city,age} = csvRow;
         const {parseInt,sanitizeFullName,sanitizeMedal,sanitizeSex,sanitizeTeamName,sanitizeSeason, sanitizeAsString} = CSVSanitizer;
 
         return {
-            age : parseInt(Age),
-            city: sanitizeAsString(City),
-            event: sanitizeAsString(Event),
-            games: sanitizeAsString(Games),
-            height: parseInt(Height),
-            id: parseInt(ID),
-            medal : sanitizeMedal(Medal),
-            name: sanitizeFullName(Name),
-            NOC: sanitizeAsString(NOC),
-            season: sanitizeSeason(Season),
-            sex: sanitizeSex(Sex),
-            sport: sanitizeAsString(Sport),
-            team: sanitizeTeamName(Team),
-            weight: parseInt(Weight),
-            year: parseInt(Year),
+            age : parseInt(age),
+            city: sanitizeAsString(city),
+            event: sanitizeAsString(event),
+            games: sanitizeAsString(games),
+            height: parseInt(height),
+            id: parseInt(id),
+            medal : sanitizeMedal(medal),
+            name: sanitizeFullName(name),
+            NOC: sanitizeAsString(noc),
+            season: sanitizeSeason(season),
+            sex: sanitizeSex(sex),
+            sport: sanitizeAsString(sport),
+            team: sanitizeTeamName(team),
+            weight: parseInt(weight),
+            year: parseInt(year),
         }
     }
 
@@ -36,30 +36,34 @@ export class CSVSanitizer {
 
     private static sanitizeSeason(value : any) : Nullable<Season> {
 
-        const sanitizedAsString = CSVSanitizer.sanitizeAsString(value);
+        const sanitizedAsString =<Season> CSVSanitizer.sanitizeAsString(value);
 
-        if([Season.WINTER,Season.SUMMER].includes(<Season>sanitizedAsString)) {
-            return value as Season;
+        if([Season.WINTER,Season.SUMMER].includes(sanitizedAsString)) {
+            return value;
         } else {
             return null;
         }
     }
 
-    private static sanitizeFullName(value : CSVValue) {
+    private static sanitizeFullName(value : any) {
 
         const sanitizedAsString = CSVSanitizer.sanitizeAsString(value);
         const noRoundBrackets = sanitizedAsString.replace(/\(.*\)/, () => '' );
         return noRoundBrackets.replace(/"/, () => '' );
     }
 
-    private static sanitizeSex(value : CSVValue) {
+    private static sanitizeSex(value : any) : Nullable<Sex> {
 
-        const sanitizedString = CSVSanitizer.sanitizeAsString(value);
+        const sanitizedString =<Sex> CSVSanitizer.sanitizeAsString(value);
 
-        return  sanitizedString ? sanitizedString : null;
+        if([Sex.F,Sex.M].includes(sanitizedString)){
+            return sanitizedString;
+        } else {
+            return null;
+        }
     }
 
-    private static parseInt(value : CSVValue) {
+    private static parseInt(value : any) {
         const parsed = Number.parseInt(<string>value);
 
         if(!Number.isNaN(parsed) && Number.isFinite(parsed)) {
@@ -69,7 +73,7 @@ export class CSVSanitizer {
         }
     }
 
-    private static sanitizeTeamName(value : CSVValue) : string {
+    private static sanitizeTeamName(value : any) : string {
 
         const sanitizedString = CSVSanitizer.sanitizeAsString(value);
 
@@ -77,7 +81,7 @@ export class CSVSanitizer {
         return noLastDigits.replace(/-$/,() => '');
     }
 
-    private static sanitizeMedal(value : CSVValue) {
+    private static sanitizeMedal(value : any) {
         const sanitizedString = CSVSanitizer.sanitizeAsString(value);
 
         if([Medal.Bronze,Medal.Silver,Medal.Gold].includes(<Medal>sanitizedString)) {

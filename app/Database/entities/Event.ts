@@ -1,9 +1,10 @@
-import {Table, Writable} from "../../types";
+import {SanitizedCSVRecord, Table, Writable} from "../../types";
 
 export class Event implements Writable {
+    private static readonly TABLE_NAME=  Table.EVENTS;
     private _name : string;
 
-    constructor(name: string) {
+    constructor({name} : SanitizedCSVRecord) {
         this._name = name;
     }
 

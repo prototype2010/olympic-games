@@ -1,6 +1,6 @@
 import PAPAPARSE from "papaparse";
 import {FileReader} from "./FileReader";
-import {PARSE_OPTIONS} from "../config";
+import {PARSE_OPTIONS} from "../../config";
 
 export class CSVParser {
 

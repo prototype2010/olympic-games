@@ -6,15 +6,13 @@ export function mapToValidDBObjects(sanitizedSCV : Array<SanitizedCSVRecord>) {
 
     return sanitizedSCV.map(sanitizedCSVRow => {
 
-        const {event, sport : sportName, medal, team, NOC, year, city, season} = sanitizedCSVRow;
-
         return new OlympicEvent(
             new Athlete(sanitizedCSVRow),
-            new Event(event),
-            new Result(medal),
-            new Sport(sportName),
-            new Team(team,NOC),
-            new Game(year,season,city)
+            new Event(sanitizedCSVRow),
+            new Result(sanitizedCSVRow),
+            new Sport(sanitizedCSVRow),
+            new Team(sanitizedCSVRow),
+            new Game(sanitizedCSVRow)
         );
     })
         ;
