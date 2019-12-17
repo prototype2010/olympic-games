@@ -27,10 +27,9 @@ export class CSVSanitizer {
         }
     }
 
-    static clearByRegexp(value : string, ...regexps : RegExp[]) {
-        return regexps.reduce((cumulative, current) => {
+    static clearByRegexp(value : string, regexps : RegExp[]) {
+        return  regexps.reduce((cumulative, current) => {
             return cumulative.replace(current, () => '');
-        }, value)
-
+        }, value);
     }
 }
