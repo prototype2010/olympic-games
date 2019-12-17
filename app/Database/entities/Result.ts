@@ -1,13 +1,16 @@
-import {Medal, Nullable, Table, Writable} from "../../types";
+import {Medal, Nullable, SanitizedCSVRecord, Table, Writable} from "../../types";
 
 export class Result implements Writable {
+    private static readonly TABLE_NAME= Table.RESULTS;
+
     private _athleteId : Nullable<number>;
     private _gameId : Nullable<number>;
     private _stortId : Nullable<number>;
     private _eventId : Nullable<number>;
     private _medal : Medal;
 
-    constructor(medal : Medal) {
+    constructor({medal} : SanitizedCSVRecord) {
+
         this._athleteId = null;
         this._gameId = null;
         this._stortId = null;

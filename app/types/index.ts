@@ -1,5 +1,3 @@
-import {Athlete, Event, Game, Result, Sport, Team} from "../Database/entities";
-
 export enum Medal {
     NA = "N/A",
     Gold="Gold",
@@ -7,40 +5,39 @@ export enum Medal {
     Bronze="Bronze",
 }
 
-export interface IndexedObject {
-    [index : string] : CSVValue
+export enum Sex {
+    M = 'M',
+    F = 'F',
 }
 
 export type Primitives = number | string | boolean
 
 export type Specials = null | undefined
 
-export type CSVValue = Primitives | Specials
-
 export type Nullable<T> = T | null;
 
 export interface RawCSVRecord {
-    id: CSVValue,
-    name: CSVValue,
-    sex: CSVValue,
-    age: CSVValue,
-    height: CSVValue,
-    weight: CSVValue,
-    team: CSVValue,
-    noc: CSVValue,
-    games: CSVValue,
-    year: CSVValue,
-    season: CSVValue,
-    city: CSVValue,
-    sport: CSVValue,
-    event: CSVValue,
-    medal: CSVValue,
+    id: any,
+    name: any,
+    sex: any,
+    age: any,
+    height: any,
+    weight: any,
+    team: any,
+    noc: any,
+    games: any,
+    year: any,
+    season: any,
+    city: any,
+    sport: any,
+    event: any,
+    medal: any,
 }
 
 export interface SanitizedCSVRecord {
     id : Nullable<number>,
     name : string,
-    sex : Nullable<string>,
+    sex : Nullable<Sex>,
     age : Nullable<number>,
     height: Nullable<number>,
     weight : Nullable<number>,
@@ -58,6 +55,7 @@ export interface SanitizedCSVRecord {
 export interface Writable {
     formQuery : (tableName : Table) => string;
 }
+
 
 export enum Season {
     SUMMER = 'summer',

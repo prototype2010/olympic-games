@@ -1,5 +1,5 @@
 import {DatabaseConnection} from './app/Database/Database';
-import { CSV_FILE_PATH} from './app/config';
+import { CSV_FILE_PATH} from './config';
 import {CSVParser} from "./app/utils/CSVParser";
 import {CSVSanitizer} from './app/utils/CSVSanitizer';
 import {mapToValidDBObjects} from "./app/utils";

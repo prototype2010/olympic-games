@@ -1,19 +1,20 @@
-import {Nullable, SanitizedCSVRecord, Table, Writable} from "../../types";
+import {Nullable, SanitizedCSVRecord, Sex, Table, Writable} from "../../types";
 
 interface AthleteParams {
     height? : number;
     weight? : number;
 }
 
-export class Athlete  implements Writable {
+export class Athlete implements Writable {
+    private static readonly TABLE_NAME= Table.ATHLETES;
+
     private _fullName : string;
-    private _sex : Nullable<string>;
+    private _sex : Nullable<Sex>;
     private _birthYear : Nullable<number>;
     private _params : AthleteParams;
     private _teamId: Nullable<number>;
 
-    constructor(csvRecord : SanitizedCSVRecord) {
-        const { name, sex,year,weight, height,  } = csvRecord;
+    constructor({ name, sex,year,weight, height,  } : SanitizedCSVRecord) {
 
         this._fullName = name;
         this._sex = sex;
@@ -45,11 +46,11 @@ export class Athlete  implements Writable {
         this._fullName = value;
     }
 
-    get sex(): Nullable<string> {
+    get sex(): Nullable<Sex> {
         return this._sex;
     }
 
-    set sex(value: Nullable<string>) {
+    set sex(value: Nullable<Sex>) {
         this._sex = value;
     }
 

@@ -1,11 +1,14 @@
-import {Nullable, Season} from "../../types";
+import {Nullable, SanitizedCSVRecord, Season, Table} from "../../types";
 
 export class Game {
+    private static readonly TABLE_NAME= Table.GAMES;
+
     private _year : Nullable<number>;
     private _season : Nullable<Season>;
     private _city: string;
 
-    constructor(year: Nullable<number>, season: Nullable<Season>, city: string) {
+    constructor({ city, year, season,} : SanitizedCSVRecord) {
+
         this._year = year;
         this._season = season;
         this._city = city;
