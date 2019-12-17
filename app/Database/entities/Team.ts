@@ -1,12 +1,14 @@
-import {SanitizedCSVRecord, Table, Writable} from "../../types";
+import { SanitizedCSVRecord, Table, Writable} from "../../types";
+import {Identifyable} from "../utils/Identifyable";
 
-export class Team  implements Writable {
+export class Team  extends Identifyable  implements Writable {
     private static readonly TABLE_NAME= Table.TEAMS;
 
     private _name : string;
     private _NOCName : string;
 
     constructor({team, noc} : SanitizedCSVRecord) {
+        super();
         this._name = team;
         this._NOCName = noc;
     }
@@ -14,7 +16,7 @@ export class Team  implements Writable {
     formQuery () {
         const {name,NOCName} = this;
 
-        return `INSERT INTO '${Team.TABLE_NAME}' VALUES (null,'${name}','${NOCName}')`;
+        return `INSERT INTO "${Team.TABLE_NAME}" VALUES (null,"${name}","${NOCName}")`;
     }
 
     get name(): string {

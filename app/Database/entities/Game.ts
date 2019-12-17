@@ -1,6 +1,7 @@
-import {Nullable, SanitizedCSVRecord, Season, Table} from "../../types";
+import {Nullable, SanitizedCSVRecord, Season, Table, Writable} from "../../types";
+import {Identifyable} from "../utils/Identifyable";
 
-export class Game {
+export class Game extends Identifyable  implements Writable {
     private static readonly TABLE_NAME= Table.GAMES;
 
     private _year : Nullable<number>;
@@ -8,7 +9,7 @@ export class Game {
     private _city: string;
 
     constructor({ city, year, season,} : SanitizedCSVRecord) {
-
+        super();
         this._year = year;
         this._season = season;
         this._city = city;
@@ -17,7 +18,7 @@ export class Game {
     formQuery () {
         const {year, season, city} = this;
 
-        return `INSERT INTO '${Game.TABLE_NAME}' VALUES (null,${year},'${season}','${city}')`;
+        return `INSERT INTO "${Game.TABLE_NAME}" VALUES (null,${year},"${season}","${city}")`;
     }
 
     get year(): Nullable<number> {
@@ -43,4 +44,5 @@ export class Game {
     set city(value: string) {
         this._city = value;
     }
+
 }

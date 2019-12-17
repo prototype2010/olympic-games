@@ -53,7 +53,7 @@ export interface SanitizedCSVRecord {
 }
 
 export interface Writable {
-    formQuery : (tableName : Table) => string;
+    formQuery : () => string;
 }
 
 
