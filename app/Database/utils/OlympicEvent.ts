@@ -1,4 +1,4 @@
-import {Athlete, Event, Game, Result, Sport, Team} from "../Database/entities/index";
+import {Athlete, Event, Game, Result, Sport, Team} from "../entities/index";
 
 
 export class OlympicEvent {

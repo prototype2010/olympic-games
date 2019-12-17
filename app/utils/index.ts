@@ -1,5 +1,5 @@
 import {Athlete, Event, Game, Result, Sport, Team} from "../Database/entities";
-import {OlympicEvent} from "./OlympicEvent";
+import {OlympicEvent} from "../Database/utils/OlympicEvent";
 import {Callable, SanitizedCSVRecord} from "../types";
 
 export function makeHashKey(...args : any[]) {
