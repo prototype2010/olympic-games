@@ -1,5 +1,5 @@
 export enum Medal {
-    NA = "N/A",
+    "NA" = "NA",
     Gold="Gold",
     Silver="Silver",
     Bronze="Bronze",
@@ -58,8 +58,8 @@ export interface Writable {
 
 
 export enum Season {
-    SUMMER = 'summer',
-    WINTER = 'winter'
+    Summer = 'Summer',
+    Winter = 'Winter'
 }
 
 export enum Table {
@@ -73,4 +73,8 @@ export enum Table {
 
 export interface Callable {
     new (...args : any[]) : any
+}
+
+export interface IndexedObject {
+    [index: string] : any
 }

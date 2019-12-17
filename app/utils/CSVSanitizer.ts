@@ -1,69 +1,12 @@
-import {Medal, Nullable, RawCSVRecord, SanitizedCSVRecord, Season, Sex} from "../types";
+import {IndexedObject, Nullable,} from "../types";
 
 export class CSVSanitizer {
 
-    static sanitizeArray(csvRowsArray : Array<RawCSVRecord> = []) {
-        return  csvRowsArray.map(csvRow => CSVSanitizer.sanitize(csvRow));
-    }
-
-    static sanitize(csvRow : RawCSVRecord) : SanitizedCSVRecord {
-
-        const {age,city,event,games,height,id,medal,name,noc,season,sex,sport,team,weight,year} = csvRow;
-        const {parseInt,sanitizeFullName,sanitizeMedal,sanitizeSex,sanitizeTeamName,sanitizeSeason, sanitizeAsString} = CSVSanitizer;
-
-        return {
-            age : parseInt(age),
-            city: sanitizeAsString(city),
-            event: sanitizeAsString(event),
-            games: sanitizeAsString(games),
-            height: parseInt(height),
-            id: parseInt(id),
-            medal : sanitizeMedal(medal),
-            name: sanitizeFullName(name),
-            noc: sanitizeAsString(noc),
-            season: sanitizeSeason(season),
-            sex: sanitizeSex(sex),
-            sport: sanitizeAsString(sport),
-            team: sanitizeTeamName(team),
-            weight: parseInt(weight),
-            year: parseInt(year),
-        }
-    }
-
-    private static sanitizeAsString(value : any) {
+    static sanitizeAsString(value : any) {
         return typeof value === 'string' ? value : String(value);
     }
 
-    private static sanitizeSeason(value : any) : Nullable<Season> {
-
-        const sanitizedAsString = CSVSanitizer.sanitizeAsString(value);
-
-        if([Season.WINTER,Season.SUMMER].includes(<Season>sanitizedAsString)) {
-            return value as Season;
-        } else {
-            return null;
-        }
-    }
-
-    private static sanitizeFullName(value : any) {
-
-        const sanitizedAsString = CSVSanitizer.sanitizeAsString(value);
-        const noRoundBrackets = sanitizedAsString.replace(/\(.*\)/, () => '' );
-        return noRoundBrackets.replace(/"/, () => '' );
-    }
-
-    private static sanitizeSex(value : any) {
-
-        const sanitizedString =<Sex> CSVSanitizer.sanitizeAsString(value);
-
-        if([Sex.M,Sex.F].includes(sanitizedString)) {
-            return sanitizedString;
-        } else {
-            return null;
-        }
-    }
-
-    private static parseInt(value : any) {
+    static parseInt(value : any) {
         const parsed = Number.parseInt(<string>value);
 
         if(!Number.isNaN(parsed) && Number.isFinite(parsed)) {
@@ -73,21 +16,21 @@ export class CSVSanitizer {
         }
     }
 
-    private static sanitizeTeamName(value : any) : string {
+    static sanitizeFromEnum(value : any, enumArray : Array<IndexedObject>) : Nullable<string> {
 
-        const sanitizedString = CSVSanitizer.sanitizeAsString(value);
+        const [enumObject] = enumArray;
 
-        const noLastDigits = sanitizedString.replace(/\d+$/, () => '');
-        return noLastDigits.replace(/-$/,() => '');
+        if(Object.keys(enumObject).includes(String(value))) {
+            return value;
+        } else {
+            return null;
+        }
     }
 
-    private static sanitizeMedal(value : any) {
-        const sanitizedString = CSVSanitizer.sanitizeAsString(value);
+    static clearByRegexp(value : string, ...regexps : RegExp[]) {
+        return regexps.reduce((cumulative, current) => {
+            return cumulative.replace(current, () => '');
+        }, value)
 
-        if([Medal.Bronze,Medal.Silver,Medal.Gold].includes(<Medal>sanitizedString)) {
-            return sanitizedString as Medal;
-        } else {
-            return Medal.NA
-        }
     }
 }

@@ -1,10 +1,11 @@
 import {DatabaseConnection} from './app/Database/Database';
-import { CSV_FILE_PATH} from './config';
+import {CSV_FILE_PATH, sanitizeConfig} from './config';
 import {CSVParser} from "./app/utils/CSVParser";
 import {CSVSanitizer} from './app/utils/CSVSanitizer';
 import {mapToValidDBObjects} from "./app/utils";
 import {resolve} from 'path';
 import {Table} from "./app/types";
+import {SanitizeExecutor} from "./app/utils/SanitizeExecutor";
 
 
 const DB = DatabaseConnection.getInstance();
@@ -13,7 +14,10 @@ const DB = DatabaseConnection.getInstance();
 (async function init() {
     const readDocument = await CSVParser.parse(resolve(__dirname,CSV_FILE_PATH));
 
-    const sanitizedCSV =  CSVSanitizer.sanitizeArray(readDocument);
+    const sanitizedCSV =  SanitizeExecutor.sanitizeArray(readDocument, sanitizeConfig);
+
+    console.log(sanitizedCSV);
+
     const olympicEvents = mapToValidDBObjects(sanitizedCSV);
 
 
