@@ -6,9 +6,9 @@ export class Team  implements Writable {
         private _name : string;
     private _NOCName : string;
 
-    constructor({name, NOC} : SanitizedCSVRecord) {
+    constructor({name, noc} : SanitizedCSVRecord) {
         this._name = name;
-        this._NOCName = NOC;
+        this._NOCName = noc;
     }
 
     formQuery (tableName : Table) {
