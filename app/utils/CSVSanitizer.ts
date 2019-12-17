@@ -20,7 +20,7 @@ export class CSVSanitizer {
 
         const [enumObject] = enumArray;
 
-        if(Object.keys(enumObject).includes(String(value))) {
+        if(Object.values(enumObject).includes(String(value))) {
             return value;
         } else {
             return null;
