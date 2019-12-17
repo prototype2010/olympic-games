@@ -1,6 +1,6 @@
 import {Athlete, Event, Game, Result, Sport, Team} from "../Database/entities";
-import {OlympicEvent} from "../Database/entities/OlympicEvent";
-import {Callable, IndexedObject, SanitizedCSVRecord} from "../types";
+import {OlympicEvent} from "./OlympicEvent";
+import {Callable, SanitizedCSVRecord} from "../types";
 
 export function makeHashKey(...args : any[]) {
 
@@ -80,7 +80,7 @@ export function mapToValidDBObjects(sanitizedSCV : Array<SanitizedCSVRecord>) {
     console.log(events.getMap().size)
     console.log(teams.getMap().size)
     console.log(games.getMap().size)
-     console.log('total', x.length)
+    console.log('total', x.length)
 
 
     return x;
