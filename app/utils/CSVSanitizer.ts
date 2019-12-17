@@ -1,4 +1,4 @@
-import {CSVValue, Medal, Nullable, RawCSVRecord, SanitizedCSVRecord, Season} from "../types";
+import {Medal, Nullable, RawCSVRecord, SanitizedCSVRecord, Season, Sex} from "../types";
 
 export class CSVSanitizer {
 
@@ -45,21 +45,25 @@ export class CSVSanitizer {
         }
     }
 
-    private static sanitizeFullName(value : CSVValue) {
+    private static sanitizeFullName(value : any) {
 
         const sanitizedAsString = CSVSanitizer.sanitizeAsString(value);
         const noRoundBrackets = sanitizedAsString.replace(/\(.*\)/, () => '' );
         return noRoundBrackets.replace(/"/, () => '' );
     }
 
-    private static sanitizeSex(value : CSVValue) {
+    private static sanitizeSex(value : any) {
 
-        const sanitizedString = CSVSanitizer.sanitizeAsString(value);
+        const sanitizedString =<Sex> CSVSanitizer.sanitizeAsString(value);
 
-        return  sanitizedString ? sanitizedString : null;
+        if([Sex.M,Sex.F].includes(sanitizedString)) {
+            return sanitizedString;
+        } else {
+            return null;
+        }
     }
 
-    private static parseInt(value : CSVValue) {
+    private static parseInt(value : any) {
         const parsed = Number.parseInt(<string>value);
 
         if(!Number.isNaN(parsed) && Number.isFinite(parsed)) {
@@ -69,7 +73,7 @@ export class CSVSanitizer {
         }
     }
 
-    private static sanitizeTeamName(value : CSVValue) : string {
+    private static sanitizeTeamName(value : any) : string {
 
         const sanitizedString = CSVSanitizer.sanitizeAsString(value);
 
@@ -77,7 +81,7 @@ export class CSVSanitizer {
         return noLastDigits.replace(/-$/,() => '');
     }
 
-    private static sanitizeMedal(value : CSVValue) {
+    private static sanitizeMedal(value : any) {
         const sanitizedString = CSVSanitizer.sanitizeAsString(value);
 
         if([Medal.Bronze,Medal.Silver,Medal.Gold].includes(<Medal>sanitizedString)) {

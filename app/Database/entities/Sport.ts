@@ -1,7 +1,5 @@
 import {SanitizedCSVRecord, Table, Writable} from "../../types";
 
-export class Sport  implements Writable {
-    private _name : string;
 export class Sport implements Writable {
     private static readonly TABLE_NAME= Table.SPORTS;
 

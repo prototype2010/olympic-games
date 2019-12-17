@@ -70,7 +70,7 @@ export function mapToValidDBObjects(sanitizedSCV : Array<SanitizedCSVRecord>) {
         return new OlympicEvent(
             athletes([id],sanitizedCSVRow),
             events([event],event),
-            new Result(medal),
+            new Result(sanitizedCSVRow),
             sports([sportName],sportName),
             teams([team,noc],team,noc),
             games([year,season,city],year,season,city)
