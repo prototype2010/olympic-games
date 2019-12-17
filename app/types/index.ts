@@ -42,7 +42,7 @@ export interface SanitizedCSVRecord {
     height: Nullable<number>,
     weight : Nullable<number>,
     team : string,
-    NOC : string,
+    noc : string,
     games : string,
     year : Nullable<number>,
     season : Nullable<Season>,
