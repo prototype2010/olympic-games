@@ -14,7 +14,7 @@ export class Athlete implements Writable {
     private _params : AthleteParams;
     private _teamId: Nullable<number>;
 
-    constructor({ name, sex,year,weight, height,  } : SanitizedCSVRecord) {
+    constructor({ name, sex,year,weight, height,} : SanitizedCSVRecord) {
 
         this._fullName = name;
         this._sex = sex;
@@ -34,8 +34,10 @@ export class Athlete implements Writable {
         this._params = params;
     }
 
-    formQuery (tableName : Table) {
-        return ``;
+    formQuery () {
+        const {fullName,sex,birthYear,params,teamId} = this;
+
+        return `INSERT INTO '${Athlete.TABLE_NAME}' VALUES (null,'${fullName}','${sex}',${birthYear},'${JSON.stringify(params)}',${teamId},)`;
     }
 
     get fullName(): string {

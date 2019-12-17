@@ -14,6 +14,12 @@ export class Game {
         this._city = city;
     }
 
+    formQuery () {
+        const {year, season, city} = this;
+
+        return `INSERT INTO '${Game.TABLE_NAME}' VALUES (null,${year},'${season}','${city}')`;
+    }
+
     get year(): Nullable<number> {
         return this._year;
     }

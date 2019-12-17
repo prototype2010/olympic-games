@@ -9,8 +9,10 @@ export class Sport implements Writable {
         this._name = name;
     }
 
-    formQuery (tableName : Table) {
-        return `INSERT `;
+    formQuery () {
+        const {name} = this;
+
+        return `INSERT INTO '${Sport.TABLE_NAME}' VALUES (null,'${name}')`;
     }
 
     get name(): string {

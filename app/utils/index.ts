@@ -66,11 +66,11 @@ export function mapToValidDBObjects(sanitizedSCV : Array<SanitizedCSVRecord>) {
 
         return new OlympicEvent(
             athletes([id],sanitizedCSVRow),
-            events([event],event),
+            events([event],sanitizedCSVRow),
             new Result(sanitizedCSVRow),
-            sports([sportName],sportName),
-            teams([team,noc],team,noc),
-            games([year,season,city],year,season,city)
+            sports([sportName],sanitizedCSVRow),
+            teams([team,noc],sanitizedCSVRow),
+            games([year,season,city],sanitizedCSVRow)
         );
     });
 

@@ -16,38 +16,37 @@ const DB = DatabaseConnection.getInstance();
 
     const sanitizedCSV =  SanitizeExecutor.sanitizeArray(readDocument, sanitizeConfig);
 
-    console.log(sanitizedCSV);
-
     const olympicEvents = mapToValidDBObjects(sanitizedCSV);
+
+
+    DB.serialize(function () {
+
+        // olympicEvents.forEach(({team}) => {
+        //    DB.run(team.formQuery(Table.TEAMS))
+        // })
+        //
+        // DB.run(`INSERT INTO teams values (null, 'name${Math.random()}', 'NOCNAME${Math.random()}')`)
+        //
+        // DB.each('SELECT * from teams', function(err : Error, tables : any) {
+        //     console.log(err, tables);
+        // });
+
+        // DB.all('SELECT name from teams'), function (err : Error, tables : any) {
+        //     console.log(err,tables);
+        // };
+
+        // DB.all("SELECT name as NAME from sports"), function (err : Error, tables : any) {
+        //     console.log(err,tables);
+        // };
+
+
+    });
 
 
 
 })();
 
 
-
-DB.serialize(function () {
-
-    // olympicEvents.forEach(({team}) => {
-    //    DB.run(team.formQuery(Table.TEAMS))
-    // })
-    //
-    // DB.run(`INSERT INTO teams values (null, 'name${Math.random()}', 'NOCNAME${Math.random()}')`)
-    //
-    // DB.each('SELECT * from teams', function(err : Error, tables : any) {
-    //     console.log(err, tables);
-    // });
-
-    // DB.all('SELECT name from teams'), function (err : Error, tables : any) {
-    //     console.log(err,tables);
-    // };
-
-    // DB.all("SELECT name as NAME from sports"), function (err : Error, tables : any) {
-    //     console.log(err,tables);
-    // };
-
-
-});
 
 
 

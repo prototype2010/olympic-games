@@ -3,16 +3,18 @@ import {SanitizedCSVRecord, Table, Writable} from "../../types";
 export class Team  implements Writable {
     private static readonly TABLE_NAME= Table.TEAMS;
 
-        private _name : string;
+    private _name : string;
     private _NOCName : string;
 
-    constructor({name, noc} : SanitizedCSVRecord) {
-        this._name = name;
+    constructor({team, noc} : SanitizedCSVRecord) {
+        this._name = team;
         this._NOCName = noc;
     }
 
-    formQuery (tableName : Table) {
-        return `INSERT INTO ${tableName} VALUES ()`;
+    formQuery () {
+        const {name,NOCName} = this;
+
+        return `INSERT INTO '${Team.TABLE_NAME}' VALUES (null,'${name}','${NOCName}')`;
     }
 
     get name(): string {

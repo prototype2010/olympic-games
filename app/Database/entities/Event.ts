@@ -8,15 +8,17 @@ export class Event implements Writable {
         this._name = name;
     }
 
+    formQuery () {
+        const {name} = this;
+
+        return `INSERT INTO '${Event.TABLE_NAME}' VALUES (null,'${name}')`;
+    }
+
     get name(): string {
         return this._name;
     }
 
     set name(value: string) {
         this._name = value;
-    }
-
-    formQuery (tableName : Table) {
-        return ``;
     }
 }
