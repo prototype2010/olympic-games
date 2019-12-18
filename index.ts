@@ -22,30 +22,32 @@ async function init() {
     const sanitizedCSV =  SanitizeExecutor.sanitizeArray(readDocument, sanitizeConfig);
     const {rows} = mapToValidDBObjects(sanitizedCSV);
 
-    DB.serialize(async function () {
 
-        DB.run(`DELETE FROM ${Table.SPORTS}`)
-        DB.run(`DELETE FROM ${Table.TEAMS}`)
-        DB.run(`DELETE FROM ${Table.RESULTS}`)
-        DB.run(`DELETE FROM ${Table.EVENTS}`)
-        DB.run(`DELETE FROM ${Table.ATHLETES}`)
-        DB.run(`DELETE FROM ${Table.GAMES}`)
-    });
+   await new Promise((resolve) => {
+       DB.serialize(async function () {
 
-
-    for await (const row of rows) {
-        await row.insertToDb()
-    }
+           DB.run(`DELETE FROM ${Table.SPORTS}`)
+           DB.run(`DELETE FROM ${Table.TEAMS}`)
+           DB.run(`DELETE FROM ${Table.RESULTS}`)
+           DB.run(`DELETE FROM ${Table.EVENTS}`)
+           DB.run(`DELETE FROM ${Table.ATHLETES}`)
+           DB.run(`DELETE FROM ${Table.GAMES}`)
 
 
-    DB.close();
+           for (const row of rows) {
+               await row.insertToDb()
+           }
+       });
+
+       resolve();
+   });
 
     console.log('DB connection closed');
 
-};
+}
 
 init()
-    .then(result => console.log('result'))
+    .then(result => DB.close())
     .catch(e => console.log(e));
 
 

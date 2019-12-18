@@ -9,6 +9,8 @@ export const writeToDB = (entity : Entity)=> new Promise<Entity>((resolve) => {
 
     const DBQuery = entity.formQuery();
 
+
+
     DatabaseConnection.getInstance()
         .run(DBQuery,function (this: any, err : Error) {
 
