@@ -1,6 +1,7 @@
 import {Athlete, Event, Game, Result, Sport, Team} from "../Database/entities";
 import {OlympicEvent} from "../Database/utils/OlympicEvent";
-import {Callable, IndexedObject, SanitizedCSVRecord} from "../types";
+import {Callable, SanitizedCSVRecord} from "../types";
+
 
 export function makeHashKey(...args : any[]) {
 
@@ -60,28 +61,19 @@ export function mapToValidDBObjects(sanitizedSCV : Array<SanitizedCSVRecord>) {
     const teams = getFromHashMap<Team>(new Map(),Team);
     const games = getFromHashMap<Game>(new Map(),Game);
 
-    const rows =  sanitizedSCV.map(sanitizedCSVRow => {
+    const rows : Array<OlympicEvent> =  sanitizedSCV.map(sanitizedCSVRow => {
 
-        const {event, sport, team, noc, year, city, season, id} = sanitizedCSVRow;
+        const {event, sport, noc, year, city, season, id} = sanitizedCSVRow;
 
         return new OlympicEvent(
             athletes([id],sanitizedCSVRow),
             events([event],sanitizedCSVRow),
             new Result(sanitizedCSVRow),
             sports([sport],sanitizedCSVRow),
-            teams([team,noc],sanitizedCSVRow),
+            teams([noc],sanitizedCSVRow),
             games([year,season,city],sanitizedCSVRow)
         );
     });
-
-    console.log('athletes',teams.getMap())
-    // console.log('sports',sports.getMap().length)
-    // console.log(events.getMap().length)
-    // console.log(teams.getMap())
-    // console.log(teams.getMap().size)
-    // // console.log(games.getMap().size)
-    // console.log('total', x.length)
-
 
     return {
         rows,

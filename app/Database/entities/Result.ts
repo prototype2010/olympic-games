@@ -23,7 +23,7 @@ export class Result extends Identifyable  implements Writable {
     formQuery () {
         const {athleteId,gameId,sportId,eventId,medal} = this;
 
-        return `INSERT INTO "${Result.TABLE_NAME}" VALUES (null,${athleteId},${gameId},${sportId},${eventId},${medal})`;
+        return `INSERT INTO "${Result.TABLE_NAME}" VALUES (null,${athleteId},${gameId},${sportId},${eventId},"${medal}")`;
     }
 
     get athleteId(): Nullable<number> {

@@ -1,4 +1,5 @@
 import {Athlete, Event, Game, Result, Sport, Team} from "../entities/index";
+import {writeToDB} from "./index";
 
 
 export class OlympicEvent {
@@ -9,7 +10,6 @@ export class OlympicEvent {
     private _team : Team;
     private _game : Game;
 
-
     constructor(athlete: Athlete, event: Event, result: Result, sport: Sport, team: Team, game: Game) {
         this._athlete = athlete;
         this._event = event;
@@ -19,6 +19,28 @@ export class OlympicEvent {
         this._game = game;
     }
 
+    async insertToDb () {
+
+        const {sport, athlete, event, result, team, game} = this;
+
+        await writeToDB(sport);
+        await writeToDB(team);
+        await writeToDB(event);
+        await writeToDB(game);
+
+        athlete.teamId = team.dbID;
+
+        result.athleteId = athlete.dbID;
+
+        await writeToDB(athlete);
+
+        result.sportId = sport.dbID;
+        result.gameId = game.dbID;
+        result.eventId = event.dbID;
+        result.athleteId = athlete.dbID;
+
+        await  writeToDB(result);
+    }
 
     get athlete(): Athlete {
         return this._athlete;
@@ -67,4 +89,6 @@ export class OlympicEvent {
     set game(value: Game) {
         this._game = value;
     }
+
+
 }

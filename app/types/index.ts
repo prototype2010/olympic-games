@@ -1,3 +1,5 @@
+import {Athlete, Event, Game, Result, Sport, Team} from "../Database/entities";
+
 export enum Medal {
     "NA" = "NA",
     Gold="Gold",
@@ -78,3 +80,5 @@ export interface Callable {
 export interface IndexedObject {
     [index: string] : any
 }
+
+export type Entity = Athlete | Event | Game | Result | Sport | Team
