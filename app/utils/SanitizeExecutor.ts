@@ -34,11 +34,13 @@ export class SanitizeExecutor {
 
     static proceedExecutableConfig(value : any, executableConfig : Array<Array<any>>) {
 
-        return executableConfig.reduce((cummulative, current) => {
+        return executableConfig.reduce((cumulative, current) => {
 
             const [executableFunction,...args] = current;
 
-            return executableFunction(value,...args);
+            cumulative = executableFunction(cumulative,...args);
+
+            return cumulative;
 
         }, value)
 

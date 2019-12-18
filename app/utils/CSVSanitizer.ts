@@ -3,7 +3,11 @@ import {IndexedObject, Nullable,} from "../types";
 export class CSVSanitizer {
 
     static sanitizeAsString(value : any) {
-        return typeof value === 'string' ? value : String(value);
+
+
+        const sanitized =  typeof value === 'string' ? value : String(value);
+
+        return sanitized.replace(/"/g, () => "'");
     }
 
     static parseInt(value : any) {
@@ -28,8 +32,12 @@ export class CSVSanitizer {
     }
 
     static clearByRegexp(value : string, regexps : RegExp[]) {
+
         return  regexps.reduce((cumulative, current) => {
-            return cumulative.replace(current, () => '');
+
+            cumulative = cumulative.replace(current, () => '');
+
+            return cumulative;
         }, value);
     }
 }
