@@ -18,26 +18,42 @@ export class OlympicEvent {
         this._game = game;
     }
 
-    async insertToDb () {
+    bindTeamId() {
 
-        const {sport, athlete, event, result, team, game} = this;
-
-        const dbSport = await writeToDB(sport);
-        const dbTeam =await writeToDB(team);
-        const dbEvent =await writeToDB(event);
-        const dbGame =await writeToDB(game);
-
-        athlete.teamId = dbTeam.dbID;
-
-        const dbAthlete = await writeToDB(athlete);
-
-        result.athleteId = dbAthlete.dbID;
-        result.sportId = dbSport.dbID;
-        result.gameId = dbGame.dbID;
-        result.eventId = dbEvent.dbID;
-
-        await  writeToDB(result);
+        if(this.team.dbID) {
+            this.athlete.teamId =  this.team.dbID
+        } else {
+            console.log('%%%%%%%%%%%%%%%%%%%%%%%% NO ID ', this.team);
+        }
     }
+
+
+
+
+    // insertToDb () {
+    //
+    //     const {sport, athlete, event, result, team, game} = this;
+    //
+    //
+    //
+    //     writeToDB(sport);
+    //     writeToDB(team);
+    //     writeToDB(event);
+    //     writeToDB(game);
+    //
+    //     console.log('###', team);
+    //
+    //     athlete.teamId = team.dbID;
+    //
+    //     writeToDB(athlete);
+    //
+    //     result.athleteId = athlete.dbID;
+    //     result.sportId = sport.dbID;
+    //     result.gameId = game.dbID;
+    //     result.eventId = event.dbID;
+    //
+    //     writeToDB(result);
+    // }
 
     get athlete(): Athlete {
         return this._athlete;
@@ -86,6 +102,4 @@ export class OlympicEvent {
     set game(value: Game) {
         this._game = value;
     }
-
-
 }
