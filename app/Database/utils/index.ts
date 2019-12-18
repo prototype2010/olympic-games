@@ -1,10 +1,7 @@
 import {Entity} from "../../types";
 import {DatabaseConnection} from "../Database";
 
-
-
-
-export const writeToDB = (entity : Entity)=> new Promise ((resolve) => {
+export const writeToDB = (entity : Entity)=> new Promise<Entity>((resolve) => {
 
     if(entity.dbID) {
         return;

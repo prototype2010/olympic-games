@@ -1,7 +1,6 @@
 import {Athlete, Event, Game, Result, Sport, Team} from "../entities/index";
 import {writeToDB} from "./index";
 
-
 export class OlympicEvent {
     private _athlete :Athlete;
     private _event : Event;
@@ -23,21 +22,19 @@ export class OlympicEvent {
 
         const {sport, athlete, event, result, team, game} = this;
 
-        await writeToDB(sport);
-        await writeToDB(team);
-        await writeToDB(event);
-        await writeToDB(game);
+        const dbSport = await writeToDB(sport);
+        const dbTeam =await writeToDB(team);
+        const dbEvent =await writeToDB(event);
+        const dbGame =await writeToDB(game);
 
-        athlete.teamId = team.dbID;
+        athlete.teamId = dbTeam.dbID;
 
-        result.athleteId = athlete.dbID;
+        const dbAthlete = await writeToDB(athlete);
 
-        await writeToDB(athlete);
-
-        result.sportId = sport.dbID;
-        result.gameId = game.dbID;
-        result.eventId = event.dbID;
-        result.athleteId = athlete.dbID;
+        result.athleteId = dbAthlete.dbID;
+        result.sportId = dbSport.dbID;
+        result.gameId = dbGame.dbID;
+        result.eventId = dbEvent.dbID;
 
         await  writeToDB(result);
     }

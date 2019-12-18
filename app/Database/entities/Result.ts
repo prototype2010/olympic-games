@@ -1,5 +1,4 @@
 import {Medal, Nullable, SanitizedCSVRecord, Table, Writable} from "../../types";
-import {Sport} from "./Sport";
 import {Identifyable} from "../utils/Identifyable";
 
 export class Result extends Identifyable  implements Writable {

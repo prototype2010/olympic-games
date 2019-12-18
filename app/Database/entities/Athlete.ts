@@ -39,7 +39,7 @@ export class Athlete extends Identifyable implements Writable {
     formQuery () {
         const {fullName,sex,birthYear,params,teamId} = this;
 
-        return `INSERT INTO "${Athlete.TABLE_NAME}" VALUES (null,"${fullName}","${sex}",${birthYear},"${JSON.stringify(params)}",${teamId})`;
+        return `INSERT INTO "${Athlete.TABLE_NAME}" VALUES (null,"${fullName}","${sex}",${birthYear},'${JSON.stringify(params)}',${teamId})`;
     }
 
     get fullName(): string {
