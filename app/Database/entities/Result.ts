@@ -1,7 +1,7 @@
-import {Medal, Nullable, SanitizedCSVRecord, Table, Writable} from "../../types";
-import {Identifyable} from "../utils/Identifyable";
+import {Medal, Nullable, SanitizedCSVRecord, Table, WritableToDB} from "../../types";
+import {Model} from "../utils/Model";
 
-export class Result extends Identifyable  implements Writable {
+export class Result extends Model  implements WritableToDB {
     private static readonly TABLE_NAME= Table.RESULTS;
 
     private _athleteId : Nullable<number>;
@@ -19,11 +19,19 @@ export class Result extends Identifyable  implements Writable {
         this._medal = medal;
     }
 
-    formQuery () {
-        const {athleteId,gameId,sportId,eventId,medal} = this;
+   write () {
 
-        return `INSERT INTO "${Result.TABLE_NAME}" VALUES (null,${athleteId},${gameId},${sportId},${eventId},"${medal}")`;
-    }
+       const {athleteId,eventId,gameId,sportId,medal} = this;
+
+        return super.insertToDB(Result.TABLE_NAME,
+            {
+               athlete_id :  athleteId,
+                game_id : gameId,
+                sport_id : sportId,
+                event_id : eventId,
+                medal,
+            });
+   }
 
     get athleteId(): Nullable<number> {
         return this._athleteId;

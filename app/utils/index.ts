@@ -32,7 +32,7 @@ function proceedHashFuncArguments(...args : any[]) {
 
 function getFromHashMap<T>(map : Map<string,any>, instance : Callable) {
 
-    const checkHasMap =  function (hashKeyArgs : Array<any>, ...callNewArgs : Array<any>) {
+    const checkHasMap = function (hashKeyArgs : Array<any>, ...callNewArgs : Array<any>) {
 
         const key = makeHashKey(hashKeyArgs);
 
@@ -46,8 +46,12 @@ function getFromHashMap<T>(map : Map<string,any>, instance : Callable) {
         }
     };
 
-    checkHasMap.getMap = function () {
+    checkHasMap.getArray = function () {
         return [...map.values()] as Array<T>;
+    };
+
+    checkHasMap.getMap = function () {
+        return map;
     };
 
     return checkHasMap;
@@ -78,11 +82,11 @@ export function mapToValidDBObjects(sanitizedSCV : Array<SanitizedCSVRecord>) {
     return {
         rows,
         uniqueEntries : {
-            athletes : athletes.getMap(),
-            sports : sports.getMap(),
-            events : events.getMap(),
-            teams : teams.getMap(),
-            games : games.getMap(),
+            athletes : athletes.getArray(),
+            sports : sports.getArray(),
+            events : events.getArray(),
+            teams : teams.getArray(),
+            games : games.getArray(),
         }
     };
 }

@@ -1,7 +1,7 @@
-import {Nullable, SanitizedCSVRecord, Season, Table, Writable} from "../../types";
-import {Identifyable} from "../utils/Identifyable";
+import {Nullable, SanitizedCSVRecord, Season, Table, WritableToDB} from "../../types";
+import {Model} from "../utils/Model";
 
-export class Game extends Identifyable  implements Writable {
+export class Game extends Model  implements WritableToDB {
     private static readonly TABLE_NAME= Table.GAMES;
 
     private _year : Nullable<number>;
@@ -15,10 +15,15 @@ export class Game extends Identifyable  implements Writable {
         this._city = city;
     }
 
-    formQuery () {
-        const {year, season, city} = this;
+    write() {
 
-        return `INSERT INTO "${Game.TABLE_NAME}" VALUES (null,${year},"${season}","${city}")`;
+        const {city,season,year} = this;
+
+        return super.insertToDB(Game.TABLE_NAME, {
+            city,
+            year,
+            season,
+        });
     }
 
     get year(): Nullable<number> {

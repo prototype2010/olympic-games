@@ -1,7 +1,7 @@
-import {Nullable, SanitizedCSVRecord, Table, Writable} from "../../types";
-import {Identifyable} from "../utils/Identifyable";
+import {SanitizedCSVRecord, Table, WritableToDB} from "../../types";
+import {Model} from "../utils/Model";
 
-export class Sport extends Identifyable  implements Writable {
+export class Sport extends Model implements WritableToDB {
     private static readonly TABLE_NAME= Table.SPORTS;
 
     private _name : string;
@@ -11,10 +11,10 @@ export class Sport extends Identifyable  implements Writable {
         this._name = sport;
     }
 
-    formQuery () {
-        const {name} = this;
-
-        return `INSERT INTO ${Sport.TABLE_NAME} VALUES (null,"${name}")`;
+    write () {
+        return super.insertToDB(Sport.TABLE_NAME, {
+            name : this.name
+        });
     }
 
     get name(): string {

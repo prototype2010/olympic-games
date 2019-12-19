@@ -5,7 +5,6 @@ import {mapToValidDBObjects} from "./app/utils";
 import {resolve} from 'path';
 import {Table} from "./app/types";
 import {SanitizeExecutor} from "./app/utils/SanitizeExecutor";
-import {writeToDB} from "./app/Database/utils";
 
 
 const DB = DatabaseConnection.getInstance();
@@ -21,122 +20,70 @@ async function init() {
     const {teams,sports,games,events,athletes} = uniqueEntries;
 
 
-    DB.serialize( function () {
-        DB.run(`DELETE FROM ${Table.SPORTS}`);
-        DB.run(`DELETE FROM ${Table.TEAMS}`);
-        DB.run(`DELETE FROM ${Table.RESULTS}`);
-        DB.run(`DELETE FROM ${Table.EVENTS}`);
-        DB.run(`DELETE FROM ${Table.ATHLETES}`);
-        DB.run(`DELETE FROM ${Table.GAMES}`);
+    // drop tables
+    for await (const tableName of Object.values(Table)) {
+        await DB.raw(`DELETE FROM ${tableName}`);
+    }
+    console.log('Tables dropeed');
 
-        teams.forEach(team => {
-            writeToDB(team);
-        });
+    for await (const game of games) {
+        await game.write();
+    }
 
-        sports.forEach(sport => {
-            writeToDB(sport)
-        });
-
-        games.forEach(game => {
-            writeToDB(game)
-        });
+    console.log(`${games.length} games inserted`);
 
 
-        DB.serialize(function () {
+    for await (const event of events) {
+        await event.write();
+    }
+
+    console.log(`${events.length} events inserted`);
 
 
+    for await (const team of teams) {
+        await team.write();
+    }
 
-            rows.forEach(({athlete, team}) => {
+    console.log(`${teams.length} teams inserted`);
 
-                DB.run(team.formQuery(), function () {
+    for await (const sport of sports) {
+        await sport.write();
+    }
 
+    console.log(`${sports.length} sports inserted`);
 
-                    const  that = this;
-
-                    DB.serialize(function () {
-                        athlete.teamId = that.lastID;
-                        console.log('$$$$$$$$',athlete.formQuery())
-                        DB.run(athlete.formQuery());
-
-                    })
-
-                });
-
-                // row.bindTeamId();
-            });
-
-
-        });
-
-
-
-        // DB.parallelize( function () {
-        //
-        //
-        //     rows.forEach(({athlete, team}) => {
-        //
-        //         console.log(team);
-        //
-        //         // row.bindTeamId();
-        //     });
-
-            // athletes.forEach(athlete => {
-            //     DB.run(athlete.formQuery())
-            // });
-
-
-            // DB.all('SELECT * from sports', (err, res) => {
-            //     console.log(err,res);
-            // })
-            // teams.forEach(team => {
-            //     DB.run(team.formQuery())
-            // });
-
-        // });
-
-        // rows.forEach(row => {
-        //     row.bindTeamId();
-        // });
-        //
-        // athletes.forEach(athlete => {
-        //     DB.run(athlete.formQuery())
-        // });
-        //
-
-        // DB.all('SELECT * from sports', (err, res) => {
-        //     console.log(err,res);
-        // })
-        // teams.forEach(team => {
-        //     DB.run(team.formQuery())
-        // });
-
-
-
-        // rows.forEach(row => {
-        //     row.insertToDb();
-        // });
+    rows.forEach(({athlete,team}) => {
+        athlete.teamId = team.dbID;
     });
 
+    console.log(`Making remap athlete -> team`);
 
-    DB.serialize( function () {
+    for await (const athlete of athletes) {
+        await athlete.write();
+    }
 
+    console.log(`${athletes.length} athletes inserted`);
 
+    for await (const olympicEvents of rows) {
 
-        DB.all('SELECT * from athletes', (err, res) => {
-            console.log(err,res);
-        })
+        const {sport,result,game,athlete,event} = olympicEvents;
 
-    });
+        result.gameId = game.dbID;
+        result.athleteId = athlete.dbID;
+        result.eventId = event.dbID;
+        result.sportId = sport.dbID;
 
+        await result.write();
+    }
 
+    console.log(`${rows.length} olympicEvents inserted`);
 
-    console.log('DB connection closed');
-
+    DatabaseConnection.getInstance().destroy(function () {
+        console.log('Connection destroyed...');
+    })
 }
 
-init()
-    // .then(result => DB.close())
-    .catch(e => console.log(e));
+init().catch(e => console.log(e));
 
 
 

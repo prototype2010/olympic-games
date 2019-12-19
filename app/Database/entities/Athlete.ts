@@ -1,12 +1,12 @@
-import {Nullable, SanitizedCSVRecord, Sex, Table, Writable} from "../../types";
-import {Identifyable} from "../utils/Identifyable";
+import {Nullable, SanitizedCSVRecord, Sex, Table, WritableToDB} from "../../types";
+import {Model} from "../utils/Model";
 
 interface AthleteParams {
     height? : number;
     weight? : number;
 }
 
-export class Athlete extends Identifyable implements Writable {
+export class Athlete extends Model implements WritableToDB {
     private static readonly TABLE_NAME= Table.ATHLETES;
 
     private _fullName : string;
@@ -36,10 +36,17 @@ export class Athlete extends Identifyable implements Writable {
         this._params = params;
     }
 
-    formQuery () {
-        const {fullName,sex,birthYear,params,teamId} = this;
+    write() {
 
-        return `INSERT INTO "${Athlete.TABLE_NAME}" VALUES (null,"${fullName}","${sex}",${birthYear},'${JSON.stringify(params)}',${teamId})`;
+        const {fullName, sex, teamId,params,birthYear} = this;
+
+        return super.insertToDB(Athlete.TABLE_NAME, {
+            full_name : fullName,
+            sex,
+            team_id : teamId,
+            params : JSON.stringify(params),
+            year_of_birth : birthYear,
+        })
     }
 
     get fullName(): string {

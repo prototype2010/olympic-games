@@ -54,8 +54,8 @@ export interface SanitizedCSVRecord {
     medal : Medal,
 }
 
-export interface Writable {
-    formQuery : () => string;
+export interface WritableToDB {
+    write : () => Promise<any>;
 }
 
 

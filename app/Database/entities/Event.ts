@@ -1,19 +1,19 @@
-import {Nullable, SanitizedCSVRecord, Table, Writable} from "../../types";
-import {Identifyable} from "../utils/Identifyable";
+import { SanitizedCSVRecord, Table, WritableToDB} from "../../types";
+import {Model} from "../utils/Model";
 
-export class Event extends Identifyable  implements Writable {
+export class Event extends Model  implements WritableToDB {
     private static readonly TABLE_NAME=  Table.EVENTS;
     private _name : string;
 
-    constructor({name} : SanitizedCSVRecord) {
+    constructor({event} : SanitizedCSVRecord) {
         super();
-        this._name = name;
+        this._name = event;
     }
 
-    formQuery () {
-        const {name} = this;
-
-        return `INSERT INTO "${Event.TABLE_NAME}" VALUES (null,"${name}")`;
+    write() {
+        return super.insertToDB(Event.TABLE_NAME, {
+            name : this.name
+        });
     }
 
     get name(): string {

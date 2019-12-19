@@ -1,5 +1,4 @@
 import {Athlete, Event, Game, Result, Sport, Team} from "../entities/index";
-import {writeToDB} from "./index";
 
 export class OlympicEvent {
     private _athlete :Athlete;
@@ -17,43 +16,6 @@ export class OlympicEvent {
         this._team = team;
         this._game = game;
     }
-
-    bindTeamId() {
-
-        if(this.team.dbID) {
-            this.athlete.teamId =  this.team.dbID
-        } else {
-            console.log('%%%%%%%%%%%%%%%%%%%%%%%% NO ID ', this.team);
-        }
-    }
-
-
-
-
-    // insertToDb () {
-    //
-    //     const {sport, athlete, event, result, team, game} = this;
-    //
-    //
-    //
-    //     writeToDB(sport);
-    //     writeToDB(team);
-    //     writeToDB(event);
-    //     writeToDB(game);
-    //
-    //     console.log('###', team);
-    //
-    //     athlete.teamId = team.dbID;
-    //
-    //     writeToDB(athlete);
-    //
-    //     result.athleteId = athlete.dbID;
-    //     result.sportId = sport.dbID;
-    //     result.gameId = game.dbID;
-    //     result.eventId = event.dbID;
-    //
-    //     writeToDB(result);
-    // }
 
     get athlete(): Athlete {
         return this._athlete;
