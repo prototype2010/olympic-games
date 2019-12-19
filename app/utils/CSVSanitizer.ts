@@ -4,7 +4,6 @@ export class CSVSanitizer {
 
     static sanitizeAsString(value : any) {
 
-
         const sanitized =  typeof value === 'string' ? value : String(value);
 
         return sanitized.replace(/"/g, () => "'");

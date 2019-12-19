@@ -7,6 +7,7 @@ export class Team  extends Model  implements WritableToDB {
     private _name : string;
     private _NOCName : string;
 
+
     constructor({team, noc} : SanitizedCSVRecord) {
         super();
         this._name = team;
