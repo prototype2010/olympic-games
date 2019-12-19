@@ -5,6 +5,7 @@ import {mapToValidDBObjects} from "./app/utils";
 import {resolve} from 'path';
 import {Table} from "./app/types";
 import {SanitizeExecutor} from "./app/utils/SanitizeExecutor";
+import {resolveAllAsChunks} from "./app/Database/utils";
 
 
 const DB = DatabaseConnection.getInstance();
@@ -12,71 +13,55 @@ const DB = DatabaseConnection.getInstance();
 
 async function init() {
 
+    console.time('Parsing document');
+
     const readDocument = await CSVParser.parse(resolve(__dirname,CSV_FILE_PATH));
 
     const sanitizedCSV =  SanitizeExecutor.sanitizeArray(readDocument, sanitizeConfig);
     const {rows, uniqueEntries} = mapToValidDBObjects(sanitizedCSV);
 
+    console.timeEnd('Parsing document');
+
     const {teams,sports,games,events,athletes} = uniqueEntries;
 
 
+    console.time('No dependency entries document');
     // drop tables
     for await (const tableName of Object.values(Table)) {
         await DB.raw(`DELETE FROM ${tableName}`);
     }
-    console.log('Tables dropeed');
 
-    for await (const game of games) {
-        await game.write();
-    }
+    await resolveAllAsChunks([
+        ...teams,
+        ...sports,
+        ...events,
+        ...games,
+    ]);
 
-    console.log(`${games.length} games inserted`);
+    console.timeEnd('No dependency entries document');
 
-
-    for await (const event of events) {
-        await event.write();
-    }
-
-    console.log(`${events.length} events inserted`);
-
-
-    for await (const team of teams) {
-        await team.write();
-    }
-
-    console.log(`${teams.length} teams inserted`);
-
-    for await (const sport of sports) {
-        await sport.write();
-    }
-
-    console.log(`${sports.length} sports inserted`);
+    console.time('Inserting athletes');
 
     rows.forEach(({athlete,team}) => {
         athlete.teamId = team.dbID;
     });
 
-    console.log(`Making remap athlete -> team`);
+    await resolveAllAsChunks(athletes);
 
-    for await (const athlete of athletes) {
-        await athlete.write();
-    }
+    console.timeEnd('Inserting athletes');
 
-    console.log(`${athletes.length} athletes inserted`);
+    console.time('Inserting results');
 
-    for await (const olympicEvents of rows) {
-
-        const {sport,result,game,athlete,event} = olympicEvents;
-
+    await resolveAllAsChunks(rows.map(({sport,result,game,athlete,event}) => {
         result.gameId = game.dbID;
         result.athleteId = athlete.dbID;
         result.eventId = event.dbID;
         result.sportId = sport.dbID;
 
-        await result.write();
-    }
+        return result;
+    }));
 
-    console.log(`${rows.length} olympicEvents inserted`);
+    console.timeEnd('Inserting results');
 
     DatabaseConnection.getInstance().destroy(function () {
         console.log('Connection destroyed...');
