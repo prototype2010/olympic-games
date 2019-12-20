@@ -11,7 +11,7 @@ export class SanitizeExecutor {
 
         return {
           ...cumulative,
-          [key]: SanitizeExecutor.proceedExecutableConfig(value, executableConfig!) as any,
+          [key]: SanitizeExecutor.proceedExecutableConfig(value, executableConfig!),
         };
       }, <SanitizedCSVRecord>{});
     });
