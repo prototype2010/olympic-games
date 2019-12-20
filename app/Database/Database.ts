@@ -10,7 +10,7 @@ export class DatabaseConnection {
             filename: DB_FILE_PATH
         },
         useNullAsDefault: true,
-        pool: { min: 20, max: 100 }
+        pool: { min: 100, max: 200 }
     });
 
     private constructor(){}
