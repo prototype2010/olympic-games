@@ -44,9 +44,9 @@ async function init() {
 
     console.time('Inserting results');
 
-    const chunkedRows = chunk(rows, 1000);
+    const chunkedResults = chunk(rows, 1000);
 
-    for await (const rowsChunk of chunkedRows) {
+    for await (const rowsChunk of chunkedResults) {
 
         await resolveAllAsChunks(rowsChunk.map(({sport,result,game,athlete,event,team}) => {
 
@@ -57,10 +57,11 @@ async function init() {
                         if(!athlete.dbID) {
                             athlete.teamId = team.dbID;
 
-                            await athlete.write();
+                            resolve(athlete.write());
                         }
 
-                        resolve(athlete);
+                        resolve();
+
                     }).then(() => {
 
                         result.gameId = game.dbID;
@@ -68,7 +69,7 @@ async function init() {
                         result.eventId = event.dbID;
                         result.sportId = sport.dbID;
 
-                        Promise.resolve(result);
+                        return result.write();
                     });
                 }
             }
