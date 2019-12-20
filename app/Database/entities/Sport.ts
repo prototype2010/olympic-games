@@ -1,7 +1,7 @@
-import { SanitizedCSVRecord, Table, WritableToDB } from '../../types';
+import { SanitizedCSVRecord, Table } from '../../types';
 import { Model } from '../utils/Model';
 
-export class Sport extends Model implements WritableToDB {
+export class Sport extends Model {
   private static readonly TABLE_NAME = Table.SPORTS;
 
   private _name: string;

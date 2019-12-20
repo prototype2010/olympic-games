@@ -1,7 +1,7 @@
 import { IndexedObject, Nullable, Table } from '../../types';
 import { DatabaseConnection } from '../Database';
 
-export class Model {
+export abstract class Model {
   protected _dbID: Nullable<number> = null;
 
   async insertToDB(tableName: Table, insertData: IndexedObject) {
@@ -26,4 +26,6 @@ export class Model {
   set dbID(value: Nullable<number>) {
     this._dbID = value;
   }
+
+  abstract write(): Promise<any>;
 }

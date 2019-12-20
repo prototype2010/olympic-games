@@ -1,4 +1,4 @@
-import { Nullable, SanitizedCSVRecord, Sex, Table, WritableToDB } from '../../types';
+import { Nullable, SanitizedCSVRecord, Sex, Table } from '../../types';
 import { Model } from '../utils/Model';
 
 interface AthleteParams {
@@ -6,7 +6,7 @@ interface AthleteParams {
   weight?: number;
 }
 
-export class Athlete extends Model implements WritableToDB {
+export class Athlete extends Model {
   private static readonly TABLE_NAME = Table.ATHLETES;
 
   private _fullName: string;

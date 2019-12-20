@@ -54,10 +54,6 @@ export interface SanitizedCSVRecord {
   medal: Medal;
 }
 
-export interface WritableToDB {
-  write: () => Promise<any>;
-}
-
 export enum Season {
   Summer = 'Summer',
   Winter = 'Winter',

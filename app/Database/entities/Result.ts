@@ -1,7 +1,7 @@
-import { Medal, Nullable, SanitizedCSVRecord, Table, WritableToDB } from '../../types';
+import { Medal, Nullable, SanitizedCSVRecord, Table } from '../../types';
 import { Model } from '../utils/Model';
 
-export class Result extends Model implements WritableToDB {
+export class Result extends Model {
   private static readonly TABLE_NAME = Table.RESULTS;
 
   private _athleteId: Nullable<number>;
