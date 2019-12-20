@@ -3,10 +3,9 @@ import { CSV_FILE_PATH, sanitizeConfig } from './config';
 import { CSVParser } from './app/utils/CSVParser';
 import { mapToValidDBObjects } from './app/utils';
 import { resolve } from 'path';
-import { Entity, Table } from './app/types';
+import { Table } from './app/types';
 import { SanitizeExecutor } from './app/utils/SanitizeExecutor';
 import { resolveAllAsChunks } from './app/Database/utils';
-import { Athlete } from './app/Database/entities';
 import { chunk } from 'lodash';
 
 const DB = DatabaseConnection.getInstance();

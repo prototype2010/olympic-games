@@ -4,7 +4,7 @@
   "description": "test task 1",
   "main": "index.ts",
   "scripts": {
-    "start:dev": "ts-node index.ts",
+    "start:debug": "node --inspect --require ts-node/register index.ts",
     "prettier": "prettier --write \"./**/*.{ts,json}\"",
     "precommit": "pretty-quick --staged",
     "postcommit": "git update-index -g"
@@ -21,7 +21,6 @@
     "eslint-plugin-prettier": "^3.1.2",
     "husky": "^3.1.0",
     "pretty-quick": "^2.0.1",
-    "ts-node": "^8.4.1",
     "typescript": "^3.7.2"
   },
   "dependencies": {
@@ -31,7 +30,8 @@
     "knex": "^0.20.4",
     "lodash": "^4.17.15",
     "sqlite3": "^4.1.1",
-    "prettier": "^1.19.1"
+    "prettier": "^1.19.1",
+    "ts-node": "^8.4.1"
   },
   "author": "",
   "license": "ISC"
