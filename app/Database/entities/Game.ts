@@ -1,40 +1,51 @@
-import {Nullable, SanitizedCSVRecord, Season, Table} from "../../types";
+import { Nullable, SanitizedCSVRecord, Season, Table } from '../../types';
+import { Model } from '../utils/Model';
 
-export class Game {
-    private static readonly TABLE_NAME= Table.GAMES;
+export class Game extends Model {
+  private static readonly TABLE_NAME = Table.GAMES;
 
-    private _year : Nullable<number>;
-    private _season : Nullable<Season>;
-    private _city: string;
+  private _year: Nullable<number>;
+  private _season: Nullable<Season>;
+  private _city: string;
 
-    constructor({ city, year, season,} : SanitizedCSVRecord) {
+  constructor({ city, year, season }: SanitizedCSVRecord) {
+    super();
+    this._year = year;
+    this._season = season;
+    this._city = city;
+  }
 
-        this._year = year;
-        this._season = season;
-        this._city = city;
-    }
+  write() {
+    const { city, season, year } = this;
 
-    get year(): Nullable<number> {
-        return this._year;
-    }
+    return super.insertToDB(Game.TABLE_NAME, {
+      city,
+      year,
+      season,
+    });
+  }
 
-    set year(value: Nullable<number>) {
-        this._year = value;
-    }
+  get year(): Nullable<number> {
+    return this._year;
+  }
 
-    get season(): Nullable<Season> {
-        return this._season;
-    }
+  set year(value: Nullable<number>) {
+    this._year = value;
+  }
 
-    set season(value: Nullable<Season>) {
-        this._season = value;
-    }
+  get season(): Nullable<Season> {
+    return this._season;
+  }
 
-    get city(): string {
-        return this._city;
-    }
+  set season(value: Nullable<Season>) {
+    this._season = value;
+  }
 
-    set city(value: string) {
-        this._city = value;
-    }
+  get city(): string {
+    return this._city;
+  }
+
+  set city(value: string) {
+    this._city = value;
+  }
 }

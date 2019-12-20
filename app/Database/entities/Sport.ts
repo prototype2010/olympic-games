@@ -1,23 +1,27 @@
-import {SanitizedCSVRecord, Table, Writable} from "../../types";
+import { SanitizedCSVRecord, Table } from '../../types';
+import { Model } from '../utils/Model';
 
-export class Sport implements Writable {
-    private static readonly TABLE_NAME= Table.SPORTS;
+export class Sport extends Model {
+  private static readonly TABLE_NAME = Table.SPORTS;
 
-        private _name : string;
+  private _name: string;
 
-    constructor({name} : SanitizedCSVRecord) {
-        this._name = name;
-    }
+  constructor({ sport }: SanitizedCSVRecord) {
+    super();
+    this._name = sport;
+  }
 
-    formQuery (tableName : Table) {
-        return `INSERT `;
-    }
+  write() {
+    return super.insertToDB(Sport.TABLE_NAME, {
+      name: this.name,
+    });
+  }
 
-    get name(): string {
-        return this._name;
-    }
+  get name(): string {
+    return this._name;
+  }
 
-    set name(value: string) {
-        this._name = value;
-    }
+  set name(value: string) {
+    this._name = value;
+  }
 }
