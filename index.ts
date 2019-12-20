@@ -3,9 +3,10 @@ import {CSV_FILE_PATH, sanitizeConfig} from './config';
 import {CSVParser} from "./app/utils/CSVParser";
 import {mapToValidDBObjects} from "./app/utils";
 import {resolve} from 'path';
-import {Table} from "./app/types";
+import {Entity, Table} from "./app/types";
 import {SanitizeExecutor} from "./app/utils/SanitizeExecutor";
 import {resolveAllAsChunks} from "./app/Database/utils";
+import {Athlete} from "./app/Database/entities";
 
 
 const DB = DatabaseConnection.getInstance();
@@ -22,7 +23,7 @@ async function init() {
 
     console.timeEnd('Parsing document');
 
-    const {teams,sports,games,events,athletes} = uniqueEntries;
+    const {teams,sports,games,events} = uniqueEntries;
 
 
     console.time('No dependency entries document');
@@ -40,25 +41,33 @@ async function init() {
 
     console.timeEnd('No dependency entries document');
 
-    console.time('Inserting athletes');
-
-    rows.forEach(({athlete,team}) => {
-        athlete.teamId = team.dbID;
-    });
-
-    await resolveAllAsChunks(athletes);
-
-    console.timeEnd('Inserting athletes');
-
     console.time('Inserting results');
 
-    await resolveAllAsChunks(rows.map(({sport,result,game,athlete,event}) => {
-        result.gameId = game.dbID;
-        result.athleteId = athlete.dbID;
-        result.eventId = event.dbID;
-        result.sportId = sport.dbID;
+    await resolveAllAsChunks(rows.map(({sport,result,game,athlete,event,team}) => {
 
-        return result;
+
+        return {
+            write : () => {
+                return new Promise( async (resolve) => {
+
+                    if(!athlete.dbID) {
+                        athlete.teamId = team.dbID;
+
+                        await athlete.write();
+                    }
+
+                    resolve(athlete);
+                }).then(() => {
+
+                    result.gameId = game.dbID;
+                    result.athleteId = athlete.dbID;
+                    result.eventId = event.dbID;
+                    result.sportId = sport.dbID;
+
+                    Promise.resolve(result);
+                });
+            }
+        }
     }));
 
     console.timeEnd('Inserting results');
