@@ -1,89 +1,74 @@
-import {DatabaseConnection} from './app/Database/Database';
-import {CSV_FILE_PATH, sanitizeConfig} from './config';
-import {CSVParser} from "./app/utils/CSVParser";
-import {mapToValidDBObjects} from "./app/utils";
-import {resolve} from 'path';
-import {Entity, Table} from "./app/types";
-import {SanitizeExecutor} from "./app/utils/SanitizeExecutor";
-import {resolveAllAsChunks} from "./app/Database/utils";
-import {Athlete} from "./app/Database/entities";
-import {chunk} from 'lodash';
-
+import { DatabaseConnection } from './app/Database/Database';
+import { CSV_FILE_PATH, sanitizeConfig } from './config';
+import { CSVParser } from './app/utils/CSVParser';
+import { mapToValidDBObjects } from './app/utils';
+import { resolve } from 'path';
+import { Entity, Table } from './app/types';
+import { SanitizeExecutor } from './app/utils/SanitizeExecutor';
+import { resolveAllAsChunks } from './app/Database/utils';
+import { Athlete } from './app/Database/entities';
+import { chunk } from 'lodash';
 
 const DB = DatabaseConnection.getInstance();
 
-
 async function init() {
+  console.time('Parsing document');
 
-    console.time('Parsing document');
+  const readDocument = await CSVParser.parse(resolve(__dirname, CSV_FILE_PATH));
 
-    const readDocument = await CSVParser.parse(resolve(__dirname,CSV_FILE_PATH));
+  const sanitizedCSV = SanitizeExecutor.sanitizeArray(readDocument, sanitizeConfig);
+  const { rows, uniqueEntries } = mapToValidDBObjects(sanitizedCSV);
 
-    const sanitizedCSV =  SanitizeExecutor.sanitizeArray(readDocument, sanitizeConfig);
-    const {rows, uniqueEntries} = mapToValidDBObjects(sanitizedCSV);
+  console.timeEnd('Parsing document');
 
-    console.timeEnd('Parsing document');
+  const { teams, sports, games, events } = uniqueEntries;
 
-    const {teams,sports,games,events} = uniqueEntries;
+  console.time('No dependency entries document');
+  // drop tables
+  for await (const tableName of Object.values(Table)) {
+    await DB.raw(`DELETE FROM ${tableName}`);
+  }
 
+  await resolveAllAsChunks([...teams, ...sports, ...events, ...games]);
 
-    console.time('No dependency entries document');
-    // drop tables
-    for await (const tableName of Object.values(Table)) {
-        await DB.raw(`DELETE FROM ${tableName}`);
-    }
+  console.timeEnd('No dependency entries document');
 
-    await resolveAllAsChunks([
-        ...teams,
-        ...sports,
-        ...events,
-        ...games,
-    ]);
+  console.time('Inserting results');
 
-    console.timeEnd('No dependency entries document');
+  const chunkedResults = chunk(rows, 1000);
 
-    console.time('Inserting results');
+  for await (const rowsChunk of chunkedResults) {
+    await resolveAllAsChunks(
+      rowsChunk.map(({ sport, result, game, athlete, event, team }) => {
+        return {
+          write: () => {
+            return new Promise(async resolve => {
+              if (!athlete.dbID) {
+                athlete.teamId = team.dbID;
 
-    const chunkedResults = chunk(rows, 1000);
+                resolve(athlete.write());
+              }
 
-    for await (const rowsChunk of chunkedResults) {
+              resolve();
+            }).then(() => {
+              result.gameId = game.dbID;
+              result.athleteId = athlete.dbID;
+              result.eventId = event.dbID;
+              result.sportId = sport.dbID;
 
-        await resolveAllAsChunks(rowsChunk.map(({sport,result,game,athlete,event,team}) => {
+              return result.write();
+            });
+          },
+        };
+      }),
+    );
+  }
 
-            return {
-                write : () => {
-                    return new Promise( async (resolve) => {
+  console.timeEnd('Inserting results');
 
-                        if(!athlete.dbID) {
-                            athlete.teamId = team.dbID;
-
-                            resolve(athlete.write());
-                        }
-
-                        resolve();
-
-                    }).then(() => {
-
-                        result.gameId = game.dbID;
-                        result.athleteId = athlete.dbID;
-                        result.eventId = event.dbID;
-                        result.sportId = sport.dbID;
-
-                        return result.write();
-                    });
-                }
-            }
-        }));
-    }
-
-    console.timeEnd('Inserting results');
-
-    DatabaseConnection.getInstance().destroy(function () {
-        console.log('Connection destroyed...');
-    })
+  DatabaseConnection.getInstance().destroy(function() {
+    console.log('Connection destroyed...');
+  });
 }
 
 init().catch(e => console.log(e));
-
-
-
