@@ -7,6 +7,7 @@ import {Entity, Table} from "./app/types";
 import {SanitizeExecutor} from "./app/utils/SanitizeExecutor";
 import {resolveAllAsChunks} from "./app/Database/utils";
 import {Athlete} from "./app/Database/entities";
+import {chunk} from 'lodash';
 
 
 const DB = DatabaseConnection.getInstance();
@@ -43,32 +44,36 @@ async function init() {
 
     console.time('Inserting results');
 
-    await resolveAllAsChunks(rows.map(({sport,result,game,athlete,event,team}) => {
+    const chunkedRows = chunk(rows, 1000);
 
+    for await (const rowsChunk of chunkedRows) {
 
-        return {
-            write : () => {
-                return new Promise( async (resolve) => {
+        await resolveAllAsChunks(rowsChunk.map(({sport,result,game,athlete,event,team}) => {
 
-                    if(!athlete.dbID) {
-                        athlete.teamId = team.dbID;
+            return {
+                write : () => {
+                    return new Promise( async (resolve) => {
 
-                        await athlete.write();
-                    }
+                        if(!athlete.dbID) {
+                            athlete.teamId = team.dbID;
 
-                    resolve(athlete);
-                }).then(() => {
+                            await athlete.write();
+                        }
 
-                    result.gameId = game.dbID;
-                    result.athleteId = athlete.dbID;
-                    result.eventId = event.dbID;
-                    result.sportId = sport.dbID;
+                        resolve(athlete);
+                    }).then(() => {
 
-                    Promise.resolve(result);
-                });
+                        result.gameId = game.dbID;
+                        result.athleteId = athlete.dbID;
+                        result.eventId = event.dbID;
+                        result.sportId = sport.dbID;
+
+                        Promise.resolve(result);
+                    });
+                }
             }
-        }
-    }));
+        }));
+    }
 
     console.timeEnd('Inserting results');
 

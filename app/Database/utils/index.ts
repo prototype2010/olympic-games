@@ -1,5 +1,5 @@
 import {chunk} from 'lodash';
-import {Entity, WritableToDB} from "../../types";
+import { WritableToDB} from "../../types";
 const chunkSize = 100;
 
 export const resolveAllAsChunks = async (entities : Array<WritableToDB>) => {
