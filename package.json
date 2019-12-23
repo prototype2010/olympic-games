@@ -7,7 +7,9 @@
     "start:debug": "node --inspect --require ts-node/register index.ts",
     "prettier": "prettier --write \"./**/*.{ts,json}\"",
     "precommit": "pretty-quick --staged",
-    "postcommit": "git update-index -g"
+    "postcommit": "git update-index -g",
+    "script": "ts-node",
+    "args": "-r tsconfig-paths/register ./stat.ts"
   },
   "devDependencies": {
     "@types/knex": "^0.16.1",
