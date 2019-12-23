@@ -77,3 +77,8 @@ export interface IndexedObject {
 }
 
 export type Entity = Athlete | Event | Game | Result | Sport | Team;
+
+export enum Charts {
+  Medals = 'medals',
+  TopTeams = 'top-teams',
+}

@@ -1,6 +1,6 @@
 import { IndexedObject, Nullable } from '../types';
 
-export class CSVSanitizer {
+export class Sanitizer {
   static sanitizeAsString(value: any) {
     const sanitized = typeof value === 'string' ? value : String(value);
 

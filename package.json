@@ -7,13 +7,12 @@
     "start:debug": "node --inspect --require ts-node/register index.ts",
     "prettier": "prettier --write \"./**/*.{ts,json}\"",
     "precommit": "pretty-quick --staged",
-    "postcommit": "git update-index -g",
-    "script": "ts-node",
-    "args": "-r tsconfig-paths/register ./stat.ts"
+    "postcommit": "git update-index -g"
   },
   "devDependencies": {
     "@types/knex": "^0.16.1",
     "@types/lodash": "^4.14.149",
+    "@types/minimist": "^1.2.0",
     "@types/node": "^12.12.3",
     "@types/sqlite3": "^3.1.5",
     "@typescript-eslint/eslint-plugin": "^2.12.0",
@@ -31,8 +30,9 @@
     "dotenv": "^8.2.0",
     "knex": "^0.20.4",
     "lodash": "^4.17.15",
-    "sqlite3": "^4.1.1",
+    "minimist": "^1.2.0",
     "prettier": "^1.19.1",
+    "sqlite3": "^4.1.1",
     "ts-node": "^8.4.1"
   },
   "author": "",
