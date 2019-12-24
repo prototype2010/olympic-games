@@ -10,7 +10,7 @@ const { _: noFlagParams, help } = parseCLIParams();
 export const CLIExtractorConfig: { [index: string]: Array<CLIExctractorDescriptor> } = {
   'top-teams': [
     {
-      priority: 1,
+      priority: 2,
       required: true,
       extractFunction: [[Sanitizer.sanitizeFromEnum, [Season]]],
       paramName: 'season',
@@ -23,15 +23,15 @@ export const CLIExtractorConfig: { [index: string]: Array<CLIExctractorDescripto
     },
     {
       priority: 0,
-      required: true,
-      extractFunction: [[Sanitizer.sanitizeAsString, []]],
-      paramName: 'noc',
+      required: false,
+      extractFunction: [[Sanitizer.parseInt, []]],
+      paramName: 'year',
     },
   ],
 
   medals: [
     {
-      priority: 1,
+      priority: 2,
       required: true,
       extractFunction: [[Sanitizer.sanitizeFromEnum, [Season]]],
       paramName: 'season',
@@ -39,11 +39,11 @@ export const CLIExtractorConfig: { [index: string]: Array<CLIExctractorDescripto
     {
       priority: 0,
       required: false,
-      extractFunction: [[Sanitizer.parseInt, []]],
-      paramName: 'year',
+      extractFunction: [[Sanitizer.sanitizeAsString, []]],
+      paramName: 'noc',
     },
     {
-      priority: 0,
+      priority: 1,
       required: false,
       extractFunction: [[Sanitizer.sanitizeFromEnum, [Medal]]],
       paramName: 'medal',
@@ -55,10 +55,11 @@ if (help) {
   printHelp();
 } else if (matchedChartName(noFlagParams)) {
   const chartName = matchedChartName(noFlagParams) as Charts;
+  const cliParams = preproceedParserArguments(noFlagParams, chartName);
 
   if (chartName) {
-    console.log(noFlagParams);
-    console.log(CLIArgumentsParser.extract(noFlagParams, CLIExtractorConfig[chartName]));
+    console.log(cliParams);
+    console.log(CLIArgumentsParser.extract(cliParams, CLIExtractorConfig[chartName]));
   }
 
   switch (chartName) {
@@ -80,6 +81,14 @@ if (help) {
   printHelp();
 }
 
+function preproceedParserArguments(params: Array<any>, chartName: string) {
+  const argsArray = params.slice();
+
+  argsArray.splice(params.indexOf(chartName), 1);
+
+  return argsArray;
+}
+
 function matchedChartName<T>(chartParams: Array<string>) {
   const [chartName] = chartParams;
 
@@ -88,18 +97,18 @@ function matchedChartName<T>(chartParams: Array<string>) {
 
 function printHelp() {
   console.log('usage :');
-  console.log('./stat --help');
+
+  console.log('season [winter|summer] NOC medal_name [gold|silver|bronze] (in any order)');
+  console.log('season [winter|summer] year medal_type [gold|silver|bronze] (in any order)');
+
+  console.log('./stat medals summer ukr ');
+  console.log('./stat medals silver UKR winter');
+  console.log('./stat top-teams silver winter');
+  console.log('./stat top-teams winter');
 }
 
 function parseCLIParams() {
   return minimist(process.argv.slice(2), {
     boolean: ['help'],
-    alias: {
-      medal: ['bronze', 'gold', 'silver'],
-      season: ['summer', 'winter'],
-    },
   });
 }
-
-//Params: season [winter|summer] NOC medal_name [gold|silver|bronze] (in any order).
-//Params: season [winter|summer] year medal_type [gold|silver|bronze] (in any order).

@@ -9,23 +9,21 @@ export class CLIArgumentsParser {
       return CLIArgumentsParser.extractParamsByConfig(CLIArguments, descriptorsByPriority);
     } catch (e) {
       console.error(e, e.message);
-      console.error(`Error occurred during extract params from ${CLIArguments} by config ${CLIConfig}`);
+      console.error(`Error occurred during extract params from ${CLIArguments} by config ${JSON.stringify(CLIConfig)}`);
     }
   }
 
   static sortByPriority(CLIConfig: Array<CLIExctractorDescriptor>) {
-    return CLIConfig.sort((descriptor1, descriptor2) => descriptor2.priority - descriptor1.priority);
+    return CLIConfig.sort((descriptor1, descriptor2) => descriptor1.priority - descriptor2.priority);
   }
 
   static extractParamsByConfig(CLIArguments: Array<string>, CLIConfig: Array<CLIExctractorDescriptor>) {
-    return CLIConfig.reduce(
+    return CLIConfig.reduceRight(
       (cumulative, cliConfig) => {
         const { match: foundMatch, modifiedArray } = CLIArgumentsParser.findArgumentInArray(
           cumulative.arguments,
           cliConfig,
         );
-
-        console.log('modifiedArray', modifiedArray);
 
         return {
           match: {
@@ -75,15 +73,24 @@ export class CLIArgumentsParser {
   }
 
   static continueSearch(CLIArguments: Array<string>, foundMatch: any, CLIConfig: CLIExctractorDescriptor) {
-    let foundValue = foundMatch
-      ? {
-          [CLIConfig.paramName]: foundMatch,
-        }
-      : {};
+    if (foundMatch) {
+      return CLIArgumentsParser.continueWithDeletedArg(CLIArguments, foundMatch, CLIConfig);
+    } else {
+      return CLIArgumentsParser.continueWithKeptArg(CLIArguments);
+    }
+  }
 
+  static continueWithDeletedArg(CLIArguments: Array<string>, foundMatch: any, CLIConfig: CLIExctractorDescriptor) {
     return {
       modifiedArray: CLIArgumentsParser.deleteMatchFromArray(CLIArguments, foundMatch),
-      match: foundValue,
+      match: { [CLIConfig.paramName]: foundMatch },
+    };
+  }
+
+  static continueWithKeptArg(CLIArguments: Array<string>) {
+    return {
+      modifiedArray: CLIArguments,
+      match: {},
     };
   }
 }
