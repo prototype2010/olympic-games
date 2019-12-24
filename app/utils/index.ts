@@ -1,6 +1,8 @@
 import { Athlete, Event, Game, Result, Sport, Team } from '../Database/entities';
 import { OlympicEvent } from '../Database/utils/OlympicEvent';
-import { Callable, SanitizedCSVRecord } from '../types';
+import { Callable, Charts, SanitizedCSVRecord } from '../types';
+import { Sanitizer } from './Sanitizer';
+import minimist from 'minimist';
 
 export function makeHashKey(...args: any[]) {
   const objectToBeHashed = proceedHashFuncArguments(...args);
@@ -79,4 +81,36 @@ export function mapToValidDBObjects(sanitizedSCV: Array<SanitizedCSVRecord>) {
       games: games.getArray(),
     },
   };
+}
+
+export function preproceedParserArguments(params: Array<any>, chartName: string) {
+  const argsArray = params.slice();
+
+  argsArray.splice(params.indexOf(chartName), 1);
+
+  return argsArray;
+}
+
+export function matchedChartName<T>(chartParams: Array<string>) {
+  const [chartName] = chartParams;
+
+  return Sanitizer.sanitizeFromEnum(chartName, [Charts]);
+}
+
+export function printHelp() {
+  console.log('usage :');
+
+  console.log('season [winter|summer] NOC medal_name [gold|silver|bronze] (in any order)');
+  console.log('season [winter|summer] year medal_type [gold|silver|bronze] (in any order)');
+
+  console.log('./stat medals summer ukr ');
+  console.log('./stat medals silver UKR winter');
+  console.log('./stat top-teams silver winter');
+  console.log('./stat top-teams winter');
+}
+
+export function parseCLIParams() {
+  return minimist(process.argv.slice(2), {
+    boolean: ['help'],
+  });
 }

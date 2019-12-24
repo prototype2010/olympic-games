@@ -19,22 +19,19 @@ export class CLIArgumentsParser {
 
   static extractParamsByConfig(CLIArguments: Array<string>, CLIConfig: Array<CLIExctractorDescriptor>) {
     return CLIConfig.reduceRight(
-      (cumulative, cliConfig) => {
-        const { match: foundMatch, modifiedArray } = CLIArgumentsParser.findArgumentInArray(
-          cumulative.arguments,
-          cliConfig,
-        );
+      ({ CLIArguments, match }, cliConfig) => {
+        const { match: foundMatch, modifiedArray } = CLIArgumentsParser.findArgumentInArray(CLIArguments, cliConfig);
 
         return {
           match: {
-            ...cumulative.match,
+            ...match,
             ...foundMatch,
           },
-          arguments: modifiedArray,
+          CLIArguments: modifiedArray,
         };
       },
       {
-        arguments: CLIArguments,
+        CLIArguments: CLIArguments,
         match: {},
       },
     );

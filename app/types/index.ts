@@ -1,5 +1,4 @@
 import { Athlete, Event, Game, Result, Sport, Team } from '../Database/entities';
-import { Sanitizer } from '../utils/Sanitizer';
 
 export enum Medal {
   'NA' = 'NA',
