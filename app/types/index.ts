@@ -1,4 +1,5 @@
 import { Athlete, Event, Game, Result, Sport, Team } from '../Database/entities';
+import { Sanitizer } from '../utils/Sanitizer';
 
 export enum Medal {
   'NA' = 'NA',
@@ -81,4 +82,11 @@ export type Entity = Athlete | Event | Game | Result | Sport | Team;
 export enum Charts {
   Medals = 'medals',
   TopTeams = 'top-teams',
+}
+
+export interface CLIExctractorDescriptor {
+  priority: number;
+  required: boolean;
+  extractFunction: any;
+  paramName: string;
 }

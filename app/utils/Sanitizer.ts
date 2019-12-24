@@ -20,8 +20,12 @@ export class Sanitizer {
   static sanitizeFromEnum(value: any, enumArray: Array<IndexedObject>): Nullable<string> {
     const [enumObject] = enumArray;
 
-    if (Object.values(enumObject).includes(String(value))) {
-      return value;
+    const foundValue = Object.values(enumObject).find(enumValue => {
+      return enumValue.toLowerCase() === String(value).toLowerCase();
+    });
+
+    if (foundValue) {
+      return foundValue;
     } else {
       return null;
     }
