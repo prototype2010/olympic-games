@@ -25,6 +25,8 @@ export class CLIArgumentsParser {
           cliConfig,
         );
 
+        console.log('modifiedArray', modifiedArray);
+
         return {
           match: {
             ...cumulative.match,
@@ -58,7 +60,7 @@ export class CLIArgumentsParser {
     if (required) {
       throw new Error(`Required parameter not found ${paramName} in ${CLIArguments}`);
     } else {
-      return CLIArgumentsParser.continueSearch(CLIArguments, {}, CLIConfig);
+      return CLIArgumentsParser.continueSearch(CLIArguments, undefined, CLIConfig);
     }
   }
 
@@ -67,7 +69,9 @@ export class CLIArgumentsParser {
       return value === foundMatch;
     });
 
-    return CLIArguments.splice(matchIndex, 1);
+    CLIArguments.splice(matchIndex, 1);
+
+    return CLIArguments;
   }
 
   static continueSearch(CLIArguments: Array<string>, foundMatch: any, CLIConfig: CLIExctractorDescriptor) {
