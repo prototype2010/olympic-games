@@ -7,9 +7,11 @@
     "start:debug": "node --inspect --require ts-node/register index.ts",
     "prettier": "prettier --write \"./**/*.{ts,json}\"",
     "precommit": "pretty-quick --staged",
-    "postcommit": "git update-index -g"
+    "postcommit": "git update-index -g",
+    "test": "jest --watch"
   },
   "devDependencies": {
+    "@types/jest": "^24.0.24",
     "@types/knex": "^0.16.1",
     "@types/lodash": "^4.14.149",
     "@types/minimist": "^1.2.0",
@@ -21,8 +23,10 @@
     "eslint-config-prettier": "^6.7.0",
     "eslint-plugin-prettier": "^3.1.2",
     "husky": "^3.1.0",
+    "jest": "^24.9.0",
     "pretty-quick": "^2.0.1",
-    "typescript": "^3.7.2"
+    "ts-jest": "^24.2.0",
+    "typescript": "^3.7.4"
   },
   "dependencies": {
     "@types/dotenv": "^8.2.0",

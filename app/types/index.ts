@@ -83,7 +83,7 @@ export enum Charts {
   TopTeams = 'top-teams',
 }
 
-export interface CLIExctractorDescriptor {
+export interface CLIExtractorDescriptor {
   priority: number;
   required: boolean;
   extractFunction: any;

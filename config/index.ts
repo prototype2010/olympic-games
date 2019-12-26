@@ -1,5 +1,5 @@
 import { Sanitizer } from '../app/utils/Sanitizer';
-import { Charts, CLIExctractorDescriptor, Medal, Season, Sex } from '../app/types';
+import { Charts, CLIExtractorDescriptor, Medal, Season, Sex } from '../app/types';
 import { printHelp } from '../app/utils';
 
 export const { DB_FILE_PATH, CSV_FILE_PATH } = require('dotenv').config().parsed;
@@ -8,24 +8,24 @@ export type SanitizeConfig = typeof sanitizeConfig;
 
 export const sanitizeConfig = {
   name: [
-    [Sanitizer.sanitizeAsString, []],
+    [Sanitizer.asString, []],
     [Sanitizer.clearByRegexp, [/\(.*\)/g, /"/g]],
   ],
-  sport: [[Sanitizer.sanitizeAsString, []]],
-  city: [[Sanitizer.sanitizeAsString, []]],
-  noc: [[Sanitizer.sanitizeAsString, []]],
-  event: [[Sanitizer.sanitizeAsString, []]],
-  games: [[Sanitizer.sanitizeAsString, []]],
-  medal: [[Sanitizer.sanitizeFromEnum, [Medal]]],
-  season: [[Sanitizer.sanitizeFromEnum, [Season]]],
-  sex: [[Sanitizer.sanitizeFromEnum, [Sex]]],
+  sport: [[Sanitizer.asString, []]],
+  city: [[Sanitizer.asString, []]],
+  noc: [[Sanitizer.asString, []]],
+  event: [[Sanitizer.asString, []]],
+  games: [[Sanitizer.asString, []]],
+  medal: [[Sanitizer.fromEnum, [Medal]]],
+  season: [[Sanitizer.fromEnum, [Season]]],
+  sex: [[Sanitizer.fromEnum, [Sex]]],
   id: [[Sanitizer.parseInt, []]],
   year: [[Sanitizer.parseInt, []]],
   weight: [[Sanitizer.parseInt, []]],
   height: [[Sanitizer.parseInt, []]],
   age: [[Sanitizer.parseInt, []]],
   team: [
-    [Sanitizer.sanitizeAsString, []],
+    [Sanitizer.asString, []],
     [Sanitizer.clearByRegexp, [/\d+$/g, /-$/g]],
   ],
 };
@@ -40,18 +40,23 @@ export function getConfigByChartName(chartName: Charts) {
   }
 }
 
-const CLIExtractorConfig: { [index: string]: Array<CLIExctractorDescriptor> } = {
+interface ChartConfigs {
+  'top-teams': Array<CLIExtractorDescriptor>;
+  medals: Array<CLIExtractorDescriptor>;
+}
+
+export const CLIExtractorConfig: ChartConfigs = {
   'top-teams': [
     {
       priority: 2,
       required: true,
-      extractFunction: [[Sanitizer.sanitizeFromEnum, [Season]]],
+      extractFunction: [[Sanitizer.fromEnum, [Season]]],
       paramName: 'season',
     },
     {
       priority: 1,
       required: false,
-      extractFunction: [[Sanitizer.sanitizeFromEnum, [Medal]]],
+      extractFunction: [[Sanitizer.fromEnum, [Medal]]],
       paramName: 'medal',
     },
     {
@@ -66,19 +71,19 @@ const CLIExtractorConfig: { [index: string]: Array<CLIExctractorDescriptor> } = 
     {
       priority: 2,
       required: true,
-      extractFunction: [[Sanitizer.sanitizeFromEnum, [Season]]],
+      extractFunction: [[Sanitizer.fromEnum, [Season]]],
       paramName: 'season',
     },
     {
       priority: 0,
-      required: false,
-      extractFunction: [[Sanitizer.sanitizeAsString, []]],
+      required: true,
+      extractFunction: [[Sanitizer.asString, []]],
       paramName: 'noc',
     },
     {
       priority: 1,
       required: false,
-      extractFunction: [[Sanitizer.sanitizeFromEnum, [Medal]]],
+      extractFunction: [[Sanitizer.fromEnum, [Medal]]],
       paramName: 'medal',
     },
   ],

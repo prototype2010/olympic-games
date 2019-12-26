@@ -1,23 +1,26 @@
-import { CLIExctractorDescriptor } from '../types';
+import { CLIExtractorDescriptor } from '../types';
 import { SanitizeExecutor } from './SanitizeExecutor';
 
 export class CLIArgumentsParser {
-  static extract(CLIArguments: Array<string>, CLIConfig: Array<CLIExctractorDescriptor>) {
+  static extract(CLIArguments: Array<string | number>, CLIConfig: Array<CLIExtractorDescriptor>) {
     try {
       const descriptorsByPriority = CLIArgumentsParser.sortByPriority(CLIConfig);
 
       return CLIArgumentsParser.extractParamsByConfig(CLIArguments, descriptorsByPriority);
     } catch (e) {
-      console.error(e, e.message);
-      console.error(`Error occurred during extract params from ${CLIArguments} by config ${JSON.stringify(CLIConfig)}`);
+      throw new Error(
+        `${e.message}. Error occurred during extract params from ${CLIArguments} by config ${JSON.stringify(
+          CLIConfig,
+        )}`,
+      );
     }
   }
 
-  static sortByPriority(CLIConfig: Array<CLIExctractorDescriptor>) {
+  private static sortByPriority(CLIConfig: Array<CLIExtractorDescriptor>) {
     return CLIConfig.sort((descriptor1, descriptor2) => descriptor1.priority - descriptor2.priority);
   }
 
-  static extractParamsByConfig(CLIArguments: Array<string>, CLIConfig: Array<CLIExctractorDescriptor>) {
+  private static extractParamsByConfig(CLIArguments: Array<string>, CLIConfig: Array<CLIExtractorDescriptor>) {
     return CLIConfig.reduceRight(
       ({ CLIArguments, match }, cliConfig) => {
         const { match: foundMatch, modifiedArray } = CLIArgumentsParser.findArgumentInArray(CLIArguments, cliConfig);
@@ -31,13 +34,13 @@ export class CLIArgumentsParser {
         };
       },
       {
-        CLIArguments: CLIArguments,
+        CLIArguments: CLIArguments.slice(), // just a copy of real array
         match: {},
       },
     );
   }
 
-  static findArgumentInArray(CLIArguments: Array<string>, CLIConfig: CLIExctractorDescriptor) {
+  private static findArgumentInArray(CLIArguments: Array<string>, CLIConfig: CLIExtractorDescriptor) {
     const { extractFunction } = CLIConfig;
 
     const foundValue = CLIArguments.find(value => SanitizeExecutor.proceedExecutableConfig(value, extractFunction));
@@ -49,17 +52,17 @@ export class CLIArgumentsParser {
     }
   }
 
-  static checkParamIsRequired(CLIArguments: Array<string>, CLIConfig: CLIExctractorDescriptor) {
+  private static checkParamIsRequired(CLIArguments: Array<string>, CLIConfig: CLIExtractorDescriptor) {
     const { required, paramName } = CLIConfig;
 
     if (required) {
-      throw new Error(`Required parameter not found ${paramName} in ${CLIArguments}`);
+      throw new Error(`Required parameter not found ${paramName} in [${CLIArguments}]`);
     } else {
       return CLIArgumentsParser.continueSearch(CLIArguments, undefined, CLIConfig);
     }
   }
 
-  static deleteMatchFromArray(CLIArguments: Array<string>, foundMatch: any) {
+  private static deleteMatchFromArray(CLIArguments: Array<string>, foundMatch: any) {
     const matchIndex = CLIArguments.findIndex(value => {
       return value === foundMatch;
     });
@@ -69,7 +72,7 @@ export class CLIArgumentsParser {
     return CLIArguments;
   }
 
-  static continueSearch(CLIArguments: Array<string>, foundMatch: any, CLIConfig: CLIExctractorDescriptor) {
+  private static continueSearch(CLIArguments: Array<string>, foundMatch: any, CLIConfig: CLIExtractorDescriptor) {
     if (foundMatch) {
       return CLIArgumentsParser.continueWithDeletedArg(CLIArguments, foundMatch, CLIConfig);
     } else {
@@ -77,14 +80,18 @@ export class CLIArgumentsParser {
     }
   }
 
-  static continueWithDeletedArg(CLIArguments: Array<string>, foundMatch: any, CLIConfig: CLIExctractorDescriptor) {
+  private static continueWithDeletedArg(
+    CLIArguments: Array<string>,
+    foundMatch: any,
+    CLIConfig: CLIExtractorDescriptor,
+  ) {
     return {
       modifiedArray: CLIArgumentsParser.deleteMatchFromArray(CLIArguments, foundMatch),
       match: { [CLIConfig.paramName]: foundMatch },
     };
   }
 
-  static continueWithKeptArg(CLIArguments: Array<string>) {
+  private static continueWithKeptArg(CLIArguments: Array<string>) {
     return {
       modifiedArray: CLIArguments,
       match: {},

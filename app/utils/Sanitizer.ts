@@ -1,7 +1,7 @@
 import { IndexedObject, Nullable } from '../types';
 
 export class Sanitizer {
-  static sanitizeAsString(value: any) {
+  static asString(value: any) {
     const sanitized = typeof value === 'string' ? value : String(value);
 
     return sanitized.replace(/"/g, () => "'");
@@ -17,7 +17,7 @@ export class Sanitizer {
     }
   }
 
-  static sanitizeFromEnum(value: any, enumArray: Array<IndexedObject>): Nullable<string> {
+  static fromEnum(value: any, enumArray: Array<IndexedObject>): Nullable<string> {
     const [enumObject] = enumArray;
 
     const foundValue = Object.values(enumObject).find(enumValue => {

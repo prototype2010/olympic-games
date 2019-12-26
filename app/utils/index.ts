@@ -94,7 +94,7 @@ export function preproceedParserArguments(params: Array<any>, chartName: string)
 export function matchedChartName<T>(chartParams: Array<string>) {
   const [chartName] = chartParams;
 
-  return Sanitizer.sanitizeFromEnum(chartName, [Charts]);
+  return Sanitizer.fromEnum(chartName, [Charts]);
 }
 
 export function printHelp() {
