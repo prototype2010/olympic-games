@@ -65,6 +65,33 @@ async function init() {
 
   console.timeEnd('Inserting results');
 
+  //Show bar chart with amount of medals for the certain team specified by
+  // NOC name (case insensitive), season and certain medal name (gold, silver, bronze).
+  // NOC name and season are required. If medal name is not present, all medals should be counted.
+  // Sort result by year in chronological order.
+  // If there is no medals for this year - show 0 (blank bar), but all years must be present.
+
+  //Show amount of medals per team for the certain year, season and medal type ordered by amount.
+  // Most awarded teams must be on the top. Season is required.
+  //
+  // If year is not specified take results for all time.
+  // If medal type is not specified take results for all types.
+  // Show resulting chart only for those teams, that have more than average result: if average amount for all teams is 200 - show only teams with more than 200 medals.
+
+  const athletesInTeam = await DatabaseConnection.getInstance()('teams')
+    .where({ noc_name: 'FIN' })
+    .join('athletes', 'teams.id', 'athletes.team_id')
+    .join('results', 'athletes.id', 'results.athlete_id')
+    .join('games', 'results.game_id', 'games.id')
+    .join('sports', 'results.sport_id', 'sports.id')
+    .where({
+      season: 'Summer',
+    })
+    // .whereIn('medal',['Bronze','Gold', 'Silver'] )
+    .orderBy('year', 'asc');
+
+  console.log(athletesInTeam);
+
   DatabaseConnection.getInstance().destroy(function() {
     console.log('Connection destroyed...');
   });

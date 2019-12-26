@@ -89,3 +89,8 @@ export interface CLIExtractorDescriptor {
   extractFunction: any;
   paramName: string;
 }
+
+export interface ChartConfigs {
+  'top-teams': Array<CLIExtractorDescriptor>;
+  medals: Array<CLIExtractorDescriptor>;
+}

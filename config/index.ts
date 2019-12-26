@@ -1,5 +1,5 @@
 import { Sanitizer } from '../app/utils/Sanitizer';
-import { Charts, CLIExtractorDescriptor, Medal, Season, Sex } from '../app/types';
+import { ChartConfigs, Charts, CLIExtractorDescriptor, IndexedObject, Medal, Season, Sex } from '../app/types';
 import { printHelp } from '../app/utils';
 
 export const { DB_FILE_PATH, CSV_FILE_PATH } = require('dotenv').config().parsed;
@@ -38,11 +38,6 @@ export function getConfigByChartName(chartName: Charts) {
 
     throw new Error(`No such chartname found ${chartName}`);
   }
-}
-
-interface ChartConfigs {
-  'top-teams': Array<CLIExtractorDescriptor>;
-  medals: Array<CLIExtractorDescriptor>;
 }
 
 export const CLIExtractorConfig: ChartConfigs = {
