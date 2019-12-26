@@ -20,7 +20,7 @@ export class CLIArgumentsParser {
     return CLIConfig.sort((descriptor1, descriptor2) => descriptor1.priority - descriptor2.priority);
   }
 
-  private static extractParamsByConfig(CLIArguments: Array<string>, CLIConfig: Array<CLIExtractorDescriptor>) {
+  private static extractParamsByConfig(CLIArguments: Array<string | number>, CLIConfig: Array<CLIExtractorDescriptor>) {
     return CLIConfig.reduceRight(
       ({ CLIArguments, match }, cliConfig) => {
         const { match: foundMatch, modifiedArray } = CLIArgumentsParser.findArgumentInArray(CLIArguments, cliConfig);
@@ -40,7 +40,7 @@ export class CLIArgumentsParser {
     );
   }
 
-  private static findArgumentInArray(CLIArguments: Array<string>, CLIConfig: CLIExtractorDescriptor) {
+  private static findArgumentInArray(CLIArguments: Array<string | number>, CLIConfig: CLIExtractorDescriptor) {
     const { extractFunction } = CLIConfig;
 
     const foundValue = CLIArguments.find(value => SanitizeExecutor.proceedExecutableConfig(value, extractFunction));
@@ -52,7 +52,7 @@ export class CLIArgumentsParser {
     }
   }
 
-  private static checkParamIsRequired(CLIArguments: Array<string>, CLIConfig: CLIExtractorDescriptor) {
+  private static checkParamIsRequired(CLIArguments: Array<string | number>, CLIConfig: CLIExtractorDescriptor) {
     const { required, paramName } = CLIConfig;
 
     if (required) {
@@ -62,7 +62,7 @@ export class CLIArgumentsParser {
     }
   }
 
-  private static deleteMatchFromArray(CLIArguments: Array<string>, foundMatch: any) {
+  private static deleteMatchFromArray(CLIArguments: Array<string | number>, foundMatch: any) {
     const matchIndex = CLIArguments.findIndex(value => {
       return value === foundMatch;
     });
@@ -72,7 +72,11 @@ export class CLIArgumentsParser {
     return CLIArguments;
   }
 
-  private static continueSearch(CLIArguments: Array<string>, foundMatch: any, CLIConfig: CLIExtractorDescriptor) {
+  private static continueSearch(
+    CLIArguments: Array<string | number>,
+    foundMatch: any,
+    CLIConfig: CLIExtractorDescriptor,
+  ) {
     if (foundMatch) {
       return CLIArgumentsParser.continueWithDeletedArg(CLIArguments, foundMatch, CLIConfig);
     } else {
@@ -81,7 +85,7 @@ export class CLIArgumentsParser {
   }
 
   private static continueWithDeletedArg(
-    CLIArguments: Array<string>,
+    CLIArguments: Array<string | number>,
     foundMatch: any,
     CLIConfig: CLIExtractorDescriptor,
   ) {
@@ -91,7 +95,7 @@ export class CLIArgumentsParser {
     };
   }
 
-  private static continueWithKeptArg(CLIArguments: Array<string>) {
+  private static continueWithKeptArg(CLIArguments: Array<string | number>) {
     return {
       modifiedArray: CLIArguments,
       match: {},
