@@ -17,4 +17,8 @@ export class DatabaseConnection {
   static getInstance() {
     return DatabaseConnection.instance;
   }
+
+  static destroy() {
+    return DatabaseConnection.instance.destroy();
+  }
 }

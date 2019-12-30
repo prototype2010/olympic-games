@@ -1,20 +1,14 @@
-import { Athlete, Event, Game, Result, Sport, Team } from '../Database/entities';
-
 export enum Medal {
   'NA' = 'NA',
-  Gold = 'Gold',
-  Silver = 'Silver',
-  Bronze = 'Bronze',
+  Gold = 'gold',
+  Silver = 'silver',
+  Bronze = 'bronze',
 }
 
 export enum Sex {
   M = 'M',
   F = 'F',
 }
-
-export type Primitives = number | string | boolean;
-
-export type Specials = null | undefined;
 
 export type Nullable<T> = T | null;
 
@@ -55,8 +49,8 @@ export interface SanitizedCSVRecord {
 }
 
 export enum Season {
-  Summer = 'Summer',
-  Winter = 'Winter',
+  Summer = 'summer',
+  Winter = 'winter',
 }
 
 export enum Table {
@@ -76,8 +70,6 @@ export interface IndexedObject {
   [index: string]: any;
 }
 
-export type Entity = Athlete | Event | Game | Result | Sport | Team;
-
 export enum Charts {
   Medals = 'medals',
   TopTeams = 'top-teams',
@@ -93,4 +85,16 @@ export interface CLIExtractorDescriptor {
 export interface ChartConfigs {
   'top-teams': Array<CLIExtractorDescriptor>;
   medals: Array<CLIExtractorDescriptor>;
+}
+
+export interface MedalsChartParsedArgs {
+  medal?: Medal;
+  season: Season;
+  noc: string;
+}
+
+export interface TopTeamsChartparsedArgs {
+  medal?: Medal;
+  season: Season;
+  year?: number;
 }
