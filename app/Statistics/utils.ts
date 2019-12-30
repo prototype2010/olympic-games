@@ -21,3 +21,7 @@ export function getMedalsSummaryFromDBSet(
 
   return [...consolidatedData.entries()];
 }
+
+export function prepareEnumValueForQuery<T>(value: T | undefined, defaultValuesList: Array<string | number>) {
+  return value ? [value] : defaultValuesList;
+}

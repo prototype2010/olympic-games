@@ -93,7 +93,7 @@ export interface MedalsChartParsedArgs {
   noc: string;
 }
 
-export interface TopTeamsChartparsedArgs {
+export interface TopTeamsChartParsedArgs {
   medal?: Medal;
   season: Season;
   year?: number;
