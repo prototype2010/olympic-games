@@ -48,24 +48,34 @@ export class Statistics {
     const bd = DatabaseConnection.getInstance();
     const currentYear = new Date().getFullYear();
 
-    const medalsSummary = await DatabaseConnection.getInstance()('teams')
+    const averageMedalsResult = await DatabaseConnection.getInstance()('teams')
       .join('athletes', 'teams.id', 'athletes.team_id')
       .join('results', 'athletes.id', 'results.athlete_id')
-      .join('games', 'results.game_id', 'games.id')
-      .whereIn('results.medal', prepareEnumValueForQuery(medal, [Medal.Bronze, Medal.Gold, Medal.Silver]))
-      .where('games.season', season)
-      .where(function(this: Knex) {
-        if (year) {
-          this.where('games.year', year);
-        } else {
-          this.whereBetween('games.year', [0, currentYear]);
-        }
-      })
-      .select('team_id', bd.raw('COUNT(team_id) as `medals count`'))
-      .groupBy('team_id');
+      .select('team_id', DatabaseConnection.getInstance().raw('COUNT(team_id) as medals_amount'))
+      .groupBy('team_id')
+      .select(DatabaseConnection.getInstance().raw('ROUND(AVG(medals_amount)) AS Q1'));
 
-    console.log('####', medalsSummary);
-    console.log('rows', medalsSummary.length);
+    // const medalsSummary = await DatabaseConnection.getInstance()('teams')
+    //   .join('athletes', 'teams.id', 'athletes.team_id')
+    //   .join('results', 'athletes.id', 'results.athlete_id')
+    //   .join('games', 'results.game_id', 'games.id')
+    //   .whereIn('results.medal', prepareEnumValueForQuery(medal, [Medal.Bronze, Medal.Gold, Medal.Silver]))
+    //   .where('games.season', season)
+    //   .where(function(this: Knex) {
+    //     if (year) {
+    //       this.where('games.year', year);
+    //     } else {
+    //       this.whereBetween('games.year', [0, currentYear]);
+    //     }
+    //   })
+    //   .select('team_id', DatabaseConnection.getInstance().raw('COUNT(team_id) as medals_amount'))
+    //   .groupBy('team_id')
+    // .having('medals_amount','>', DatabaseConnection.getInstance().raw('AVG(medals_amount)'));
+
+    // .having('medals_amount', '>', DatabaseConnection.getInstance().raw('AVG(medals_amount)'));
+
+    console.log('####', averageMedalsResult);
+    console.log('rows', averageMedalsResult.length);
 
     //Show amount of medals per team for the certain year, season and medal type ordered by amount.
     // Most awarded teams must be on the top. Season is required.
