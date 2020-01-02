@@ -45,7 +45,7 @@ export class Statistics {
 
   static async getTopTeamsStatistics(matchObject: TopTeamsChartParsedArgs) {
     const { medal, season, year } = matchObject;
-
+    const bd = DatabaseConnection.getInstance();
     const currentYear = new Date().getFullYear();
 
     const medalsSummary = await DatabaseConnection.getInstance()('teams')
@@ -61,8 +61,8 @@ export class Statistics {
           this.whereBetween('games.year', [0, currentYear]);
         }
       })
-      .groupBy('team_id')
-      .having(DatabaseConnection.getInstance().raw('count(*) > 0'));
+      .select('team_id', bd.raw('COUNT(team_id) as `medals count`'))
+      .groupBy('team_id');
 
     console.log('####', medalsSummary);
     console.log('rows', medalsSummary.length);
