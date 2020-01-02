@@ -1,6 +1,7 @@
 import { Charts, IndexedObject, Medal, MedalsChartParsedArgs, TopTeamsChartParsedArgs } from '../types';
 import { DatabaseConnection } from '../Database/Database';
 import { getMedalsSummaryFromDBSet, prepareEnumValueForQuery } from './utils';
+import * as Knex from 'knex';
 
 export class Statistics {
   static getDatasetByChartName(chartName: Charts, matchObject: IndexedObject) {
@@ -45,7 +46,26 @@ export class Statistics {
   static async getTopTeamsStatistics(matchObject: TopTeamsChartParsedArgs) {
     const { medal, season, year } = matchObject;
 
-    const medalsSummary = await DatabaseConnection.getInstance()('teams');
+    const currentYear = new Date().getFullYear();
+
+    const medalsSummary = await DatabaseConnection.getInstance()('teams')
+      .join('athletes', 'teams.id', 'athletes.team_id')
+      .join('results', 'athletes.id', 'results.athlete_id')
+      .join('games', 'results.game_id', 'games.id')
+      .whereIn('results.medal', prepareEnumValueForQuery(medal, [Medal.Bronze, Medal.Gold, Medal.Silver]))
+      .where('games.season', season)
+      .where(function(this: Knex) {
+        if (year) {
+          this.where('games.year', year);
+        } else {
+          this.whereBetween('games.year', [0, currentYear]);
+        }
+      })
+      .groupBy('team_id')
+      .having(DatabaseConnection.getInstance().raw('count(*) > 0'));
+
+    console.log('####', medalsSummary);
+    console.log('rows', medalsSummary.length);
 
     //Show amount of medals per team for the certain year, season and medal type ordered by amount.
     // Most awarded teams must be on the top. Season is required.
