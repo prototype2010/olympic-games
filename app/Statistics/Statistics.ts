@@ -1,6 +1,5 @@
 import { Charts, IndexedObject, Medal, MedalsChartParsedArgs, TopTeamsChartParsedArgs } from '../types';
 import { DatabaseConnection } from '../Database/Database';
-import { getMedalsSummaryFromDBSet, prepareEnumValueForQuery } from './utils';
 import * as Knex from 'knex';
 
 export class Statistics {
@@ -20,7 +19,9 @@ export class Statistics {
     }
   }
 
-  static async getMedalsStatistics(matchObject: MedalsChartParsedArgs) {
+  static async getMedalsStatistics(
+    matchObject: MedalsChartParsedArgs,
+  ): Promise<Array<{ Year: string; Amount: number }>> {
     const { medal, season, noc } = matchObject;
 
     //Show bar chart with amount of medals for the certain team specified by
@@ -29,24 +30,33 @@ export class Statistics {
     // Sort result by year in chronological order.
     // If there is no medals for this year - show 0 (blank bar), but all years must be present.
 
-    const medalsSummary = await DatabaseConnection.getInstance()('teams')
+    return DatabaseConnection.getInstance()('teams')
       .where({ noc_name: noc })
       .join('athletes', 'teams.id', 'athletes.team_id')
       .join('results', 'athletes.id', 'results.athlete_id')
       .join('games', 'results.game_id', 'games.id')
       .join('sports', 'results.sport_id', 'sports.id')
       .where({ season })
-      .whereIn('medal', prepareEnumValueForQuery(medal, Object.values(Medal)))
+      .whereIn('medal', medal ? [medal] : [Medal.Bronze, Medal.Gold, Medal.Silver])
+      .groupBy('year')
       .orderBy('year', 'asc')
-      .select('year', 'medal');
-
-    return getMedalsSummaryFromDBSet('year', medalsSummary);
+      .count('medal', { as: 'Amount' })
+      .select('year as Year');
   }
 
-  static async getTopTeamsStatistics(matchObject: TopTeamsChartParsedArgs) {
+  static async getTopTeamsStatistics(
+    matchObject: TopTeamsChartParsedArgs,
+  ): Promise<Array<{ NOC: string; Amount: number }>> {
     const { medal, season, year } = matchObject;
     const db = DatabaseConnection.getInstance();
     const currentYear = new Date().getFullYear();
+
+    //Show amount of medals per team for the certain year, season and medal type ordered by amount.
+    // Most awarded teams must be on the top. Season is required.
+    //
+    // If year is not specified take results for all time.
+    // If medal type is not specified take results for all types.
+    // Show resulting chart only for those teams, that have more than average result: if average amount for all teams is 200 - show only teams with more than 200 medals.
 
     const [medals_summary] = await DatabaseConnection.getInstance()
       .with(
@@ -64,11 +74,11 @@ export class Statistics {
 
     const { average_medals_per_team = 0 } = medals_summary;
 
-    const medalsSummary = await DatabaseConnection.getInstance()('teams')
+    return DatabaseConnection.getInstance()('teams')
       .join('athletes', 'teams.id', 'athletes.team_id')
       .join('results', 'athletes.id', 'results.athlete_id')
       .join('games', 'results.game_id', 'games.id')
-      .whereNotIn('results.medal', prepareEnumValueForQuery(medal, [Medal.Bronze, Medal.Gold, Medal.Silver]))
+      .whereIn('medal', medal ? [medal] : [Medal.Bronze, Medal.Gold, Medal.Silver])
       .where('games.season', season)
       .where(function(this: Knex) {
         if (year) {
@@ -81,16 +91,5 @@ export class Statistics {
       .groupBy('team_id')
       .orderBy('Amount', 'desc')
       .having('Amount', '>', average_medals_per_team);
-
-    console.log('####', medalsSummary);
-    console.log('rows', medalsSummary.length);
-    console.log('average_medals_per_team', average_medals_per_team);
-
-    //Show amount of medals per team for the certain year, season and medal type ordered by amount.
-    // Most awarded teams must be on the top. Season is required.
-    //
-    // If year is not specified take results for all time.
-    // If medal type is not specified take results for all types.
-    // Show resulting chart only for those teams, that have more than average result: if average amount for all teams is 200 - show only teams with more than 200 medals.
   }
 }
