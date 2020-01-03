@@ -45,37 +45,46 @@ export class Statistics {
 
   static async getTopTeamsStatistics(matchObject: TopTeamsChartParsedArgs) {
     const { medal, season, year } = matchObject;
-    const bd = DatabaseConnection.getInstance();
+    const db = DatabaseConnection.getInstance();
     const currentYear = new Date().getFullYear();
 
-    const averageMedalsResult = await DatabaseConnection.getInstance()('teams')
+    const [medals_summary] = await DatabaseConnection.getInstance()
+      .with(
+        'with_count',
+        db('teams')
+          .join('athletes', 'teams.id', 'athletes.team_id')
+          .join('results', 'athletes.id', 'results.athlete_id')
+          .whereNot('medal', Medal.NA)
+          .count('medal', { as: 'medals_count' })
+          .groupBy('team_id'),
+      )
+      .select('*')
+      .avg('medals_count', { as: 'average_medals_per_team' })
+      .from('with_count');
+
+    const { average_medals_per_team = 0 } = medals_summary;
+
+    const medalsSummary = await DatabaseConnection.getInstance()('teams')
       .join('athletes', 'teams.id', 'athletes.team_id')
       .join('results', 'athletes.id', 'results.athlete_id')
-      .select('team_id', DatabaseConnection.getInstance().raw('COUNT(team_id) as medals_amount'))
+      .join('games', 'results.game_id', 'games.id')
+      .whereNotIn('results.medal', prepareEnumValueForQuery(medal, [Medal.Bronze, Medal.Gold, Medal.Silver]))
+      .where('games.season', season)
+      .where(function(this: Knex) {
+        if (year) {
+          this.where('games.year', year);
+        } else {
+          this.whereBetween('games.year', [0, currentYear]);
+        }
+      })
+      .select('noc_name as NOC', DatabaseConnection.getInstance().raw('COUNT(team_id) as Amount'))
       .groupBy('team_id')
-      .select(DatabaseConnection.getInstance().raw('ROUND(AVG(medals_amount)) AS Q1'));
+      .orderBy('Amount', 'desc')
+      .having('Amount', '>', average_medals_per_team);
 
-    // const medalsSummary = await DatabaseConnection.getInstance()('teams')
-    //   .join('athletes', 'teams.id', 'athletes.team_id')
-    //   .join('results', 'athletes.id', 'results.athlete_id')
-    //   .join('games', 'results.game_id', 'games.id')
-    //   .whereIn('results.medal', prepareEnumValueForQuery(medal, [Medal.Bronze, Medal.Gold, Medal.Silver]))
-    //   .where('games.season', season)
-    //   .where(function(this: Knex) {
-    //     if (year) {
-    //       this.where('games.year', year);
-    //     } else {
-    //       this.whereBetween('games.year', [0, currentYear]);
-    //     }
-    //   })
-    //   .select('team_id', DatabaseConnection.getInstance().raw('COUNT(team_id) as medals_amount'))
-    //   .groupBy('team_id')
-    // .having('medals_amount','>', DatabaseConnection.getInstance().raw('AVG(medals_amount)'));
-
-    // .having('medals_amount', '>', DatabaseConnection.getInstance().raw('AVG(medals_amount)'));
-
-    console.log('####', averageMedalsResult);
-    console.log('rows', averageMedalsResult.length);
+    console.log('####', medalsSummary);
+    console.log('rows', medalsSummary.length);
+    console.log('average_medals_per_team', average_medals_per_team);
 
     //Show amount of medals per team for the certain year, season and medal type ordered by amount.
     // Most awarded teams must be on the top. Season is required.
