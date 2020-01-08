@@ -3,7 +3,7 @@ import { CSV_FILE_PATH, sanitizeConfig } from './config';
 import { CSVParser } from './app/utils/CSVParser';
 import { mapToValidDBObjects } from './app/utils';
 import { resolve } from 'path';
-import { Table } from './app/types';
+import { SanitizedCSVRecord, Table } from './app/types';
 import { SanitizeExecutor } from './app/utils/SanitizeExecutor';
 import { resolveAllAsChunks } from './app/Database/utils';
 import { chunk } from 'lodash';
@@ -16,7 +16,7 @@ async function init() {
 
   const readDocument = await CSVParser.parse(resolve(__dirname, CSV_FILE_PATH));
 
-  const sanitizedCSV = SanitizeExecutor.sanitizeArray(readDocument, sanitizeConfig);
+  const sanitizedCSV = SanitizeExecutor.sanitizeArray<SanitizedCSVRecord>(readDocument, sanitizeConfig);
   const { rows, uniqueEntries } = mapToValidDBObjects(sanitizedCSV);
 
   console.timeEnd('Parsing document');

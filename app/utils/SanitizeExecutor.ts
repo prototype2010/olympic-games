@@ -1,8 +1,8 @@
-import { IndexedObject, RawCSVRecord, SanitizedCSVRecord } from '../types';
+import { IndexedObject } from '../types';
 import { SanitizeConfig } from '../../config';
 
 export class SanitizeExecutor {
-  static sanitizeArray(csvRowsArray: Array<RawCSVRecord> = [], sanitizeConfig: SanitizeConfig) {
+  static sanitizeArray<T>(csvRowsArray: Array<IndexedObject> = [], sanitizeConfig: SanitizeConfig) {
     return csvRowsArray.map(csvRow => {
       return Object.entries(csvRow).reduce((cumulative, current) => {
         const [key, value] = current;
@@ -13,7 +13,7 @@ export class SanitizeExecutor {
           ...cumulative,
           [key]: SanitizeExecutor.proceedExecutableConfig(value, executableConfig!),
         };
-      }, <SanitizedCSVRecord>{});
+      }, {} as T);
     });
   }
 
