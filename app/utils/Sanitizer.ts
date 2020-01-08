@@ -4,7 +4,7 @@ export class Sanitizer {
   static asString(value: any) {
     const sanitized = typeof value === 'string' ? value : String(value);
 
-    return sanitized.replace(/"/g, () => "'");
+    return sanitized.replace(/"/g, "'");
   }
 
   static parseInt(value: any) {

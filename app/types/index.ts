@@ -1,3 +1,5 @@
+import { Model } from '../Database/utils/Model';
+
 export enum Medal {
   'NA' = 'NA',
   Gold = 'gold',
@@ -97,8 +99,8 @@ export enum Table {
   ATHLETES = 'athletes',
 }
 
-export interface Callable {
-  new (...args: any[]): any;
+export interface Callable<T extends Model> {
+  new (...args: any[]): T;
 }
 
 export interface IndexedObject {

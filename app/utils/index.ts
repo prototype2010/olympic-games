@@ -3,6 +3,7 @@ import { OlympicEvent } from '../Database/utils/OlympicEvent';
 import { Callable, Charts, SanitizedCSVRecord } from '../types';
 import { Sanitizer } from './Sanitizer';
 import minimist from 'minimist';
+import { Model } from '../Database/utils/Model';
 
 export function makeHashKey(...args: any[]) {
   const objectToBeHashed = proceedHashFuncArguments(...args);
@@ -26,7 +27,7 @@ function proceedHashFuncArguments(...args: any[]) {
   }
 }
 
-function getFromHashMap<T>(map: Map<string, any>, instance: Callable) {
+function getFromHashMap<T extends Model>(map: Map<string, any>, instance: Callable<T>) {
   const checkHasMap = function(hashKeyArgs: Array<any>, ...callNewArgs: Array<any>) {
     const key = makeHashKey(hashKeyArgs);
 
