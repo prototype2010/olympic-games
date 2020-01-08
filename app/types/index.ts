@@ -31,17 +31,17 @@ export interface RawCSVRecord {
 }
 
 export interface SanitizedCSVRecord {
-  id: Nullable<number>;
+  id?: number;
   name: string;
-  sex: Nullable<Sex>;
-  age: Nullable<number>;
-  height: Nullable<number>;
-  weight: Nullable<number>;
+  sex?: Sex;
+  age?: number;
+  height?: number;
+  weight?: number;
   team: string;
   noc: string;
   games: string;
-  year: Nullable<number>;
-  season: Nullable<Season>;
+  year?: number;
+  season?: Season;
   city: string;
   sport: string;
   event: string;

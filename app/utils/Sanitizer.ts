@@ -1,4 +1,4 @@
-import { IndexedObject, Nullable } from '../types';
+import { IndexedObject } from '../types';
 
 export class Sanitizer {
   static asString(value: any) {
@@ -17,7 +17,7 @@ export class Sanitizer {
     }
   }
 
-  static fromEnum(value: any, enumArray: Array<IndexedObject>): Nullable<string> {
+  static fromEnum(value: any, enumArray: Array<IndexedObject>): string | undefined {
     const [enumObject] = enumArray;
 
     const foundValue = Object.values(enumObject).find(enumValue => {
@@ -26,8 +26,6 @@ export class Sanitizer {
 
     if (foundValue) {
       return foundValue;
-    } else {
-      return null;
     }
   }
 
