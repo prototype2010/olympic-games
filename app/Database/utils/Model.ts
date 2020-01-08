@@ -2,7 +2,7 @@ import { IndexedObject, Nullable, Table } from '../../types';
 import { DatabaseConnection } from '../Database';
 
 export abstract class Model {
-  protected _dbID: Nullable<number> = null;
+  protected _id: Nullable<number> = null;
 
   async insertToDB(tableName: Table, insertData: IndexedObject) {
     try {
@@ -11,7 +11,7 @@ export abstract class Model {
         ...insertData,
       });
 
-      this.dbID = id;
+      this.id = id;
     } catch (e) {
       console.error(`Failed to insert data to ${tableName}`);
       console.error(`Insert data ${JSON.stringify(insertData)}`, e);
@@ -19,12 +19,12 @@ export abstract class Model {
     }
   }
 
-  get dbID(): Nullable<number> {
-    return this._dbID;
+  get id(): Nullable<number> {
+    return this._id;
   }
 
-  set dbID(value: Nullable<number>) {
-    this._dbID = value;
+  set id(value: Nullable<number>) {
+    this._id = value;
   }
 
   abstract write(): Promise<any>;

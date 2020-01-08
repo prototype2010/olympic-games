@@ -42,18 +42,18 @@ async function init() {
         return {
           write: () => {
             return new Promise(async resolve => {
-              if (!athlete.dbID) {
-                athlete.teamId = team.dbID;
+              if (!athlete.id) {
+                athlete.teamId = team.id;
 
                 resolve(athlete.write());
               }
 
               resolve();
             }).then(() => {
-              result.gameId = game.dbID;
-              result.athleteId = athlete.dbID;
-              result.eventId = event.dbID;
-              result.sportId = sport.dbID;
+              result.gameId = game.id;
+              result.athleteId = athlete.id;
+              result.eventId = event.id;
+              result.sportId = sport.id;
 
               return result.write();
             });
