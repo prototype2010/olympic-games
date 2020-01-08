@@ -1,8 +1,7 @@
 import { chunk } from 'lodash';
-import { Model } from './Model';
 const chunkSize = 100;
 
-export const resolveAllAsChunks = async (entities: Array<{ write(): Promise<Model> }>) => {
+export const resolveAllAsChunks = async (entities: Array<{ write(): Promise<any> }>) => {
   for await (const chunkPart of chunk(entities, chunkSize)) {
     await Promise.all(chunkPart.map(entity => entity.write()));
   }
