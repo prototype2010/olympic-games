@@ -114,3 +114,21 @@ export function parseCLIParams() {
     boolean: ['help'],
   });
 }
+
+export function getTableHeadersByCharsName(chartName: Charts) {
+  switch (chartName) {
+    case Charts.TopTeams: {
+      return ['NOC', 'Amount'];
+    }
+
+    case Charts.Medals: {
+      return ['Year', 'Amount'];
+    }
+
+    default: {
+      console.error(`No such chart ${chartName}`);
+
+      return ['key', 'value'];
+    }
+  }
+}

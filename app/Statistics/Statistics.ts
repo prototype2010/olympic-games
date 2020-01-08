@@ -1,4 +1,4 @@
-import { Charts, IndexedObject, Medal, MedalsChartParsedArgs, TopTeamsChartParsedArgs } from '../types';
+import { Charts, DBSet, IndexedObject, Medal, MedalsChartParsedArgs, TopTeamsChartParsedArgs } from '../types';
 import { DatabaseConnection } from '../Database/Database';
 import * as Knex from 'knex';
 
@@ -19,9 +19,7 @@ export class Statistics {
     }
   }
 
-  static async getMedalsStatistics(
-    matchObject: MedalsChartParsedArgs,
-  ): Promise<Array<{ Year: string; Amount: number }>> {
+  static async getMedalsStatistics(matchObject: MedalsChartParsedArgs): Promise<DBSet> {
     const { medal, season, noc } = matchObject;
 
     //Show bar chart with amount of medals for the certain team specified by
@@ -40,13 +38,11 @@ export class Statistics {
       .whereIn('medal', medal ? [medal] : [Medal.Bronze, Medal.Gold, Medal.Silver])
       .groupBy('year')
       .orderBy('year', 'asc')
-      .count('medal', { as: 'Amount' })
-      .select('year as Year');
+      .count('medal', { as: 'amount' })
+      .select('year');
   }
 
-  static async getTopTeamsStatistics(
-    matchObject: TopTeamsChartParsedArgs,
-  ): Promise<Array<{ NOC: string; Amount: number }>> {
+  static async getTopTeamsStatistics(matchObject: TopTeamsChartParsedArgs): Promise<DBSet> {
     const { medal, season, year } = matchObject;
     const db = DatabaseConnection.getInstance();
     const currentYear = new Date().getFullYear();
@@ -74,7 +70,7 @@ export class Statistics {
 
     const { average_medals_per_team = 0 } = medals_summary;
 
-    return DatabaseConnection.getInstance()('teams')
+    return db('teams')
       .join('athletes', 'teams.id', 'athletes.team_id')
       .join('results', 'athletes.id', 'results.athlete_id')
       .join('games', 'results.game_id', 'games.id')
@@ -87,9 +83,9 @@ export class Statistics {
           this.whereBetween('games.year', [0, currentYear]);
         }
       })
-      .select('noc_name as NOC', DatabaseConnection.getInstance().raw('COUNT(team_id) as Amount'))
+      .select('noc_name', DatabaseConnection.getInstance().raw('COUNT(team_id) as amount'))
       .groupBy('team_id')
-      .orderBy('Amount', 'desc')
-      .having('Amount', '>', average_medals_per_team);
+      .orderBy('amount', 'desc')
+      .having('amount', '>', average_medals_per_team);
   }
 }

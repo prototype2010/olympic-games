@@ -1,10 +1,17 @@
 #!/usr/bin/env ts-node
-import { Charts } from './app/types';
+import { Charts, DBSet } from './app/types';
 import { CLIArgumentsParser } from './app/utils/CLIArgumentsParser';
-import { matchedChartName, parseCLIParams, preproceedParserArguments, printHelp } from './app/utils';
+import {
+  getTableHeadersByCharsName,
+  matchedChartName,
+  parseCLIParams,
+  preproceedParserArguments,
+  printHelp,
+} from './app/utils';
 import { getConfigByChartName } from './config';
 import { Statistics } from './app/Statistics/Statistics';
 import { DatabaseConnection } from './app/Database/Database';
+import { ChartBuilder } from './app/Chart/ChartBuilder';
 
 const { _: noFlagParams, help } = parseCLIParams();
 
@@ -17,12 +24,15 @@ const { _: noFlagParams, help } = parseCLIParams();
     const cliParams = preproceedParserArguments(noFlagParams, chartName);
     const { match } = CLIArgumentsParser.extract(cliParams, config);
 
-    console.log('match', match);
+    const chartDataset: DBSet = await Statistics.getDatasetByChartName(chartName, match);
+    const chartHeaders = getTableHeadersByCharsName(chartName);
 
-    const chartDataset = await Statistics.getDatasetByChartName(chartName, match);
+    ChartBuilder.build({
+      headers: chartHeaders,
+      dbSet: chartDataset,
+    });
 
-    console.log(chartDataset);
-    console.log();
+    // console.log(chartDataset);
   } else {
     console.error('Incorrect usage');
     printHelp();

@@ -98,3 +98,5 @@ export interface TopTeamsChartParsedArgs {
   season: Season;
   year?: number;
 }
+
+export type DBSet = Array<{ [index: string]: string | number; amount: number }>;
