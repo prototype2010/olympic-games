@@ -46,5 +46,7 @@ export class ChartBuilder {
 
   static displayChart(rows: Array<Array<any>>) {
     rows.forEach(row => console.log(`${'\t'}${row.join('\t')}`));
+
+    return rows;
   }
 }
