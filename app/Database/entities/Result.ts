@@ -19,7 +19,7 @@ export class Result extends Model {
   write() {
     const { athleteId, eventId, gameId, sportId, medal } = this;
 
-    return super.insertToDB(Result.TABLE_NAME, {
+    return super.insertToDB<Result>(Result.TABLE_NAME, {
       athlete_id: athleteId,
       game_id: gameId,
       sport_id: sportId,

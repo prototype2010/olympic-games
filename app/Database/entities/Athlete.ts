@@ -33,7 +33,7 @@ export class Athlete extends Model {
   write() {
     const { fullName, sex, teamId, params, birthYear } = this;
 
-    return super.insertToDB(Athlete.TABLE_NAME, {
+    return super.insertToDB<Athlete>(Athlete.TABLE_NAME, {
       full_name: fullName,
       sex,
       team_id: teamId,

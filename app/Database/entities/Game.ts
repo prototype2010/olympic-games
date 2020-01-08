@@ -18,7 +18,7 @@ export class Game extends Model {
   write() {
     const { city, season, year } = this;
 
-    return super.insertToDB(Game.TABLE_NAME, {
+    return super.insertToDB<Game>(Game.TABLE_NAME, {
       city,
       year,
       season,

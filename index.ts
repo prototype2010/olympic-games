@@ -7,6 +7,7 @@ import { Table } from './app/types';
 import { SanitizeExecutor } from './app/utils/SanitizeExecutor';
 import { resolveAllAsChunks } from './app/Database/utils';
 import { chunk } from 'lodash';
+import { Model } from './app/Database/utils/Model';
 
 const DB = DatabaseConnection.getInstance();
 
@@ -28,7 +29,7 @@ async function init() {
     await DB.raw(`DELETE FROM ${tableName}`);
   }
 
-  await resolveAllAsChunks([...teams, ...sports, ...events, ...games]);
+  await resolveAllAsChunks([...teams, ...sports, ...events, ...games] as Model[]);
 
   console.timeEnd('No dependency entries document');
 
@@ -48,14 +49,14 @@ async function init() {
                 resolve(athlete.write());
               }
 
-              resolve();
+              resolve(athlete);
             }).then(() => {
               result.gameId = game.id;
               result.athleteId = athlete.id;
               result.eventId = event.id;
               result.sportId = sport.id;
 
-              return result.write();
+              return result.write() as Promise<Model>;
             });
           },
         };

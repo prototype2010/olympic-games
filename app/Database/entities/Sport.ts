@@ -12,7 +12,7 @@ export class Sport extends Model {
   }
 
   write() {
-    return super.insertToDB(Sport.TABLE_NAME, {
+    return super.insertToDB<Sport>(Sport.TABLE_NAME, {
       name: this.name,
     });
   }

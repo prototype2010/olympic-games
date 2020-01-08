@@ -4,7 +4,7 @@ import { DatabaseConnection } from '../Database';
 export abstract class Model {
   private _id?: number;
 
-  async insertToDB(tableName: Table, insertData: IndexedObject) {
+  async insertToDB<T>(tableName: Table, insertData: IndexedObject): Promise<T> {
     try {
       const [id] = await DatabaseConnection.getInstance()(tableName).insert({
         id: null,
@@ -12,14 +12,18 @@ export abstract class Model {
       });
 
       this._id = id;
+
+      return (this as any) as T;
     } catch (e) {
       console.error(`Failed to insert data to ${tableName}`);
       console.error(`Insert data ${JSON.stringify(insertData)}`, e);
       console.error(`Original error`, e);
+
+      return (this as any) as T;
     }
   }
 
-  abstract write(): Promise<any>;
+  abstract write(): Promise<Model>;
 
   get id() {
     return this._id;

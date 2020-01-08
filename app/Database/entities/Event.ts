@@ -11,7 +11,7 @@ export class Event extends Model {
   }
 
   write() {
-    return super.insertToDB(Event.TABLE_NAME, {
+    return super.insertToDB<Event>(Event.TABLE_NAME, {
       name: this.name,
     });
   }

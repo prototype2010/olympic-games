@@ -16,7 +16,7 @@ export class Team extends Model {
   write() {
     const { name, NOCName } = this;
 
-    return super.insertToDB(Team.TABLE_NAME, {
+    return super.insertToDB<Team>(Team.TABLE_NAME, {
       name,
       noc_name: NOCName,
     });
