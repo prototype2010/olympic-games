@@ -1,5 +1,3 @@
-import { Model } from '../Database/utils/Model';
-
 export enum Medal {
   'NA' = 'NA',
   Gold = 'gold',
