@@ -1,4 +1,4 @@
-import { SanitizedCSVRecord, Table } from '../../types';
+import { SportInitParams, Table } from '../../types';
 import { Model } from '../utils/Model';
 
 export class Sport extends Model {
@@ -6,7 +6,7 @@ export class Sport extends Model {
 
   readonly name: string;
 
-  constructor({ sport }: SanitizedCSVRecord) {
+  constructor({ sport }: SportInitParams) {
     super();
     this.name = sport;
   }

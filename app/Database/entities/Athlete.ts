@@ -1,10 +1,5 @@
-import { SanitizedCSVRecord, Sex, Table } from '../../types';
+import { AthleteInitParams, AthleteParams, Sex, Table } from '../../types';
 import { Model } from '../utils/Model';
-
-interface AthleteParams {
-  height?: number;
-  weight?: number;
-}
 
 export class Athlete extends Model {
   private static readonly TABLE_NAME = Table.ATHLETES;
@@ -15,7 +10,7 @@ export class Athlete extends Model {
   private _params: AthleteParams;
   private _teamId?: number;
 
-  constructor({ name, sex, year, weight, height }: SanitizedCSVRecord) {
+  constructor({ name, sex, year, weight, height }: AthleteInitParams) {
     super();
 
     this._fullName = name;

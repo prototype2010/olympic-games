@@ -1,4 +1,4 @@
-import { SanitizedCSVRecord, Table } from '../../types';
+import { Table, TeamInitParams } from '../../types';
 import { Model } from '../utils/Model';
 
 export class Team extends Model {
@@ -7,7 +7,7 @@ export class Team extends Model {
   readonly name: string;
   readonly NOCName: string;
 
-  constructor({ team, noc }: SanitizedCSVRecord) {
+  constructor({ team, noc }: TeamInitParams) {
     super();
     this.name = team;
     this.NOCName = noc;

@@ -10,8 +10,6 @@ export enum Sex {
   F = 'F',
 }
 
-export type Nullable<T> = T | null;
-
 export interface RawCSVRecord {
   id: any;
   name: any;
@@ -28,6 +26,43 @@ export interface RawCSVRecord {
   sport: any;
   event: any;
   medal: any;
+}
+
+export interface AthleteParams {
+  height?: number;
+  weight?: number;
+}
+
+export interface AthleteInitParams {
+  params: AthleteParams;
+  sex?: Sex;
+  year?: number;
+  name: string;
+  height?: number;
+  weight?: number;
+}
+
+export interface EventInitParams {
+  event: string;
+}
+
+export interface GameInitParams {
+  year?: number;
+  season?: Season;
+  city: string;
+}
+
+export interface ResultInitParams {
+  medal: Medal;
+}
+
+export interface SportInitParams {
+  sport: string;
+}
+
+export interface TeamInitParams {
+  team: string;
+  noc: string;
 }
 
 export interface SanitizedCSVRecord {

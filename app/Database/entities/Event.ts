@@ -1,11 +1,11 @@
-import { SanitizedCSVRecord, Table } from '../../types';
+import { EventInitParams, Table } from '../../types';
 import { Model } from '../utils/Model';
 
 export class Event extends Model {
   private static readonly TABLE_NAME = Table.EVENTS;
   readonly name: string;
 
-  constructor({ event }: SanitizedCSVRecord) {
+  constructor({ event }: EventInitParams) {
     super();
     this.name = event;
   }

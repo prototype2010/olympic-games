@@ -1,4 +1,4 @@
-import { SanitizedCSVRecord, Season, Table } from '../../types';
+import { GameInitParams, Season, Table } from '../../types';
 import { Model } from '../utils/Model';
 
 export class Game extends Model {
@@ -8,7 +8,7 @@ export class Game extends Model {
   private season?: Season;
   private city: string;
 
-  constructor({ city, year, season }: SanitizedCSVRecord) {
+  constructor({ city, year, season }: GameInitParams) {
     super();
     this.year = year;
     this.season = season;

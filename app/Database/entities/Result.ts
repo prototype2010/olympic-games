@@ -1,4 +1,4 @@
-import { Medal, SanitizedCSVRecord, Table } from '../../types';
+import { Medal, ResultInitParams, Table } from '../../types';
 import { Model } from '../utils/Model';
 
 export class Result extends Model {
@@ -10,7 +10,7 @@ export class Result extends Model {
   private _eventId?: number;
   private _medal: Medal;
 
-  constructor({ medal }: SanitizedCSVRecord) {
+  constructor({ medal }: ResultInitParams) {
     super();
 
     this._medal = medal;
