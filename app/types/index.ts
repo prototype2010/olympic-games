@@ -99,7 +99,7 @@ export enum Table {
   ATHLETES = 'athletes',
 }
 
-export interface Callable<T extends Model> {
+export interface Callable<T> {
   new (...args: any[]): T;
 }
 
