@@ -1,13 +1,13 @@
 import { IndexedObject } from '../types';
 
-export class Sanitizer {
+export class SanitizerUtils {
   static asString(value: any) {
     const sanitized = typeof value === 'string' ? value : String(value);
 
     return sanitized.replace(/"/g, "'");
   }
 
-  static parseInt(value: any) {
+  static parseNullableToInt(value: any) {
     const parsed = Number.parseInt(<string>value);
 
     if (!Number.isNaN(parsed) && Number.isFinite(parsed)) {

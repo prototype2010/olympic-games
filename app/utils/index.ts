@@ -1,7 +1,7 @@
 import { Athlete, Event, Game, Result, Sport, Team } from '../Database/entities';
 import { OlympicEvent } from '../Database/utils/OlympicEvent';
 import { Callable, Charts, SanitizedCSVRecord } from '../types';
-import { Sanitizer } from './Sanitizer';
+import { SanitizerUtils } from './SanitizerUtils';
 import minimist from 'minimist';
 import { Model } from '../Database/utils/Model';
 
@@ -95,7 +95,7 @@ export function preproceedParserArguments(params: Array<any>, chartName: string)
 export function matchedChartName<T>(chartParams: Array<string>) {
   const [chartName] = chartParams;
 
-  return Sanitizer.fromEnum(chartName, [Charts]);
+  return SanitizerUtils.fromEnum(chartName, [Charts]);
 }
 
 export function printHelp() {

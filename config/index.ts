@@ -1,4 +1,4 @@
-import { Sanitizer } from '../app/utils/Sanitizer';
+import { SanitizerUtils } from '../app/utils/SanitizerUtils';
 import { ChartConfigs, Charts, CLIExtractorDescriptor, IndexedObject, Medal, Season, Sex } from '../app/types';
 import { printHelp } from '../app/utils';
 
@@ -8,25 +8,25 @@ export type SanitizeConfig = typeof sanitizeConfig;
 
 export const sanitizeConfig = {
   name: [
-    [Sanitizer.asString, []],
-    [Sanitizer.clearByRegexp, [/\(.*\)/g, /"/g]],
+    [SanitizerUtils.asString, []],
+    [SanitizerUtils.clearByRegexp, [/\(.*\)/g, /"/g]],
   ],
-  sport: [[Sanitizer.asString, []]],
-  city: [[Sanitizer.asString, []]],
-  noc: [[Sanitizer.asString, []]],
-  event: [[Sanitizer.asString, []]],
-  games: [[Sanitizer.asString, []]],
-  medal: [[Sanitizer.fromEnum, [Medal]]],
-  season: [[Sanitizer.fromEnum, [Season]]],
-  sex: [[Sanitizer.fromEnum, [Sex]]],
-  id: [[Sanitizer.parseInt, []]],
-  year: [[Sanitizer.parseInt, []]],
-  weight: [[Sanitizer.parseInt, []]],
-  height: [[Sanitizer.parseInt, []]],
-  age: [[Sanitizer.parseInt, []]],
+  sport: [[SanitizerUtils.asString, []]],
+  city: [[SanitizerUtils.asString, []]],
+  noc: [[SanitizerUtils.asString, []]],
+  event: [[SanitizerUtils.asString, []]],
+  games: [[SanitizerUtils.asString, []]],
+  medal: [[SanitizerUtils.fromEnum, [Medal]]],
+  season: [[SanitizerUtils.fromEnum, [Season]]],
+  sex: [[SanitizerUtils.fromEnum, [Sex]]],
+  id: [[SanitizerUtils.parseNullableToInt, []]],
+  year: [[SanitizerUtils.parseNullableToInt, []]],
+  weight: [[SanitizerUtils.parseNullableToInt, []]],
+  height: [[SanitizerUtils.parseNullableToInt, []]],
+  age: [[SanitizerUtils.parseNullableToInt, []]],
   team: [
-    [Sanitizer.asString, []],
-    [Sanitizer.clearByRegexp, [/\d+$/g, /-$/g]],
+    [SanitizerUtils.asString, []],
+    [SanitizerUtils.clearByRegexp, [/\d+$/g, /-$/g]],
   ],
 };
 
@@ -45,19 +45,19 @@ export const CLIExtractorConfig: ChartConfigs = {
     {
       priority: 2,
       required: true,
-      extractFunction: [[Sanitizer.fromEnum, [Season]]],
+      extractFunction: [[SanitizerUtils.fromEnum, [Season]]],
       paramName: 'season',
     },
     {
       priority: 1,
       required: false,
-      extractFunction: [[Sanitizer.fromEnum, [Medal]]],
+      extractFunction: [[SanitizerUtils.fromEnum, [Medal]]],
       paramName: 'medal',
     },
     {
       priority: 0,
       required: false,
-      extractFunction: [[Sanitizer.parseInt, []]],
+      extractFunction: [[SanitizerUtils.parseNullableToInt, []]],
       paramName: 'year',
     },
   ],
@@ -66,19 +66,19 @@ export const CLIExtractorConfig: ChartConfigs = {
     {
       priority: 2,
       required: true,
-      extractFunction: [[Sanitizer.fromEnum, [Season]]],
+      extractFunction: [[SanitizerUtils.fromEnum, [Season]]],
       paramName: 'season',
     },
     {
       priority: 0,
       required: true,
-      extractFunction: [[Sanitizer.asString, []]],
+      extractFunction: [[SanitizerUtils.asString, []]],
       paramName: 'noc',
     },
     {
       priority: 1,
       required: false,
-      extractFunction: [[Sanitizer.fromEnum, [Medal]]],
+      extractFunction: [[SanitizerUtils.fromEnum, [Medal]]],
       paramName: 'medal',
     },
   ],

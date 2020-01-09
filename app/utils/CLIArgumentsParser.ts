@@ -1,5 +1,5 @@
 import { CLIExtractorDescriptor } from '../types';
-import { SanitizeExecutor } from './SanitizeExecutor';
+import { CSVSanitizer } from './CSVSanitizer';
 
 export class CLIArgumentsParser {
   static extract(CLIArguments: Array<string | number>, CLIConfig: Array<CLIExtractorDescriptor>) {
@@ -43,7 +43,7 @@ export class CLIArgumentsParser {
   private static findArgumentInArray(CLIArguments: Array<string | number>, CLIConfig: CLIExtractorDescriptor) {
     const { extractFunction } = CLIConfig;
 
-    const foundValue = CLIArguments.find(value => SanitizeExecutor.proceedExecutableConfig(value, extractFunction));
+    const foundValue = CLIArguments.find(value => CSVSanitizer.proceedExecutableConfig(value, extractFunction));
 
     if (foundValue) {
       return CLIArgumentsParser.continueSearch(CLIArguments, foundValue, CLIConfig);
