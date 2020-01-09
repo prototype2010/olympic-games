@@ -8,10 +8,10 @@ import {
   preproceedParserArguments,
   printHelp,
 } from './app/utils';
-import { getConfigByChartName } from './config';
 import { Statistics } from './app/Statistics/Statistics';
 import { DatabaseConnection } from './app/Database/Database';
 import { ChartBuilder } from './app/Chart/ChartBuilder';
+import { getConfigByChartName } from './app/CSVProcessors/SanitizerConfig';
 
 const { _: noFlagParams, help } = parseCLIParams();
 

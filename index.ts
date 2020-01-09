@@ -1,5 +1,5 @@
 import { DatabaseConnection } from './app/Database/Database';
-import { CSV_FILE_PATH, sanitizeConfig } from './config';
+import { CSV_FILE_PATH } from './config';
 import { CSVParser } from './app/CSVProcessors/CSVParser';
 import { resolve } from 'path';
 import { SanitizedCSVRecord, Table } from './app/types';
@@ -8,6 +8,7 @@ import { resolveAllAsChunks } from './app/Database/utils';
 import { chunk } from 'lodash';
 import { Model } from './app/Database/utils/Model';
 import { mapToValidDBObjects } from './app/CSVProcessors/CSVRowsMapper';
+import { sanitizeConfig } from './app/CSVProcessors/SanitizerConfig';
 
 const DB = DatabaseConnection.getInstance();
 

@@ -1,5 +1,5 @@
 import { IndexedObject } from '../types/index';
-import { SanitizeConfig } from '../../config/index';
+import { SanitizeConfig } from './SanitizerConfig';
 
 export class CSVSanitizer {
   static sanitizeArray<T>(csvRowsArray: Array<IndexedObject> = [], sanitizeConfig: SanitizeConfig) {
