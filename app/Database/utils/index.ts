@@ -6,7 +6,8 @@ const chunkSize = 100;
 
 export const resolveAllAsChunks = async (entities: Array<{ write(): Promise<Model> }>) => {
   for await (const chunkPart of chunk(entities, chunkSize)) {
-    await Promise.all(chunkPart.map(entity => entity.write()));
+    const insertResult = await Promise.all(chunkPart.map(entity => entity.write()));
+    return insertResult;
   }
 };
 
