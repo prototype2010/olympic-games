@@ -1,12 +1,15 @@
 import { SanitizerUtils } from '../app/utils/SanitizerUtils';
 import { ChartConfigs, Charts, CLIExtractorDescriptor, IndexedObject, Medal, Season, Sex } from '../app/types';
 import { printHelp } from '../app/utils';
+import { FunctionHelper } from 'knex';
 
 export const { DB_FILE_PATH, CSV_FILE_PATH } = require('dotenv').config().parsed;
 
-export type SanitizeConfig = typeof sanitizeConfig;
+export interface SanitizeConfig {
+  [key: string]: Array<[Function, Array<Object | RegExp>]>;
+}
 
-export const sanitizeConfig = {
+export const sanitizeConfig: SanitizeConfig = {
   name: [
     [SanitizerUtils.asString, []],
     [SanitizerUtils.clearByRegexp, [/\(.*\)/g, /"/g]],
