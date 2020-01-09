@@ -2,9 +2,9 @@ import { DatabaseConnection } from './app/Database/Database';
 import { CSV_FILE_PATH } from './config';
 import { CSVParser } from './app/CSVProcessors/CSVParser';
 import { resolve } from 'path';
-import { SanitizedCSVRecord, Table } from './app/types';
+import { SanitizedCSVRecord } from './app/types';
 import { CSVSanitizer } from './app/CSVProcessors/CSVSanitizer';
-import { resolveAllAsChunks } from './app/Database/utils';
+import { dropTables, resolveAllAsChunks } from './app/Database/utils';
 import { chunk } from 'lodash';
 import { Model } from './app/Database/utils/Model';
 import { mapToValidDBObjects } from './app/CSVProcessors/CSVRowsMapper';
@@ -26,9 +26,7 @@ async function init() {
 
   console.time('No dependency entries document');
   // drop tables
-  for await (const tableName of Object.values(Table)) {
-    await DB.raw(`DELETE FROM ${tableName}`);
-  }
+  await dropTables();
 
   await resolveAllAsChunks([...teams, ...sports, ...events, ...games] as Model[]);
 

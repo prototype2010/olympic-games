@@ -1,4 +1,4 @@
-import { Callable, Charts, SanitizedCSVRecord } from '../types';
+import { Callable, Charts } from '../types';
 import { SanitizerUtils } from './SanitizerUtils';
 import minimist from 'minimist';
 import { Model } from '../Database/utils/Model';
