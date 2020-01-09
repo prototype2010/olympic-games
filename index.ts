@@ -1,13 +1,13 @@
 import { DatabaseConnection } from './app/Database/Database';
 import { CSV_FILE_PATH, sanitizeConfig } from './config';
-import { CSVParser } from './app/utils/CSVParser';
-import { mapToValidDBObjects } from './app/utils';
+import { CSVParser } from './app/CSVProcessors/CSVParser';
 import { resolve } from 'path';
 import { SanitizedCSVRecord, Table } from './app/types';
-import { CSVSanitizer } from './app/utils/CSVSanitizer';
+import { CSVSanitizer } from './app/CSVProcessors/CSVSanitizer';
 import { resolveAllAsChunks } from './app/Database/utils';
 import { chunk } from 'lodash';
 import { Model } from './app/Database/utils/Model';
+import { mapToValidDBObjects } from './app/CSVProcessors/CSVRowsMapper';
 
 const DB = DatabaseConnection.getInstance();
 

@@ -1,5 +1,5 @@
 import { CLIExtractorDescriptor } from '../types';
-import { CSVSanitizer } from './CSVSanitizer';
+import { CSVSanitizer } from '../CSVProcessors/CSVSanitizer';
 
 export class CLIArgumentsParser {
   static extract(CLIArguments: Array<string | number>, CLIConfig: Array<CLIExtractorDescriptor>) {
