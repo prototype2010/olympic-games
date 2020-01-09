@@ -34,13 +34,13 @@ export class CSVSanitizer {
     }
   }
 
-  static proceedExecutableConfig(value: any, executableConfig: Array<Array<any>>) {
-    return executableConfig.reduce((cumulative, current) => {
-      const [executableFunction, ...args] = current;
+  static proceedExecutableConfig(rawValue: any, executableConfig: Array<Array<any>>) {
+    return executableConfig.reduce((valueToSanitize, executableConfigElement) => {
+      const [executableFunction, ...args] = executableConfigElement;
 
-      cumulative = executableFunction(cumulative, ...args);
+      valueToSanitize = executableFunction(valueToSanitize, ...args);
 
-      return cumulative;
-    }, value);
+      return valueToSanitize;
+    }, rawValue);
   }
 }
