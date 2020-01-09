@@ -27,8 +27,8 @@ function proceedHashFuncArguments(...args: any[]) {
   }
 }
 
-function getFromHashMap<T extends Model>(map: Map<string, any>, callableClass: Callable<T>) {
-  const checkHasMap = function(hashKeyArgs: Array<any>, ...callNewArgs: Array<any>) {
+function getFromHashMap<T extends Model>(map: Map<string, any>, callableClass: Callable<Model>) {
+  const createIfNotExist = function(hashKeyArgs: Array<any>, ...callNewArgs: Array<any>) {
     const key = makeHashKey(hashKeyArgs);
 
     if (map.has(key)) {
@@ -41,15 +41,11 @@ function getFromHashMap<T extends Model>(map: Map<string, any>, callableClass: C
     }
   };
 
-  checkHasMap.getArray = function() {
+  createIfNotExist.getArray = function() {
     return [...map.values()] as Array<T>;
   };
 
-  checkHasMap.getMap = function() {
-    return map;
-  };
-
-  return checkHasMap;
+  return createIfNotExist;
 }
 
 export function mapToValidDBObjects(sanitizedSCV: Array<SanitizedCSVRecord>) {
