@@ -8,7 +8,7 @@
     "prettier": "prettier --write \"./**/*.{ts,json}\"",
     "precommit": "pretty-quick --staged",
     "postcommit": "git update-index -g",
-    "test": "jest --watch"
+    "test": "test=true jest --watchAll"
   },
   "devDependencies": {
     "@types/jest": "^24.0.24",

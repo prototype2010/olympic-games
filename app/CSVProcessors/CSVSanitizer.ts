@@ -1,4 +1,4 @@
-import { IndexedObject } from '../types/index';
+import { IndexedObject } from '../types';
 import { SanitizeConfig } from './SanitizerConfig';
 
 export class CSVSanitizer {
