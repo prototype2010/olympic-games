@@ -2,9 +2,6 @@ import 'jest';
 import { CLIArgumentsParser } from '../utils/CLIArgumentsParser';
 import { CLIExtractorConfig } from '../CSVProcessors/SanitizerConfig';
 import { wrapThrowable } from '../testUtils';
-import { DB_FILE_PATH, CSV_FILE_PATH } from '../../config';
-
-console.log(DB_FILE_PATH, CSV_FILE_PATH);
 
 const { medals, 'top-teams': topTeams } = CLIExtractorConfig;
 describe('CLI parser', () => {
