@@ -27,17 +27,17 @@ function proceedHashFuncArguments(...args: any[]) {
   }
 }
 
-function getFromHashMap<T extends Model>(map: Map<string, any>, instance: Callable<T>) {
+function getFromHashMap<T extends Model>(map: Map<string, any>, callableClass: Callable<T>) {
   const checkHasMap = function(hashKeyArgs: Array<any>, ...callNewArgs: Array<any>) {
     const key = makeHashKey(hashKeyArgs);
 
     if (map.has(key)) {
       return map.get(key);
     } else {
-      const newObject = new instance(...callNewArgs);
-      map.set(key, newObject);
+      const instance = new callableClass(...callNewArgs);
+      map.set(key, instance);
 
-      return newObject;
+      return instance;
     }
   };
 
