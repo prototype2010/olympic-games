@@ -10,9 +10,9 @@ import { mapToValidDBObjects } from './app/CSVProcessors/CSVRowsMapper';
 import { sanitizeConfig } from './app/CSVProcessors/SanitizerConfig';
 import { chunk } from 'lodash';
 
-const DB = DatabaseConnection.getInstance();
-
 async function init() {
+  const DB = DatabaseConnection.getInstance();
+
   console.time('Parsing document');
 
   const readDocument = await CSVParser.parse(resolve(__dirname, CSV_FILE_PATH));
@@ -41,7 +41,7 @@ async function init() {
   });
 
   for await (const athletesChunk of chunk(athletes, CHUNK_SIZE)) {
-    await DatabaseConnection.getInstance()('athletes').insert(
+    await DB('athletes').insert(
       athletesChunk.map(({ teamId, birthYear, fullName, sex, params, id }) => ({
         id,
         full_name: fullName,
@@ -54,7 +54,7 @@ async function init() {
   }
 
   for await (const rowsChunk of chunk(rows, CHUNK_SIZE)) {
-    await DatabaseConnection.getInstance()('results').insert(
+    await DB('results').insert(
       rowsChunk.map(row => {
         const { result, event, sport, athlete, game } = row;
 
@@ -75,7 +75,7 @@ async function init() {
   }
   console.timeEnd('Inserting results');
 
-  DatabaseConnection.getInstance().destroy(function() {
+  DB.destroy(function() {
     console.log('Connection destroyed...');
   });
 }
