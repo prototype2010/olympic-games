@@ -1,13 +1,11 @@
+import 'jest';
 import { getFromHashMap } from '../utils';
 import { Athlete } from '../Database/entities';
 import { SanitizedCSVRecord, Sex } from '../types';
 import { mapToValidDBObjects } from '../CSVProcessors/CSVRowsMapper';
-import parsedCSV from '../testUtils/testData/csv/parsedCSV';
-import { SanitizerUtils } from '../utils/SanitizerUtils';
 import { sanitizeConfig } from '../CSVProcessors/SanitizerConfig';
 import { CSVSanitizer } from '../CSVProcessors/CSVSanitizer';
 import parsedCSVForMapper from '../testUtils/testData/csv/parsedCSVForMapper';
-import { JSONSchema4 } from 'json-schema';
 import correctlyMappedCSV from '../testUtils/testData/csv/correctlyMappedCSV';
 
 describe('Verify parsed csv correctly maps to unique objects', () => {
