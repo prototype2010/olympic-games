@@ -1,6 +1,8 @@
 import { getFromHashMap } from '../utils';
 import { Athlete } from '../Database/entities';
-import { Sex } from '../types';
+import { SanitizedCSVRecord, Sex } from '../types';
+import { mapToValidDBObjects } from '../CSVProcessors/CSVRowsMapper';
+import parsedCSV from '../testUtils/testData/csv/parsedCSV';
 
 describe('Verify parsed csv correctly maps to unique objects', () => {
   test('Hash map function should keep original objects', () => {
@@ -31,5 +33,9 @@ describe('Verify parsed csv correctly maps to unique objects', () => {
     athletes([2], athleteParams2);
 
     expect(athletes.getArray()).toEqual([new Athlete(athleteParams1), new Athlete(athleteParams2)]);
+  });
+
+  test('Verify rows mapper creates correct unique objects', () => {
+    // todo
   });
 });

@@ -36,4 +36,8 @@ export class SanitizerUtils {
       return cumulative;
     }, value);
   }
+
+  static asItIs(rawValue: any) {
+    return rawValue;
+  }
 }
