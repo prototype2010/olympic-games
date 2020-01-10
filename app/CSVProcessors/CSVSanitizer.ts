@@ -1,5 +1,6 @@
 import { IndexedObject } from '../types';
 import { SanitizeConfig } from './SanitizerConfig';
+import { SanitizerUtils } from '../utils/SanitizerUtils';
 
 export class CSVSanitizer {
   static sanitizeArray<T>(csvRowsArray: Array<IndexedObject> = [], sanitizeConfig: SanitizeConfig) {
@@ -30,7 +31,7 @@ export class CSVSanitizer {
     if (propName in sanitizeConfig) {
       return sanitizeConfig[propName];
     } else {
-      return [[[(rawValue: any) => rawValue], []]];
+      return [[SanitizerUtils.asItIs, []]];
     }
   }
 

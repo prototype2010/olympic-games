@@ -1,6 +1,6 @@
 import csv from 'csv-parser';
 import { createReadStream } from 'fs';
-import { RawCSVRecord } from '../types/index';
+import { RawCSVRecord } from '../types';
 
 export class CSVParser {
   static async parse(filePath: string): Promise<Array<RawCSVRecord>> {

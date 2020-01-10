@@ -13,15 +13,17 @@ export class ChartBuilder {
     const { dbSet, headers } = chartData;
 
     const readyToDisplayRows = ChartBuilder.prepareRowsToDisplay(dbSet);
+    const remappedToBars = ChartBuilder.remapAmountBars(readyToDisplayRows);
 
-    ChartBuilder.displayChart([headers, ...readyToDisplayRows]);
+    ChartBuilder.displayChart([headers, ...remappedToBars]);
+
+    /* for testing purposes */
+    return [headers, ...remappedToBars];
   }
 
   static prepareRowsToDisplay(dbSet: DBSet) {
     const maximumMedalAmount = Math.max(...dbSet.map(({ amount }) => amount));
-    const withProportionalAmount = ChartBuilder.setProportionalAmount(dbSet, maximumMedalAmount);
-
-    return ChartBuilder.remapAmountBars(withProportionalAmount);
+    return ChartBuilder.setProportionalAmount(dbSet, maximumMedalAmount);
   }
 
   static setProportionalAmount(dbSet: DBSet, maximumValue: number): DBSet {
@@ -45,8 +47,12 @@ export class ChartBuilder {
   }
 
   static displayChart(rows: Array<Array<any>>) {
-    rows.forEach(row => console.log(`${'\t'}${row.join('\t')}`));
+    if (!process.env.test) {
+      /* do not display charts during tests */
+      rows.forEach(row => console.log(`${'\t'}${row.join('\t')}`));
+    }
 
+    /* for testing purposes */
     return rows;
   }
 }
