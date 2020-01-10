@@ -1,4 +1,4 @@
-import { IndexedObject, SanitizedCSVRecord } from '../types';
+import { IndexedObject } from '../types';
 import { SanitizeConfig } from './SanitizerConfig';
 import { SanitizerUtils } from '../utils/SanitizerUtils';
 

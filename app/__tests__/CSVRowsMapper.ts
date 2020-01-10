@@ -3,6 +3,12 @@ import { Athlete } from '../Database/entities';
 import { SanitizedCSVRecord, Sex } from '../types';
 import { mapToValidDBObjects } from '../CSVProcessors/CSVRowsMapper';
 import parsedCSV from '../testUtils/testData/csv/parsedCSV';
+import { SanitizerUtils } from '../utils/SanitizerUtils';
+import { sanitizeConfig } from '../CSVProcessors/SanitizerConfig';
+import { CSVSanitizer } from '../CSVProcessors/CSVSanitizer';
+import parsedCSVForMapper from '../testUtils/testData/csv/parsedCSVForMapper';
+import { JSONSchema4 } from 'json-schema';
+import correctlyMappedCSV from '../testUtils/testData/csv/correctlyMappedCSV';
 
 describe('Verify parsed csv correctly maps to unique objects', () => {
   test('Hash map function should keep original objects', () => {
@@ -36,6 +42,10 @@ describe('Verify parsed csv correctly maps to unique objects', () => {
   });
 
   test('Verify rows mapper creates correct unique objects', () => {
-    // todo
+    const sanitizedCSV = CSVSanitizer.sanitizeArray(parsedCSVForMapper, sanitizeConfig);
+
+    const { uniqueEntries } = mapToValidDBObjects(sanitizedCSV as SanitizedCSVRecord[]);
+
+    expect(uniqueEntries).toEqual(correctlyMappedCSV);
   });
 });
