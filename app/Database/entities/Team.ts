@@ -1,33 +1,40 @@
-import {SanitizedCSVRecord, Table, Writable} from "../../types";
+import { SanitizedCSVRecord, Table } from '../../types';
+import { Model } from '../utils/Model';
 
-export class Team  implements Writable {
-    private static readonly TABLE_NAME= Table.TEAMS;
+export class Team extends Model {
+  private static readonly TABLE_NAME = Table.TEAMS;
 
-        private _name : string;
-    private _NOCName : string;
+  private _name: string;
+  private _NOCName: string;
 
-    constructor({name, noc} : SanitizedCSVRecord) {
-        this._name = name;
-        this._NOCName = noc;
-    }
+  constructor({ team, noc }: SanitizedCSVRecord) {
+    super();
+    this._name = team;
+    this._NOCName = noc;
+  }
 
-    formQuery (tableName : Table) {
-        return `INSERT INTO ${tableName} VALUES ()`;
-    }
+  write() {
+    const { name, NOCName } = this;
 
-    get name(): string {
-        return this._name;
-    }
+    return super.insertToDB(Team.TABLE_NAME, {
+      name,
+      noc_name: NOCName,
+    });
+  }
 
-    set name(value: string) {
-        this._name = value;
-    }
+  get name(): string {
+    return this._name;
+  }
 
-    get NOCName(): string {
-        return this._NOCName;
-    }
+  set name(value: string) {
+    this._name = value;
+  }
 
-    set NOCName(value: string) {
-        this._NOCName = value;
-    }
+  get NOCName(): string {
+    return this._NOCName;
+  }
+
+  set NOCName(value: string) {
+    this._NOCName = value;
+  }
 }
