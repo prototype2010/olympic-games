@@ -1,22 +1,14 @@
-import { Athlete, Event, Game, Result, Sport, Team } from '../Database/entities';
-
 export enum Medal {
   'NA' = 'NA',
-  Gold = 'Gold',
-  Silver = 'Silver',
-  Bronze = 'Bronze',
+  Gold = 'gold',
+  Silver = 'silver',
+  Bronze = 'bronze',
 }
 
 export enum Sex {
   M = 'M',
   F = 'F',
 }
-
-export type Primitives = number | string | boolean;
-
-export type Specials = null | undefined;
-
-export type Nullable<T> = T | null;
 
 export interface RawCSVRecord {
   id: any;
@@ -36,18 +28,55 @@ export interface RawCSVRecord {
   medal: any;
 }
 
-export interface SanitizedCSVRecord {
-  id: Nullable<number>;
+export interface AthleteParams {
+  height?: number;
+  weight?: number;
+}
+
+export interface AthleteInitParams {
+  params: AthleteParams;
+  sex?: Sex;
+  year?: number;
   name: string;
-  sex: Nullable<Sex>;
-  age: Nullable<number>;
-  height: Nullable<number>;
-  weight: Nullable<number>;
+  height?: number;
+  weight?: number;
+}
+
+export interface EventInitParams {
+  event: string;
+}
+
+export interface GameInitParams {
+  year?: number;
+  season?: Season;
+  city: string;
+}
+
+export interface ResultInitParams {
+  medal: Medal;
+}
+
+export interface SportInitParams {
+  sport: string;
+}
+
+export interface TeamInitParams {
+  team: string;
+  noc: string;
+}
+
+export interface SanitizedCSVRecord {
+  id?: number;
+  name: string;
+  sex?: Sex;
+  age?: number;
+  height?: number;
+  weight?: number;
   team: string;
   noc: string;
   games: string;
-  year: Nullable<number>;
-  season: Nullable<Season>;
+  year?: number;
+  season?: Season;
   city: string;
   sport: string;
   event: string;
@@ -55,8 +84,8 @@ export interface SanitizedCSVRecord {
 }
 
 export enum Season {
-  Summer = 'Summer',
-  Winter = 'Winter',
+  Summer = 'summer',
+  Winter = 'winter',
 }
 
 export enum Table {
@@ -68,12 +97,41 @@ export enum Table {
   ATHLETES = 'athletes',
 }
 
-export interface Callable {
-  new (...args: any[]): any;
+export interface Callable<T> {
+  new (...args: any[]): T;
 }
 
 export interface IndexedObject {
   [index: string]: any;
 }
 
-export type Entity = Athlete | Event | Game | Result | Sport | Team;
+export enum Charts {
+  Medals = 'medals',
+  TopTeams = 'top-teams',
+}
+
+export interface CLIExtractorDescriptor {
+  priority: number;
+  required: boolean;
+  extractFunction: any;
+  paramName: string;
+}
+
+export interface ChartConfigs {
+  'top-teams': Array<CLIExtractorDescriptor>;
+  medals: Array<CLIExtractorDescriptor>;
+}
+
+export interface MedalsChartParsedArgs {
+  medal?: Medal;
+  season: Season;
+  noc: string;
+}
+
+export interface TopTeamsChartParsedArgs {
+  medal?: Medal;
+  season: Season;
+  year?: number;
+}
+
+export type DBSet = Array<{ [index: string]: string | number; amount: number }>;

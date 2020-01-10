@@ -1,71 +1,81 @@
 import { DatabaseConnection } from './app/Database/Database';
-import { CSV_FILE_PATH, sanitizeConfig } from './config';
-import { CSVParser } from './app/utils/CSVParser';
-import { mapToValidDBObjects } from './app/utils';
+import { CSV_FILE_PATH } from './config';
+import { CSVParser } from './app/CSVProcessors/CSVParser';
 import { resolve } from 'path';
-import { Table } from './app/types';
-import { SanitizeExecutor } from './app/utils/SanitizeExecutor';
-import { resolveAllAsChunks } from './app/Database/utils';
+import { SanitizedCSVRecord } from './app/types';
+import { CSVSanitizer } from './app/CSVProcessors/CSVSanitizer';
+import { CHUNK_SIZE, dropTables, resolveAllAsChunks } from './app/Database/utils';
+import { Model } from './app/Database/utils/Model';
+import { mapToValidDBObjects } from './app/CSVProcessors/CSVRowsMapper';
+import { sanitizeConfig } from './app/CSVProcessors/SanitizerConfig';
 import { chunk } from 'lodash';
 
-const DB = DatabaseConnection.getInstance();
-
 async function init() {
+  const DB = DatabaseConnection.getInstance();
+
   console.time('Parsing document');
 
   const readDocument = await CSVParser.parse(resolve(__dirname, CSV_FILE_PATH));
 
-  const sanitizedCSV = SanitizeExecutor.sanitizeArray(readDocument, sanitizeConfig);
+  const sanitizedCSV = CSVSanitizer.sanitizeArray<SanitizedCSVRecord>(readDocument, sanitizeConfig);
   const { rows, uniqueEntries } = mapToValidDBObjects(sanitizedCSV);
 
   console.timeEnd('Parsing document');
 
-  const { teams, sports, games, events } = uniqueEntries;
+  const { teams, sports, games, events, athletes } = uniqueEntries;
 
   console.time('No dependency entries document');
-  // drop tables
-  for await (const tableName of Object.values(Table)) {
-    await DB.raw(`DELETE FROM ${tableName}`);
-  }
 
-  await resolveAllAsChunks([...teams, ...sports, ...events, ...games]);
+  // drop tables
+  await dropTables();
+
+  await resolveAllAsChunks([...sports, ...events, ...games, ...teams] as Model[]);
 
   console.timeEnd('No dependency entries document');
 
   console.time('Inserting results');
 
-  const chunkedResults = chunk(rows, 1000);
+  rows.forEach(({ athlete, team }, index) => {
+    athlete.teamId = team.id;
+    athlete.id = index;
+  });
 
-  for await (const rowsChunk of chunkedResults) {
-    await resolveAllAsChunks(
-      rowsChunk.map(({ sport, result, game, athlete, event, team }) => {
+  for await (const athletesChunk of chunk(athletes, CHUNK_SIZE)) {
+    await DB('athletes').insert(
+      athletesChunk.map(({ teamId, birthYear, fullName, sex, params, id }) => ({
+        id,
+        full_name: fullName,
+        sex,
+        team_id: teamId,
+        params: JSON.stringify(params),
+        year_of_birth: birthYear,
+      })),
+    );
+  }
+
+  for await (const rowsChunk of chunk(rows, CHUNK_SIZE)) {
+    await DB('results').insert(
+      rowsChunk.map(row => {
+        const { result, event, sport, athlete, game } = row;
+
+        result.gameId = game.id;
+        result.athleteId = athlete.id;
+        result.eventId = event.id;
+        result.sportId = sport.id;
+
         return {
-          write: () => {
-            return new Promise(async resolve => {
-              if (!athlete.dbID) {
-                athlete.teamId = team.dbID;
-
-                resolve(athlete.write());
-              }
-
-              resolve();
-            }).then(() => {
-              result.gameId = game.dbID;
-              result.athleteId = athlete.dbID;
-              result.eventId = event.dbID;
-              result.sportId = sport.dbID;
-
-              return result.write();
-            });
-          },
+          athlete_id: result.athleteId,
+          game_id: result.gameId,
+          sport_id: result.sportId,
+          event_id: result.eventId,
+          medal: result.medal,
         };
       }),
     );
   }
-
   console.timeEnd('Inserting results');
 
-  DatabaseConnection.getInstance().destroy(function() {
+  DB.destroy(function() {
     console.log('Connection destroyed...');
   });
 }

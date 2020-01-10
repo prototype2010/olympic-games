@@ -1,31 +1,35 @@
-import { IndexedObject, Nullable, Table } from '../../types';
+import { IndexedObject, Table } from '../../types';
 import { DatabaseConnection } from '../Database';
 
 export abstract class Model {
-  protected _dbID: Nullable<number> = null;
+  private _id?: number;
 
-  async insertToDB(tableName: Table, insertData: IndexedObject) {
+  async insertToDB<T>(tableName: Table, insertData: IndexedObject): Promise<T> {
     try {
       const [id] = await DatabaseConnection.getInstance()(tableName).insert({
         id: null,
         ...insertData,
       });
 
-      this.dbID = id;
+      this._id = id;
+
+      return (this as any) as T;
     } catch (e) {
       console.error(`Failed to insert data to ${tableName}`);
       console.error(`Insert data ${JSON.stringify(insertData)}`, e);
       console.error(`Original error`, e);
+
+      return (this as any) as T;
     }
   }
 
-  get dbID(): Nullable<number> {
-    return this._dbID;
+  abstract write(): Promise<Model>;
+
+  get id() {
+    return this._id;
   }
 
-  set dbID(value: Nullable<number>) {
-    this._dbID = value;
+  set id(value) {
+    this._id = value;
   }
-
-  abstract write(): Promise<any>;
 }
