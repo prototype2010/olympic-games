@@ -34,7 +34,6 @@ export interface AthleteParams {
 }
 
 export interface AthleteInitParams {
-  params: AthleteParams;
   sex?: Sex;
   year?: number;
   name: string;
