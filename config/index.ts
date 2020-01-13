@@ -9,7 +9,7 @@ function resolveEnvFilePath(): string | never {
   if (existsSync(filePath)) {
     return filePath;
   } else {
-    throw new Error(`.env[.*] file is required ${filePath}/  <-- HERE`);
+    throw new Error(`.env[.*] file is required ${resolve(__dirname, `../`)}/  <-- HERE`);
   }
 }
 
