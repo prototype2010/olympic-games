@@ -10,7 +10,7 @@ function resolveEnvFilePath() {
   if (fs_1.existsSync(filePath)) {
     return filePath;
   } else {
-    throw new Error(`.env[.*] file is required ${filePath}/  <-- HERE`);
+    throw new Error(`.env[.*] file is required ${path_1.resolve(__dirname, `../`)}/  <-- HERE`);
   }
 }
 (_a = require('dotenv').config({
