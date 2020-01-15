@@ -8,12 +8,12 @@ export class CSVSanitizer {
   }
 
   static sanitizeRow<T>(row: IndexedObject, sanitizeConfig: SanitizeConfig) {
-    return Object.entries(row).reduce((rawCSVRow, csvRowEntry) => {
+    return Object.entries(row).reduce((sanitizedRow, csvRowEntry) => {
       const sanitizedEntry = CSVSanitizer.sanitizeField(csvRowEntry, sanitizeConfig);
       const [key, value] = sanitizedEntry;
 
       return {
-        ...rawCSVRow,
+        ...sanitizedRow,
         [key]: value,
       };
     }, {} as T);
