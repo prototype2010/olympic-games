@@ -10,6 +10,14 @@ export class Event extends Model {
     this.name = event;
   }
 
+  getKeyFields(): string[] {
+    return ['name'];
+  }
+
+  public buildKey(): string {
+    return super.buildKey();
+  }
+
   write() {
     return super.insertToDB<Event>(Event.TABLE_NAME, {
       name: this.name,

@@ -13,6 +13,14 @@ export class Team extends Model {
     this.NOCName = noc;
   }
 
+  getKeyFields(): string[] {
+    return ['name', 'NOCName'];
+  }
+
+  public buildKey(): string {
+    return super.buildKey();
+  }
+
   write() {
     const { name, NOCName } = this;
 

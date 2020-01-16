@@ -1,50 +1,6 @@
-import { Callable, Charts } from '../types';
+import { Charts } from '../types';
 import { SanitizerUtils } from './SanitizerUtils';
 import minimist from 'minimist';
-import { Model } from '../Database/utils/Model';
-
-export function makeHashKey(...args: any[]) {
-  const objectToBeHashed = proceedHashFuncArguments(...args);
-
-  return Object.entries(objectToBeHashed).reduce((cumulative, current) => {
-    const [key, value] = current;
-
-    if (typeof key !== 'function' && typeof key !== 'object') {
-      cumulative += `${key}=${value}#`;
-    }
-
-    return cumulative;
-  }, '');
-}
-
-function proceedHashFuncArguments(...args: any[]) {
-  if (args.length === 1 && typeof args[0] === 'object') {
-    return args[0];
-  } else {
-    return { ...args };
-  }
-}
-
-export function getFromHashMap<T extends Model>(map: Map<string, any>, callableClass: Callable<Model>) {
-  const createIfNotExist = function(hashKeyArgs: Array<any>, ...callNewArgs: Array<any>) {
-    const key = makeHashKey(hashKeyArgs);
-
-    if (map.has(key)) {
-      return map.get(key);
-    } else {
-      const instance = new callableClass(...callNewArgs);
-      map.set(key, instance);
-
-      return instance;
-    }
-  };
-
-  createIfNotExist.getArray = function() {
-    return [...map.values()] as Array<T>;
-  };
-
-  return createIfNotExist;
-}
 
 export function preproceedParserArguments(params: Array<any>, chartName: string) {
   const argsArray = params.slice();

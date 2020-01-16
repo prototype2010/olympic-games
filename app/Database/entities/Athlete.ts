@@ -42,6 +42,14 @@ export class Athlete extends Model {
     });
   }
 
+  public buildKey(): string {
+    return super.buildKey();
+  }
+
+  getKeyFields(): string[] {
+    return ['fullName', 'sex', 'birthYear'];
+  }
+
   get fullName() {
     return this._fullName;
   }

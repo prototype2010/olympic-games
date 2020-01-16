@@ -28,6 +28,14 @@ export class Result extends Model {
     });
   }
 
+  getKeyFields(): string[] {
+    return ['athlete_id', 'game_id', 'sport_id', 'event_id', 'medal'];
+  }
+
+  public buildKey(): string {
+    return super.buildKey();
+  }
+
   get athleteId() {
     return this._athleteId;
   }

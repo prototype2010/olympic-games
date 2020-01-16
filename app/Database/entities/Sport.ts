@@ -11,6 +11,14 @@ export class Sport extends Model {
     this.name = sport;
   }
 
+  getKeyFields(): string[] {
+    return ['name'];
+  }
+
+  public buildKey(): string {
+    return super.buildKey();
+  }
+
   write() {
     return super.insertToDB<Sport>(Sport.TABLE_NAME, {
       name: this.name,

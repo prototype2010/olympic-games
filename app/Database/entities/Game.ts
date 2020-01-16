@@ -15,6 +15,14 @@ export class Game extends Model {
     this.city = city;
   }
 
+  getKeyFields(): string[] {
+    return ['year', 'season', 'city'];
+  }
+
+  public buildKey(): string {
+    return super.buildKey();
+  }
+
   write() {
     const { city, season, year } = this;
 

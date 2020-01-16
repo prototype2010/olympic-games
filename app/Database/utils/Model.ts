@@ -1,5 +1,6 @@
 import { IndexedObject, Table } from '../../types';
 import { DatabaseConnection } from '../Database';
+import { pick } from 'lodash';
 
 export abstract class Model {
   private _id?: number;
@@ -25,7 +26,18 @@ export abstract class Model {
 
   abstract write(): Promise<Model>;
 
-  get id() {
+  public buildKey(): string {
+    const pickedObject = pick(this, this.getKeyFields());
+    const entries = Object.entries(pickedObject);
+
+    const keyValuePairs: Array<string> = entries.map(([key, value]) => `${key}-${value}`);
+
+    return keyValuePairs.join('#');
+  }
+
+  abstract getKeyFields(): string[];
+
+  get id(): number | undefined {
     return this._id;
   }
 
