@@ -17,7 +17,10 @@ async function init() {
 
   const readDocument = await CSVParser.parse(resolve(__dirname, CSV_FILE_PATH));
 
-  const sanitizedCSV = CSVSanitizer.sanitizeArray<SanitizedCSVRecord>(readDocument, sanitizeConfig);
+  const csvSanitizer = new CSVSanitizer<SanitizedCSVRecord>(sanitizeConfig);
+
+  const sanitizedCSV = csvSanitizer.sanitizeArray(readDocument);
+
   const { rows, uniqueEntries } = mapToValidDBObjects(sanitizedCSV);
 
   console.timeEnd('Parsing document');

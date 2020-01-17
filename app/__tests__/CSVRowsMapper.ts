@@ -40,9 +40,10 @@ describe('Verify parsed csv correctly maps to unique objects', () => {
   });
 
   test('Verify rows mapper creates correct unique objects', () => {
-    const sanitizedCSV = CSVSanitizer.sanitizeArray(parsedCSVForMapper, sanitizeConfig);
+    const sanitizer = new CSVSanitizer<SanitizedCSVRecord>(sanitizeConfig);
+    const sanitizedArray = sanitizer.sanitizeArray(parsedCSVForMapper);
 
-    const { uniqueEntries } = mapToValidDBObjects(sanitizedCSV as SanitizedCSVRecord[]);
+    const { uniqueEntries } = mapToValidDBObjects(sanitizedArray);
 
     expect(uniqueEntries).toEqual(correctlyMappedCSV);
   });

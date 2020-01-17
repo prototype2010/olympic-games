@@ -47,7 +47,7 @@ export class Athlete extends Model {
   }
 
   getKeyFields(): string[] {
-    return ['fullName', 'sex', 'birthYear'];
+    return ['fullName', 'sex'];
   }
 
   get fullName() {

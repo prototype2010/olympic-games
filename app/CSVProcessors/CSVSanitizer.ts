@@ -1,41 +1,48 @@
-import { IndexedObject } from '../types';
-import { SanitizeConfig } from './SanitizerConfig';
+import { IndexedObject, SanitizeConfig } from '../types';
 import { SanitizerUtils } from '../utils/SanitizerUtils';
 
-export class CSVSanitizer {
-  static sanitizeArray<T>(csvRowsArray: Array<IndexedObject> = [], sanitizeConfig: SanitizeConfig) {
-    return csvRowsArray.map(csvRow => CSVSanitizer.sanitizeRow<T>(csvRow, sanitizeConfig));
+export class CSVSanitizer<T> {
+  private readonly sanitizeConfig?: SanitizeConfig;
+
+  constructor(sanitizeConfig?: SanitizeConfig) {
+    this.sanitizeConfig = sanitizeConfig;
   }
 
-  static sanitizeRow<T>(row: IndexedObject, sanitizeConfig: SanitizeConfig) {
-    return Object.entries(row).reduce((sanitizedRow, csvRowEntry) => {
-      const sanitizedEntry = CSVSanitizer.sanitizeField(csvRowEntry, sanitizeConfig);
-      const [key, value] = sanitizedEntry;
+  public sanitizeArray(csvRowsArray: Array<IndexedObject> = []): Array<T> {
+    return csvRowsArray.map(csvRow => this.sanitizeRow(csvRow));
+  }
+
+  public sanitizeRow(row: IndexedObject): T {
+    const csvRowEntries = Object.entries(row);
+
+    return csvRowEntries.reduce((sanitizedRow, csvRowEntry) => {
+      const [key, value] = csvRowEntry;
+
+      const sanitizedEntry = this.sanitizeField(key, value);
 
       return {
         ...sanitizedRow,
-        [key]: value,
+        ...sanitizedEntry,
       };
     }, {} as T);
   }
 
-  static sanitizeField(parsedCSVEntry: [string, any], sanitizeConfig: SanitizeConfig) {
-    const [key, value] = parsedCSVEntry;
-    const executableConfig = CSVSanitizer.readConfigByPropName(key, sanitizeConfig);
-    const sanitizedValue = CSVSanitizer.proceedExecutableConfig(value, executableConfig);
+  public sanitizeField(key: string, value: any): IndexedObject {
+    const executableConfig = this.readConfigByPropName(key);
+    const sanitizedValue = this.proceedExecutableConfig(value, executableConfig);
 
-    return [key, sanitizedValue];
+    return { [key]: sanitizedValue };
   }
 
-  static readConfigByPropName(propName: string, sanitizeConfig: IndexedObject): Array<Array<any>> {
-    if (propName in sanitizeConfig) {
-      return sanitizeConfig[propName];
+  private readConfigByPropName(propName: string): Array<Array<any>> {
+    if (propName in this.sanitizeConfig!) {
+      return this.sanitizeConfig![propName];
     } else {
       return [[SanitizerUtils.asItIs, []]];
     }
   }
 
-  static proceedExecutableConfig(rawValue: any, executableConfig: Array<Array<any>>) {
+  public proceedExecutableConfig(rawValue: any, executableConfig: Array<Array<any>>) {
     return executableConfig.reduce((valueToSanitize, executableConfigElement) => {
       const [executableFunction, ...args] = executableConfigElement;
 

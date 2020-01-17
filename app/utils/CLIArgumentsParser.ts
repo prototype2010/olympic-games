@@ -43,7 +43,7 @@ export class CLIArgumentsParser {
   private static findArgumentInArray(CLIArguments: Array<string | number>, CLIConfig: CLIExtractorDescriptor) {
     const { extractFunction } = CLIConfig;
 
-    const foundValue = CLIArguments.find(value => CSVSanitizer.proceedExecutableConfig(value, extractFunction));
+    const foundValue = CLIArguments.find(value => new CSVSanitizer().proceedExecutableConfig(value, extractFunction));
 
     if (foundValue) {
       return CLIArgumentsParser.continueSearch(CLIArguments, foundValue, CLIConfig);

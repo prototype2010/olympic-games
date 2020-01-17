@@ -133,4 +133,8 @@ export interface TopTeamsChartParsedArgs {
   year?: number;
 }
 
+export interface SanitizeConfig {
+  [key: string]: Array<[Function, Array<Object | RegExp>]>;
+}
+
 export type DBSet = Array<{ [index: string]: string | number; amount: number }>;

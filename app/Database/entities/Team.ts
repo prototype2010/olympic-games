@@ -14,7 +14,7 @@ export class Team extends Model {
   }
 
   getKeyFields(): string[] {
-    return ['name', 'NOCName'];
+    return ['NOCName'];
   }
 
   public buildKey(): string {

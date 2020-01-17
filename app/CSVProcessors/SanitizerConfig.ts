@@ -1,10 +1,6 @@
 import { SanitizerUtils } from '../utils/SanitizerUtils';
-import { ChartConfigs, Charts, Medal, Season, Sex } from '../types';
+import { ChartConfigs, Charts, Medal, SanitizeConfig, Season, Sex } from '../types';
 import { printHelp } from '../utils';
-
-export interface SanitizeConfig {
-  [key: string]: Array<[Function, Array<Object | RegExp>]>;
-}
 
 export const sanitizeConfig: SanitizeConfig = {
   name: [
@@ -29,16 +25,6 @@ export const sanitizeConfig: SanitizeConfig = {
     [SanitizerUtils.clearByRegexp, [/\d+$/g, /-$/g]],
   ],
 };
-
-export function getConfigByChartName(chartName: Charts) {
-  if (CLIExtractorConfig[chartName]) {
-    return CLIExtractorConfig[chartName];
-  } else {
-    printHelp();
-
-    throw new Error(`No such chartname found ${chartName}`);
-  }
-}
 
 export const CLIExtractorConfig: ChartConfigs = {
   'top-teams': [
@@ -83,3 +69,13 @@ export const CLIExtractorConfig: ChartConfigs = {
     },
   ],
 };
+
+export function getConfigByChartName(chartName: Charts) {
+  if (CLIExtractorConfig[chartName]) {
+    return CLIExtractorConfig[chartName];
+  } else {
+    printHelp();
+
+    throw new Error(`No such chartname found ${chartName}`);
+  }
+}
