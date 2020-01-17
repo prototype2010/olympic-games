@@ -21,7 +21,7 @@ async function init() {
 
   const sanitizedCSV = csvSanitizer.sanitizeArray(readDocument);
 
-  const { rows, uniqueEntries } = mapToValidDBObjects(sanitizedCSV);
+  const { olympicEvents, uniqueEntries } = mapToValidDBObjects(sanitizedCSV);
 
   console.timeEnd('Parsing document');
 
@@ -38,7 +38,7 @@ async function init() {
 
   console.time('Inserting results');
 
-  rows.forEach(({ athlete, team }, index) => {
+  olympicEvents.forEach(({ athlete, team }, index) => {
     athlete.teamId = team.id;
     athlete.id = index;
   });
@@ -56,7 +56,7 @@ async function init() {
     );
   }
 
-  for await (const rowsChunk of chunk(rows, CHUNK_SIZE)) {
+  for await (const rowsChunk of chunk(olympicEvents, CHUNK_SIZE)) {
     await DB('results').insert(
       rowsChunk.map(row => {
         const { result, event, sport, athlete, game } = row;

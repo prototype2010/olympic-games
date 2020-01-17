@@ -6,7 +6,7 @@ import { HashCollection } from '../Database/utils/HashCollection';
 export function mapToValidDBObjects(
   sanitizedSCV: Array<SanitizedCSVRecord>,
 ): {
-  rows: Array<OlympicEvent>;
+  olympicEvents: Array<OlympicEvent>;
   uniqueEntries: {
     athletes: Array<Athlete>;
     sports: Array<Sport>;
@@ -21,7 +21,7 @@ export function mapToValidDBObjects(
   const teamsHashCollection = new HashCollection<Team>();
   const gamesHashCollection = new HashCollection<Game>();
 
-  const rows: Array<OlympicEvent> = sanitizedSCV.map(sanitizedCSVRow => {
+  const olympicEvents: Array<OlympicEvent> = sanitizedSCV.map(sanitizedCSVRow => {
     const { event, sport, noc, year, city, season, name, sex, height, weight, medal, team } = sanitizedCSVRow;
 
     return new OlympicEvent(
@@ -35,7 +35,7 @@ export function mapToValidDBObjects(
   });
 
   return {
-    rows,
+    olympicEvents,
     uniqueEntries: {
       athletes: athletesHashCollection.getArray(),
       sports: sportsHashCollection.getArray(),
