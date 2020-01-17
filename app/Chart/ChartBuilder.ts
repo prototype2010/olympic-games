@@ -7,14 +7,15 @@ interface ChartData {
 
 export class ChartBuilder {
   private static readonly MAX_BARS = 200;
-  private static readonly MEDAL_SYMBOL = '█';
+  private static VALUE_SYMBOL: string;
 
-  static build(chartData: ChartData) {
+  public static build(chartData: ChartData, symbol = '█') {
     const { dbSet, headers } = chartData;
 
     const readyToDisplayRows = ChartBuilder.prepareRowsToDisplay(dbSet);
     const remappedToBars = ChartBuilder.remapAmountBars(readyToDisplayRows);
 
+    ChartBuilder.VALUE_SYMBOL = symbol;
     ChartBuilder.displayChart([headers, ...remappedToBars]);
 
     /* for testing purposes */
@@ -40,7 +41,7 @@ export class ChartBuilder {
         ...otherParams,
         new Array(amount)
           .fill('')
-          .map(() => ChartBuilder.MEDAL_SYMBOL)
+          .map(() => ChartBuilder.VALUE_SYMBOL)
           .join(''),
       ];
     });
