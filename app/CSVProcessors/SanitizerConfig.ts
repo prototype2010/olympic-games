@@ -1,6 +1,5 @@
 import { SanitizerUtils } from '../utils/SanitizerUtils';
-import { ChartConfigs, Charts, Medal, SanitizeConfig, Season, Sex } from '../types';
-import { printHelp } from '../utils';
+import { Medal, SanitizeConfig, Season, Sex } from '../types';
 
 export const sanitizeConfig: SanitizeConfig = {
   name: [
@@ -25,57 +24,3 @@ export const sanitizeConfig: SanitizeConfig = {
     [SanitizerUtils.clearByRegexp, [/\d+$/g, /-$/g]],
   ],
 };
-
-export const CLIExtractorConfig: ChartConfigs = {
-  'top-teams': [
-    {
-      priority: 2,
-      required: true,
-      extractFunction: [[SanitizerUtils.fromEnum, [Season]]],
-      paramName: 'season',
-    },
-    {
-      priority: 1,
-      required: false,
-      extractFunction: [[SanitizerUtils.fromEnum, [Medal]]],
-      paramName: 'medal',
-    },
-    {
-      priority: 0,
-      required: false,
-      extractFunction: [[SanitizerUtils.parseNullableToInt, []]],
-      paramName: 'year',
-    },
-  ],
-
-  medals: [
-    {
-      priority: 2,
-      required: true,
-      extractFunction: [[SanitizerUtils.fromEnum, [Season]]],
-      paramName: 'season',
-    },
-    {
-      priority: 0,
-      required: true,
-      extractFunction: [[SanitizerUtils.asString, []]],
-      paramName: 'noc',
-    },
-    {
-      priority: 1,
-      required: false,
-      extractFunction: [[SanitizerUtils.fromEnum, [Medal]]],
-      paramName: 'medal',
-    },
-  ],
-};
-
-export function getConfigByChartName(chartName: Charts) {
-  if (CLIExtractorConfig[chartName]) {
-    return CLIExtractorConfig[chartName];
-  } else {
-    printHelp();
-
-    throw new Error(`No such chartname found ${chartName}`);
-  }
-}

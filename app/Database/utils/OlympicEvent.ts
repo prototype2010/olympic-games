@@ -1,4 +1,4 @@
-import { Athlete, Event, Game, Result, Sport, Team } from '../entities/index';
+import { Athlete, Event, Game, Result, Sport, Team } from '../entities';
 
 export class OlympicEvent {
   private _athlete: Athlete;
