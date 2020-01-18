@@ -1,5 +1,18 @@
-import { AthleteInitParams, AthleteParams, Sex, Table } from '../../types';
+import { Sex, Table } from '../../types';
 import { Model } from '../utils/Model';
+
+export interface AthleteParams {
+  height?: number;
+  weight?: number;
+}
+
+export interface AthleteInitParams {
+  sex?: Sex;
+  year?: number;
+  name: string;
+  height?: number;
+  weight?: number;
+}
 
 export class Athlete extends Model {
   private static readonly TABLE_NAME = Table.ATHLETES;

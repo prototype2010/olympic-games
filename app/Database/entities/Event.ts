@@ -1,5 +1,9 @@
-import { EventInitParams, Table } from '../../types';
+import { Table } from '../../types';
 import { Model } from '../utils/Model';
+
+export interface EventInitParams {
+  event: string;
+}
 
 export class Event extends Model {
   private static readonly TABLE_NAME = Table.EVENTS;

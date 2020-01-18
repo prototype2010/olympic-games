@@ -28,42 +28,6 @@ export interface RawCSVRecord {
   medal: any;
 }
 
-export interface AthleteParams {
-  height?: number;
-  weight?: number;
-}
-
-export interface AthleteInitParams {
-  sex?: Sex;
-  year?: number;
-  name: string;
-  height?: number;
-  weight?: number;
-}
-
-export interface EventInitParams {
-  event: string;
-}
-
-export interface GameInitParams {
-  year?: number;
-  season?: Season;
-  city: string;
-}
-
-export interface ResultInitParams {
-  medal: Medal;
-}
-
-export interface SportInitParams {
-  sport: string;
-}
-
-export interface TeamInitParams {
-  team: string;
-  noc: string;
-}
-
 export interface SanitizedOlympiadEventRecord {
   id?: number;
   name: string;
@@ -134,7 +98,7 @@ export interface TopTeamsChartParsedArgs {
 }
 
 export interface SanitizeConfig {
-  [key: string]: Array<[Function, Array<Object | RegExp>]>;
+  [key: string]: Array<[Function, Array<Record<string, any> | RegExp>]>;
 }
 
 export type DBSet = Array<{ [index: string]: string | number; amount: number }>;

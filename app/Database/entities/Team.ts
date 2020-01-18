@@ -1,5 +1,10 @@
-import { Table, TeamInitParams } from '../../types';
+import { Table } from '../../types';
 import { Model } from '../utils/Model';
+
+export interface TeamInitParams {
+  team: string;
+  noc: string;
+}
 
 export class Team extends Model {
   private static readonly TABLE_NAME = Table.TEAMS;

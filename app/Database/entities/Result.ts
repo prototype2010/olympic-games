@@ -1,5 +1,9 @@
-import { Medal, ResultInitParams, Table } from '../../types';
+import { Medal, Table } from '../../types';
 import { Model } from '../utils/Model';
+
+export interface ResultInitParams {
+  medal: Medal;
+}
 
 export class Result extends Model {
   private static readonly TABLE_NAME = Table.RESULTS;

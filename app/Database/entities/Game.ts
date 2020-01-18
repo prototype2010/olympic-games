@@ -1,5 +1,11 @@
-import { GameInitParams, Season, Table } from '../../types';
+import { Season, Table } from '../../types';
 import { Model } from '../utils/Model';
+
+export interface GameInitParams {
+  year?: number;
+  season?: Season;
+  city: string;
+}
 
 export class Game extends Model {
   private static readonly TABLE_NAME = Table.GAMES;

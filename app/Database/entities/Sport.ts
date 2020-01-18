@@ -1,5 +1,9 @@
-import { SportInitParams, Table } from '../../types';
+import { Table } from '../../types';
 import { Model } from '../utils/Model';
+
+export interface SportInitParams {
+  sport: string;
+}
 
 export class Sport extends Model {
   private static readonly TABLE_NAME = Table.SPORTS;
