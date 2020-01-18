@@ -1,10 +1,10 @@
 import { Athlete, Event, Game, Result, Sport, Team } from '../Database/entities';
 import { OlympicEvent } from '../Database/utils/OlympicEvent';
-import { SanitizedCSVRecord } from '../types';
+import { SanitizedOlympiadEventRecord } from '../types';
 import { HashCollection } from '../Database/utils/HashCollection';
 
 export function mapToValidDBObjects(
-  sanitizedSCV: Array<SanitizedCSVRecord>,
+  sanitizedSCV: Array<SanitizedOlympiadEventRecord>,
 ): {
   olympicEvents: Array<OlympicEvent>;
   uniqueEntries: {

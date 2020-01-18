@@ -1,6 +1,6 @@
 import 'jest';
 import { Athlete } from '../app/Database/entities';
-import { SanitizedCSVRecord, Sex } from '../app/types';
+import { SanitizedOlympiadEventRecord, Sex } from '../app/types';
 import { mapToValidDBObjects } from '../app/CSVProcessors/CSVRowsMapper';
 import { sanitizeConfig } from '../app/CSVProcessors/SanitizerConfig';
 import { CSVSanitizer } from '../app/CSVProcessors/CSVSanitizer';
@@ -40,7 +40,7 @@ describe('Verify parsed csv correctly maps to unique objects', () => {
   });
 
   test('Verify rows mapper creates correct unique objects', () => {
-    const sanitizer = new CSVSanitizer<SanitizedCSVRecord>(sanitizeConfig);
+    const sanitizer = new CSVSanitizer<SanitizedOlympiadEventRecord>(sanitizeConfig);
     const sanitizedArray = sanitizer.sanitizeArray(parsedCSVForMapper);
 
     const { uniqueEntries } = mapToValidDBObjects(sanitizedArray);

@@ -2,7 +2,7 @@ import { DatabaseConnection } from './app/Database/Database';
 import { CSV_FILE_PATH } from './config';
 import { CSVParser } from './app/CSVProcessors/CSVParser';
 import { resolve } from 'path';
-import { SanitizedCSVRecord } from './app/types';
+import { SanitizedOlympiadEventRecord } from './app/types';
 import { CSVSanitizer } from './app/CSVProcessors/CSVSanitizer';
 import { CHUNK_SIZE, dropTables, resolveAllAsChunks } from './app/Database/utils';
 import { Model } from './app/Database/utils/Model';
@@ -17,7 +17,7 @@ async function init() {
 
   const readDocument = await CSVParser.parse(resolve(__dirname, CSV_FILE_PATH));
 
-  const csvSanitizer = new CSVSanitizer<SanitizedCSVRecord>(sanitizeConfig);
+  const csvSanitizer = new CSVSanitizer<SanitizedOlympiadEventRecord>(sanitizeConfig);
 
   const sanitizedCSV = csvSanitizer.sanitizeArray(readDocument);
 

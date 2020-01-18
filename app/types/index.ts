@@ -64,7 +64,7 @@ export interface TeamInitParams {
   noc: string;
 }
 
-export interface SanitizedCSVRecord {
+export interface SanitizedOlympiadEventRecord {
   id?: number;
   name: string;
   sex?: Sex;
