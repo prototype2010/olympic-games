@@ -13,7 +13,7 @@ const { _: cliArguments, help } = getCLIParams();
   if (help) {
     printHelp();
   } else {
-    const resolvedCLIConfigs = CLIConfigResolver.init<Charts>(cliArguments, [Charts.Medals, Charts.TopTeams]);
+    const resolvedCLIConfigs = CLIConfigResolver.init<Charts>(cliArguments, Charts);
 
     const { scriptName, scriptArguments, chartTableHeader, extractArgumentsRules } = resolvedCLIConfigs;
 
