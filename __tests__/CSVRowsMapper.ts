@@ -1,12 +1,12 @@
 import 'jest';
-import { Athlete } from '../Database/entities';
-import { SanitizedCSVRecord, Sex } from '../types';
-import { mapToValidDBObjects } from '../CSVProcessors/CSVRowsMapper';
-import { sanitizeConfig } from '../CSVProcessors/SanitizerConfig';
-import { CSVSanitizer } from '../CSVProcessors/CSVSanitizer';
-import parsedCSVForMapper from '../testUtils/testData/csv/parsedCSVForMapper';
-import correctlyMappedCSV from '../testUtils/testData/csv/correctlyMappedCSV';
-import { HashCollection } from '../Database/utils/HashCollection';
+import { Athlete } from '../app/Database/entities';
+import { SanitizedCSVRecord, Sex } from '../app/types';
+import { mapToValidDBObjects } from '../app/CSVProcessors/CSVRowsMapper';
+import { sanitizeConfig } from '../app/CSVProcessors/SanitizerConfig';
+import { CSVSanitizer } from '../app/CSVProcessors/CSVSanitizer';
+import parsedCSVForMapper from '../app/testUtils/testData/csv/parsedCSVForMapper';
+import correctlyMappedCSV from '../app/testUtils/testData/csv/correctlyMappedCSV';
+import { HashCollection } from '../app/Database/utils/HashCollection';
 
 describe('Verify parsed csv correctly maps to unique objects', () => {
   test('Hash map function should keep original objects', () => {

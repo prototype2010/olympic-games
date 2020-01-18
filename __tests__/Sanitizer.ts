@@ -1,6 +1,6 @@
-import { SanitizerUtils } from '../utils/SanitizerUtils';
-import { CSVSanitizer } from '../CSVProcessors/CSVSanitizer';
-import { Medal, Sex } from '../types';
+import { SanitizerUtils } from '../app/utils/SanitizerUtils';
+import { CSVSanitizer } from '../app/CSVProcessors/CSVSanitizer';
+import { Medal, Sex } from '../app/types';
 
 describe('CSV sanitizer', () => {
   test('Regexp sanitizer sanitizes correctly', () => {

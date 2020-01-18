@@ -1,7 +1,7 @@
 import 'jest';
-import { CLIArgumentsParser } from '../CLIParser/CLIArgumentsParser';
-import { wrapThrowable } from '../testUtils';
-import { CLIExtractorConfig } from '../CLIParser/config';
+import { CLIArgumentsParser } from '../app/CLIParser/CLIArgumentsParser';
+import { wrapThrowable } from '../app/testUtils';
+import { CLIExtractorConfig } from '../app/CLIParser/config';
 
 const { medals, 'top-teams': topTeams } = CLIExtractorConfig;
 describe('CLI parser', () => {

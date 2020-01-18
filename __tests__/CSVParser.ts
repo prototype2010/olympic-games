@@ -1,7 +1,7 @@
 import 'jest';
 import path from 'path';
-import { CSVParser } from '../CSVProcessors/CSVParser';
-import parsedCSV from '../testUtils/testData/csv/parsedCSV';
+import { CSVParser } from '../app/CSVProcessors/CSVParser';
+import parsedCSV from '../app/testUtils/testData/csv/parsedCSV';
 
 describe('CSV parser tests', () => {
   test('Test csv parses properly', async () => {

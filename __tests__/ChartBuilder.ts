@@ -1,5 +1,5 @@
 import 'jest';
-import { ChartBuilder } from '../Chart/ChartBuilder';
+import { ChartBuilder } from '../app/Chart/ChartBuilder';
 
 describe('Chart builder', () => {
   test('Amount decreases properly', () => {

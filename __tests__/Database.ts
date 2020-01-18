@@ -1,8 +1,8 @@
 import 'jest';
-import { DatabaseConnection } from '../Database/Database';
-import { dropTables } from '../Database/utils';
-import { Athlete, Game, Sport, Event, Team, Result } from '../Database/entities';
-import { Medal, Season, Sex } from '../types';
+import { DatabaseConnection } from '../app/Database/Database';
+import { dropTables } from '../app/Database/utils';
+import { Athlete, Game, Sport, Event, Team, Result } from '../app/Database/entities';
+import { Medal, Season, Sex } from '../app/types';
 
 const DB = DatabaseConnection.getInstance();
 
@@ -142,7 +142,7 @@ describe('Database tests', () => {
 
     await sport.write();
 
-    const sportRow = await DB('sports').where({name : sportParams.sport});
+    const sportRow = await DB('sports').where({ name: sportParams.sport });
 
     expect(sportRow.length).toBe(1);
   });
@@ -153,7 +153,7 @@ describe('Database tests', () => {
 
     await event.write();
 
-    const eventRow = await DB('events').where({name : eventParams.event});
+    const eventRow = await DB('events').where({ name: eventParams.event });
 
     expect(eventRow.length).toBe(1);
   });
