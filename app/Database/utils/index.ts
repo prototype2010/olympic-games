@@ -1,6 +1,6 @@
 import { chunk } from 'lodash';
 import { Model } from './Model';
-import { Table } from '../../types';
+import { IndexedObject, Table } from '../../types';
 import { DatabaseConnection } from '../Database';
 export const CHUNK_SIZE = 100;
 
@@ -13,5 +13,17 @@ export const resolveAllAsChunks = async (entities: Array<Model>) => {
 export const dropTables = async () => {
   for await (const tableName of Object.values(Table)) {
     await DatabaseConnection.getInstance().raw(`DELETE FROM ${tableName}`);
+  }
+};
+
+type mapFunctionCallback<T> = (value: T, index: number) => IndexedObject;
+
+export const insertValues = async <T>(
+  tableName: Table,
+  entitiesToInsert: Array<T>,
+  mapCallBack: mapFunctionCallback<T>,
+) => {
+  for await (const rowsChunk of chunk(entitiesToInsert, CHUNK_SIZE)) {
+    await DatabaseConnection.getInstance()(tableName).insert(rowsChunk.map(mapCallBack));
   }
 };
