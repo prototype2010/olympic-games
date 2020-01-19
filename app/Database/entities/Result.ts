@@ -1,4 +1,4 @@
-import { Medal, Table } from '../../types';
+import { IndexedObject, Medal, Table } from '../../types';
 import { Model } from '../utils/Model';
 
 export interface ResultInitParams {
@@ -20,16 +20,20 @@ export class Result extends Model {
     this._medal = medal;
   }
 
-  write() {
+  getInsertParams(): IndexedObject {
     const { athleteId, eventId, gameId, sportId, medal } = this;
 
-    return super.insertToDB<Result>(Result.TABLE_NAME, {
+    return {
       athlete_id: athleteId,
       game_id: gameId,
       sport_id: sportId,
       event_id: eventId,
       medal,
-    });
+    };
+  }
+
+  write() {
+    return super.insertToDB<Result>(Result.TABLE_NAME);
   }
 
   getKeyFields(): string[] {

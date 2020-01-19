@@ -1,4 +1,4 @@
-import { Table } from '../../types';
+import { IndexedObject, Table } from '../../types';
 import { Model } from '../utils/Model';
 
 export interface EventInitParams {
@@ -14,6 +14,12 @@ export class Event extends Model {
     this.name = event;
   }
 
+  getInsertParams(): IndexedObject {
+    return {
+      name: this.name,
+    };
+  }
+
   getKeyFields(): string[] {
     return ['name'];
   }
@@ -23,8 +29,6 @@ export class Event extends Model {
   }
 
   write() {
-    return super.insertToDB<Event>(Event.TABLE_NAME, {
-      name: this.name,
-    });
+    return super.insertToDB<Event>(Event.TABLE_NAME);
   }
 }

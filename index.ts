@@ -44,31 +44,16 @@ async function init() {
     athlete.id = index;
   });
 
-  await insertValues<Athlete>(Table.ATHLETES, athletes, ({ teamId, birthYear, fullName, sex, params, id }) => ({
-    id,
-    full_name: fullName,
-    sex,
-    team_id: teamId,
-    params: JSON.stringify(params),
-    year_of_birth: birthYear,
-  }));
+  await insertValues<Athlete>(Table.ATHLETES, athletes, athlete => athlete.getInsertParams());
 
-  await insertValues<OlympicEvent>(Table.RESULTS, olympicEvents, olympicEvent => {
-    const { result, event, sport, athlete, game } = olympicEvent;
-
+  olympicEvents.forEach(({ result, event, sport, athlete, game }) => {
     result.gameId = game.id;
     result.athleteId = athlete.id;
     result.eventId = event.id;
     result.sportId = sport.id;
-
-    return {
-      athlete_id: result.athleteId,
-      game_id: result.gameId,
-      sport_id: result.sportId,
-      event_id: result.eventId,
-      medal: result.medal,
-    };
   });
+
+  await insertValues<OlympicEvent>(Table.RESULTS, olympicEvents, ({ result }) => result.getInsertParams());
 
   console.timeEnd('Inserting results');
 

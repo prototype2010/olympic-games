@@ -1,4 +1,4 @@
-import { Sex, Table } from '../../types';
+import { IndexedObject, Sex, Table } from '../../types';
 import { Model } from '../utils/Model';
 
 export interface AthleteParams {
@@ -43,16 +43,20 @@ export class Athlete extends Model {
     this._params = params;
   }
 
-  write() {
+  getInsertParams(): IndexedObject {
     const { fullName, sex, teamId, params, birthYear } = this;
 
-    return super.insertToDB<Athlete>(Athlete.TABLE_NAME, {
+    return {
       full_name: fullName,
       sex,
       team_id: teamId,
       params: JSON.stringify(params),
       year_of_birth: birthYear,
-    });
+    };
+  }
+
+  write() {
+    return super.insertToDB<Athlete>(Athlete.TABLE_NAME);
   }
 
   public buildKey(): string {

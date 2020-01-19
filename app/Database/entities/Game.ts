@@ -1,4 +1,4 @@
-import { Season, Table } from '../../types';
+import { IndexedObject, Season, Table } from '../../types';
 import { Model } from '../utils/Model';
 
 export interface GameInitParams {
@@ -29,13 +29,17 @@ export class Game extends Model {
     return super.buildKey();
   }
 
-  write() {
+  getInsertParams(): IndexedObject {
     const { city, season, year } = this;
 
-    return super.insertToDB<Game>(Game.TABLE_NAME, {
+    return {
       city,
       year,
       season,
-    });
+    };
+  }
+
+  write() {
+    return super.insertToDB<Game>(Game.TABLE_NAME);
   }
 }

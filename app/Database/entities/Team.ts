@@ -1,4 +1,4 @@
-import { Table } from '../../types';
+import { IndexedObject, Table } from '../../types';
 import { Model } from '../utils/Model';
 
 export interface TeamInitParams {
@@ -26,12 +26,16 @@ export class Team extends Model {
     return super.buildKey();
   }
 
-  write() {
+  getInsertParams(): IndexedObject {
     const { name, NOCName } = this;
 
-    return super.insertToDB<Team>(Team.TABLE_NAME, {
+    return {
       name,
       noc_name: NOCName,
-    });
+    };
+  }
+
+  write() {
+    return super.insertToDB<Team>(Team.TABLE_NAME);
   }
 }
