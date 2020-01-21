@@ -1,5 +1,7 @@
 import 'jest';
 import { ChartBuilder } from '../app/Chart/ChartBuilder';
+import { resolve } from 'path';
+import { getSTDOUTFromChildProcess } from '../app/testUtils';
 
 describe('Chartbuilder', () => {
   describe('ChartBuilder.prepareRowsToDisplay', () => {
@@ -68,28 +70,14 @@ describe('Chartbuilder', () => {
         ['Z', ''],
       ]);
     });
-  });
 
-  describe('ChartBuilder.build', () => {
-    test('Builds chart properly', () => {
-      const builtChart = ChartBuilder.build({
-        headers: ['Team name', 'Medals'],
-        dbSet: [
-          { amount: 2, NOC: 'X' },
-          { amount: 1, NOC: 'Y' },
-          { amount: 0, NOC: 'Z' },
-        ],
+    describe('ChartBuilder.build', () => {
+      test('Builds chart properly', async () => {
+        const resolvedFilePath = resolve(__dirname, '../app/testUtils/chartBuilderTopTeams.ts');
+        const result = await getSTDOUTFromChildProcess(resolvedFilePath);
+
+        expect(result).toMatchSnapshot();
       });
-
-      expect(builtChart).toEqual([
-        ['Team name', 'Medals'],
-        [
-          'X',
-          '████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████',
-        ],
-        ['Y', '████████████████████████████████████████████████████████████████████████████████████████████████████'],
-        ['Z', ''],
-      ]);
     });
   });
 });
