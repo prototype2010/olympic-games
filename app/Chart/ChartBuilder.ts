@@ -20,9 +20,6 @@ export class ChartBuilder {
     ChartBuilder.VALUE_SYMBOL = symbol || ChartBuilder.VALUE_SYMBOL;
 
     ChartBuilder.displayChart([headers, ...remappedToBars]);
-
-    /* for testing purposes */
-    return [headers, ...remappedToBars];
   }
 
   static prepareRowsToDisplay(dbSet: DBSet) {
@@ -51,12 +48,6 @@ export class ChartBuilder {
   }
 
   static displayChart(rows: Array<Array<any>>) {
-    if (!process.env.test) {
-      /* do not display charts during tests */
-      rows.forEach(row => console.log(`${'\t'}${row.join('\t')}`));
-    }
-
-    /* for testing purposes */
-    return rows;
+    rows.forEach(row => console.log(`${'\t'}${row.join('\t')}`));
   }
 }
