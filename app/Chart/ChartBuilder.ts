@@ -7,15 +7,18 @@ interface ChartData {
 
 export class ChartBuilder {
   private static readonly MAX_BARS = 200;
-  private static VALUE_SYMBOL: string;
+  private static VALUE_SYMBOL = '█';
 
-  public static build(chartData: ChartData, symbol = '█') {
+  public static build(chartData: ChartData, symbol?: string) {
     const { dbSet, headers } = chartData;
 
     const readyToDisplayRows = ChartBuilder.prepareRowsToDisplay(dbSet);
+
     const remappedToBars = ChartBuilder.remapAmountBars(readyToDisplayRows);
 
-    ChartBuilder.VALUE_SYMBOL = symbol;
+    /* if symbol exists - use different symbol */
+    ChartBuilder.VALUE_SYMBOL = symbol || ChartBuilder.VALUE_SYMBOL;
+
     ChartBuilder.displayChart([headers, ...remappedToBars]);
 
     /* for testing purposes */
