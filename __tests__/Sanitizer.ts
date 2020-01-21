@@ -3,7 +3,7 @@ import { CSVSanitizer } from '../app/CSVProcessors/CSVSanitizer';
 import { Medal, Sex } from '../app/types';
 
 describe('CSV sanitizer', () => {
-  test('Regexp sanitizer sanitizes correctly', () => {
+  test('SanitizerUtils.clearByRegexp sanitizes correctly', () => {
     const sanitizer = new CSVSanitizer({
       name: [[SanitizerUtils.clearByRegexp, [/\(.*\)/g, /"/g]]],
     });
@@ -13,7 +13,7 @@ describe('CSV sanitizer', () => {
     expect(sanitizedRow).toEqual({ name: 'Boris  The Blade' });
   });
 
-  test('Number sanitizer sanitizes correctly', () => {
+  test('SanitizerUtils.parseNullableToInt sanitizes correctly', () => {
     const sanitizer = new CSVSanitizer({
       value: [[SanitizerUtils.parseNullableToInt, []]],
     });
@@ -23,7 +23,7 @@ describe('CSV sanitizer', () => {
     expect(sanitizedRow).toEqual({ value: 1935 });
   });
 
-  test('Enum sanitizer sanitizes correctly (negative)', () => {
+  test('SanitizerUtils.fromEnum sanitizes correctly (negative)', () => {
     const sanitizer = new CSVSanitizer({
       value: [[SanitizerUtils.fromEnum, [Medal]]],
     });
@@ -32,7 +32,7 @@ describe('CSV sanitizer', () => {
 
     expect(sanitizedRow).toEqual({ value: undefined });
   });
-  test('Enum sanitizer sanitizes correctly', () => {
+  test('SanitizerUtils.fromEnum sanitizes correctly', () => {
     const sanitizer = new CSVSanitizer({
       value: [[SanitizerUtils.fromEnum, [Medal]]],
     });
@@ -42,7 +42,7 @@ describe('CSV sanitizer', () => {
     expect(sanitizedRow).toEqual({ value: Medal.Gold });
   });
 
-  test('Absent  value  sanitizes correctly', () => {
+  test('SanitizerUtils.fromEnum sanitizes correctly', () => {
     const sanitizer = new CSVSanitizer({
       value: [[SanitizerUtils.fromEnum, [Medal]]],
     });
