@@ -5,7 +5,7 @@ import { InitializationStrategy } from '../../../CSVProcessors/InitializationStr
 import { DuplicateManager, OBJECT_RETURN_STRATEGY } from '../../../CSVProcessors/DuplicateManager';
 import { PropertyPicker } from '../../../CSVProcessors/PropertyPicker';
 
-const teamDescriptors = [new CSVPropertyDescriptor('team', 'team')];
+const teamDescriptors = [new CSVPropertyDescriptor('team', 'team'), new CSVPropertyDescriptor('noc', 'noc')];
 
 export const teamDuplicateManager = new DuplicateManager<Team>(
   teamDescriptors,

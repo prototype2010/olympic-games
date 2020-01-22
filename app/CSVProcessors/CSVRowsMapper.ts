@@ -1,12 +1,13 @@
-import { Athlete, Event, Game, Result, Sport, Team } from '../Database/entities';
+import { Athlete, Event, Game, Sport, Team } from '../Database/entities';
 import { OlympicEvent } from '../Database/utils/OlympicEvent';
 import { SanitizedOlympiadEventRecord } from '../types';
-import { HashCollection } from '../Database/utils/HashCollection';
-import { CSVPropertyDescriptor } from './PropertyDescriptor';
-import { PropertyPicker } from './PropertyPicker';
-import { ObjectInitializer } from './ObjectInitializer';
-import { InitializationStrategy } from './InitializationStrategy';
+
 import { athletesDuplicateManager } from '../Database/entities/Athlete/AthleteDuplicateMaganer';
+import { sportDuplicateManager } from '../Database/entities/Sport/SportDuplicateManager';
+import { resultDuplicateManager } from '../Database/entities/Result/ResultDuplicateMaganer';
+import { teamDuplicateManager } from '../Database/entities/Team/TeamDuplicateManager';
+import { gameDuplicateManager } from '../Database/entities/Game/GameDuplicateManager';
+import { eventsDuplicateManager } from '../Database/entities/Event/EventDuplicateManager';
 
 export type Constructor<T> = new (...args: any[]) => T;
 
@@ -22,40 +23,25 @@ export function mapToValidDBObjects(
     games: Array<Game>;
   };
 } {
-  const athletesHashCollection = new HashCollection<Athlete>();
-  const sportsHashCollection = new HashCollection<Sport>();
-  const eventsHashCollection = new HashCollection<Event>();
-  const teamsHashCollection = new HashCollection<Team>();
-  const gamesHashCollection = new HashCollection<Game>();
-  /////////////////// THIS IS TEST ZONE
-
-  /////////////////////////////////////
-
   const olympicEvents: Array<OlympicEvent> = sanitizedSCV.map(sanitizedCSVRow => {
-    const { event, sport, noc, year, city, season, name, sex, height, weight, medal, team } = sanitizedCSVRow;
+    const rowAthlete = athletesDuplicateManager.register(sanitizedCSVRow);
+    const rowEvent = eventsDuplicateManager.register(sanitizedCSVRow);
+    const rowResult = resultDuplicateManager.register(sanitizedCSVRow);
+    const rowSport = sportDuplicateManager.register(sanitizedCSVRow);
+    const rowTeam = teamDuplicateManager.register(sanitizedCSVRow);
+    const rowGame = gameDuplicateManager.register(sanitizedCSVRow);
 
-    // athletesDuplicateManager.register(sanitizedCSVRow);
-
-    return new OlympicEvent(
-      athletesDuplicateManager.register(sanitizedCSVRow),
-      eventsHashCollection.addOrGetExisting(new Event({ event })),
-      new Result({ medal }),
-      sportsHashCollection.addOrGetExisting(new Sport({ sport })),
-      teamsHashCollection.addOrGetExisting(new Team({ team, noc })),
-      gamesHashCollection.addOrGetExisting(new Game({ city, season, year })),
-    );
+    return new OlympicEvent(rowAthlete, rowEvent, rowResult, rowSport, rowTeam, rowGame);
   });
-
-  console.log(athletesDuplicateManager.getUnique());
 
   return {
     olympicEvents,
     uniqueEntries: {
-      athletes: athletesHashCollection.getArray(),
-      sports: sportsHashCollection.getArray(),
-      events: eventsHashCollection.getArray(),
-      teams: teamsHashCollection.getArray(),
-      games: gamesHashCollection.getArray(),
+      athletes: athletesDuplicateManager.getUnique(),
+      sports: sportDuplicateManager.getUnique(),
+      events: eventsDuplicateManager.getUnique(),
+      teams: teamDuplicateManager.getUnique(),
+      games: gameDuplicateManager.getUnique(),
     },
   };
 }
