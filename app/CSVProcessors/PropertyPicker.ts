@@ -8,7 +8,7 @@ export class PropertyPicker {
     };
   }
 
-  private static pickArray(descriptors: Array<CSVPropertyDescriptor>, pickTarget: IndexedObject) {
+  static pickArray(descriptors: Array<CSVPropertyDescriptor>, pickTarget: IndexedObject) {
     return descriptors.map(descriptor => PropertyPicker.pick(descriptor, pickTarget));
   }
 
