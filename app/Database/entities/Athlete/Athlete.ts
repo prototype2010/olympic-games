@@ -47,6 +47,7 @@ export class Athlete extends Model {
     const { fullName, sex, teamId, params, birthYear } = this;
 
     return {
+      id: this.id,
       full_name: fullName,
       sex,
       team_id: teamId,

@@ -10,7 +10,7 @@ export abstract class Model {
 
     try {
       const [id] = await DatabaseConnection.getInstance()(tableName).insert({
-        id: null,
+        id: insertParams.id || null,
         ...insertParams,
       });
 
