@@ -73,6 +73,8 @@ export enum Charts {
   TopTeams = 'top-teams',
 }
 
+export type Constructor<T> = new (...args: any[]) => T;
+
 export interface CLIExtractorDescriptor {
   priority: number;
   required: boolean;

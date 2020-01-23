@@ -1,11 +1,6 @@
 import 'jest';
 import { Athlete } from '../app/Database/entities';
-import { SanitizedOlympiadEventRecord, Sex } from '../app/types';
-import { mapToValidDBObjects } from '../app/CSVProcessors/CSVRowsMapper';
-import { sanitizeConfig } from '../app/CSVProcessors/SanitizerConfig';
-import { CSVSanitizer } from '../app/CSVProcessors/CSVSanitizer';
-import parsedCSVForMapper from '../app/testUtils/testData/csv/parsedCSVForMapper';
-import correctlyMappedCSV from '../app/testUtils/testData/csv/correctlyMappedCSV';
+import { Sex } from '../app/types';
 import { HashCollection } from '../app/Database/utils/HashCollection';
 
 describe('Verify parsed csv correctly maps to unique objects', () => {
@@ -38,17 +33,6 @@ describe('Verify parsed csv correctly maps to unique objects', () => {
       athletes.addOrGetExisting(new Athlete(athleteParams2));
 
       expect(athletes.getArray()).toEqual([new Athlete(athleteParams1), new Athlete(athleteParams2)]);
-    });
-  });
-
-  describe('mapToValidDBObjects excracts data correctly', () => {
-    test('Verify rows mapper creates correct unique objects', () => {
-      const sanitizer = new CSVSanitizer<SanitizedOlympiadEventRecord>(sanitizeConfig);
-      const sanitizedArray = sanitizer.sanitizeArray(parsedCSVForMapper);
-
-      const { uniqueEntries } = mapToValidDBObjects(sanitizedArray);
-
-      expect(uniqueEntries).toEqual(correctlyMappedCSV);
     });
   });
 });

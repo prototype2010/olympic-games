@@ -1,10 +1,9 @@
 import { HashCollection } from '../Database/utils/HashCollection';
 import { Model } from '../Database/utils/Model';
 import { CSVPropertyDescriptor } from './PropertyDescriptor';
-import { IndexedObject } from '../types';
+import { Constructor, IndexedObject } from '../types';
 import { InitializationStrategyFunction } from './InitializationStrategy';
 import { ObjectInitializerType } from './ObjectInitializer';
-import { Constructor } from './CSVRowsMapper';
 
 export type pickArray = (descriptors: Array<CSVPropertyDescriptor>, pickTarget: IndexedObject) => Array<any>;
 
@@ -26,7 +25,7 @@ export class DuplicateManager<T extends Model> {
     private returnStrategy: OBJECT_RETURN_STRATEGY,
   ) {}
 
-  public register(parsedCSVRow: IndexedObject) {
+  public register(this: DuplicateManager<T>, parsedCSVRow: IndexedObject) {
     const initProperties = this.propertyPicker(this.propertiesDescriptors, parsedCSVRow);
     const initializedObject = this.objectInitializer(this.initStrategy, this.constructor, initProperties);
 

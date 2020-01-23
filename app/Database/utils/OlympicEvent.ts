@@ -1,5 +1,14 @@
 import { Athlete, Event, Game, Result, Sport, Team } from '../entities';
 
+export interface OlympicEventInitParams {
+  athlete: Athlete;
+  event: Event;
+  result: Result;
+  sport: Sport;
+  team: Team;
+  game: Game;
+}
+
 export class OlympicEvent {
   private _athlete: Athlete;
   private _event: Event;
@@ -8,7 +17,9 @@ export class OlympicEvent {
   private _team: Team;
   private _game: Game;
 
-  constructor(athlete: Athlete, event: Event, result: Result, sport: Sport, team: Team, game: Game) {
+  constructor(initParams: OlympicEventInitParams) {
+    const { athlete, event, game, result, sport, team } = initParams;
+
     this._athlete = athlete;
     this._event = event;
     this._result = result;

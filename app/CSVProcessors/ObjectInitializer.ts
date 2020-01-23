@@ -1,5 +1,5 @@
 import { InitializationStrategyFunction } from './InitializationStrategy';
-import { Constructor } from './CSVRowsMapper';
+import { Constructor } from '../types';
 
 export type ObjectInitializerType<T> = (
   initStrategy: InitializationStrategyFunction<T>,

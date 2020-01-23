@@ -1,4 +1,4 @@
-import { Constructor } from './CSVRowsMapper';
+import { Constructor } from '../types';
 
 export type InitializationStrategyFunction<T> = (constructor: Constructor<T>, args: Array<any>) => T;
 
