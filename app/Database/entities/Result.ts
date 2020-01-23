@@ -1,28 +1,25 @@
-import { Medal, Nullable, SanitizedCSVRecord, Table } from '../../types';
+import { Medal, ResultInitParams, Table } from '../../types';
 import { Model } from '../utils/Model';
 
 export class Result extends Model {
   private static readonly TABLE_NAME = Table.RESULTS;
 
-  private _athleteId: Nullable<number>;
-  private _gameId: Nullable<number>;
-  private _sportId: Nullable<number>;
-  private _eventId: Nullable<number>;
+  private _athleteId?: number;
+  private _gameId?: number;
+  private _sportId?: number;
+  private _eventId?: number;
   private _medal: Medal;
 
-  constructor({ medal }: SanitizedCSVRecord) {
+  constructor({ medal }: ResultInitParams) {
     super();
-    this._athleteId = null;
-    this._gameId = null;
-    this._sportId = null;
-    this._eventId = null;
+
     this._medal = medal;
   }
 
   write() {
     const { athleteId, eventId, gameId, sportId, medal } = this;
 
-    return super.insertToDB(Result.TABLE_NAME, {
+    return super.insertToDB<Result>(Result.TABLE_NAME, {
       athlete_id: athleteId,
       game_id: gameId,
       sport_id: sportId,
@@ -31,35 +28,35 @@ export class Result extends Model {
     });
   }
 
-  get athleteId(): Nullable<number> {
+  get athleteId() {
     return this._athleteId;
   }
 
-  set athleteId(value: Nullable<number>) {
+  set athleteId(value) {
     this._athleteId = value;
   }
 
-  get gameId(): Nullable<number> {
+  get gameId() {
     return this._gameId;
   }
 
-  set gameId(value: Nullable<number>) {
+  set gameId(value) {
     this._gameId = value;
   }
 
-  get sportId(): Nullable<number> {
+  get sportId() {
     return this._sportId;
   }
 
-  set sportId(value: Nullable<number>) {
+  set sportId(value) {
     this._sportId = value;
   }
 
-  get eventId(): Nullable<number> {
+  get eventId() {
     return this._eventId;
   }
 
-  set eventId(value: Nullable<number>) {
+  set eventId(value) {
     this._eventId = value;
   }
 

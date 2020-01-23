@@ -1,30 +1,18 @@
-import { CSVSanitizer } from '../app/utils/CSVSanitizer';
-import { Medal, Season, Sex } from '../app/types';
+import { existsSync } from 'fs';
+import { resolve } from 'path';
 
-export const { DB_FILE_PATH, CSV_FILE_PATH } = require('dotenv').config().parsed;
+function resolveEnvFilePath(): string | never {
+  const { NODE_ENV_FILENAME = '' } = process.env;
 
-export type SanitizeConfig = typeof sanitizeConfig;
+  const fileName = `.env${NODE_ENV_FILENAME}`;
+  const filePath = resolve(__dirname, `../${fileName}`);
+  if (existsSync(filePath)) {
+    return filePath;
+  } else {
+    throw new Error(`.env[.*] file is required ${resolve(__dirname, `../`)}/  <-- HERE`);
+  }
+}
 
-export const sanitizeConfig = {
-  name: [
-    [CSVSanitizer.sanitizeAsString, []],
-    [CSVSanitizer.clearByRegexp, [/\(.*\)/g, /"/g]],
-  ],
-  sport: [[CSVSanitizer.sanitizeAsString, []]],
-  city: [[CSVSanitizer.sanitizeAsString, []]],
-  noc: [[CSVSanitizer.sanitizeAsString, []]],
-  event: [[CSVSanitizer.sanitizeAsString, []]],
-  games: [[CSVSanitizer.sanitizeAsString, []]],
-  medal: [[CSVSanitizer.sanitizeFromEnum, [Medal]]],
-  season: [[CSVSanitizer.sanitizeFromEnum, [Season]]],
-  sex: [[CSVSanitizer.sanitizeFromEnum, [Sex]]],
-  id: [[CSVSanitizer.parseInt, []]],
-  year: [[CSVSanitizer.parseInt, []]],
-  weight: [[CSVSanitizer.parseInt, []]],
-  height: [[CSVSanitizer.parseInt, []]],
-  age: [[CSVSanitizer.parseInt, []]],
-  team: [
-    [CSVSanitizer.sanitizeAsString, []],
-    [CSVSanitizer.clearByRegexp, [/\d+$/g, /-$/g]],
-  ],
-};
+export const { DB_FILE_PATH, CSV_FILE_PATH } = require('dotenv').config({
+  path: resolveEnvFilePath(),
+}).parsed;
