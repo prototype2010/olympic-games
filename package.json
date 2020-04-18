@@ -10,7 +10,7 @@
     "postcommit": "git update-index -g",
     "test": "NODE_ENV_FILENAME=.test jest --watchAll --maxWorkers=1",
     "build": "tsc",
-    "parse:test": "test=true node --require ts-node/register index.ts"
+    "parse:testfile": "NODE_ENV_FILENAME=.test node --require ts-node/register index.ts"
   },
   "devDependencies": {
     "@types/jest": "^24.0.24",

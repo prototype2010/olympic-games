@@ -7,18 +7,19 @@ interface ChartData {
 
 export class ChartBuilder {
   private static readonly MAX_BARS = 200;
-  private static readonly MEDAL_SYMBOL = '█';
+  private static VALUE_SYMBOL = '█';
 
-  static build(chartData: ChartData) {
+  public static build(chartData: ChartData, symbol?: string) {
     const { dbSet, headers } = chartData;
 
     const readyToDisplayRows = ChartBuilder.prepareRowsToDisplay(dbSet);
+
     const remappedToBars = ChartBuilder.remapAmountBars(readyToDisplayRows);
 
-    ChartBuilder.displayChart([headers, ...remappedToBars]);
+    /* if symbol exists - use different symbol */
+    ChartBuilder.VALUE_SYMBOL = symbol || ChartBuilder.VALUE_SYMBOL;
 
-    /* for testing purposes */
-    return [headers, ...remappedToBars];
+    ChartBuilder.displayChart([headers, ...remappedToBars]);
   }
 
   static prepareRowsToDisplay(dbSet: DBSet) {
@@ -40,19 +41,13 @@ export class ChartBuilder {
         ...otherParams,
         new Array(amount)
           .fill('')
-          .map(() => ChartBuilder.MEDAL_SYMBOL)
+          .map(() => ChartBuilder.VALUE_SYMBOL)
           .join(''),
       ];
     });
   }
 
   static displayChart(rows: Array<Array<any>>) {
-    if (!process.env.test) {
-      /* do not display charts during tests */
-      rows.forEach(row => console.log(`${'\t'}${row.join('\t')}`));
-    }
-
-    /* for testing purposes */
-    return rows;
+    rows.forEach(row => console.log(`${'\t'}${row.join('\t')}`));
   }
 }
