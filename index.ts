@@ -2,13 +2,20 @@ import { DatabaseConnection } from './app/Database/Database';
 import { CSV_FILE_PATH } from './config';
 import { CSVParser } from './app/CSVProcessors/CSVParser';
 import { resolve } from 'path';
-import { SanitizedCSVRecord } from './app/types';
+import { SanitizedOlympiadEventRecord, Table } from './app/types';
 import { CSVSanitizer } from './app/CSVProcessors/CSVSanitizer';
-import { CHUNK_SIZE, dropTables, resolveAllAsChunks } from './app/Database/utils';
-import { Model } from './app/Database/utils/Model';
-import { mapToValidDBObjects } from './app/CSVProcessors/CSVRowsMapper';
+import { dropTables, insertValues, resolveAllAsChunks } from './app/Database/utils';
 import { sanitizeConfig } from './app/CSVProcessors/SanitizerConfig';
-import { chunk } from 'lodash';
+import { OlympicEvent, OlympicEventInitParams } from './app/Database/utils/OlympicEvent';
+import { Athlete } from './app/Database/entities';
+import { BulkObjectExtractor } from './app/CSVProcessors/BulkObjectExtractor';
+import { athletesDuplicateManager } from './app/Database/entities/Athlete/AthleteDuplicateMaganer';
+import { eventsDuplicateManager } from './app/Database/entities/Event/EventDuplicateManager';
+import { resultDuplicateManager } from './app/Database/entities/Result/ResultDuplicateMaganer';
+import { sportDuplicateManager } from './app/Database/entities/Sport/SportDuplicateManager';
+import { teamDuplicateManager } from './app/Database/entities/Team/TeamDuplicateManager';
+import { gameDuplicateManager } from './app/Database/entities/Game/GameDuplicateManager';
+import { ExtractionDescriptor } from './app/CSVProcessors/ExtractionDescriptor';
 
 async function init() {
   const DB = DatabaseConnection.getInstance();
@@ -17,62 +24,60 @@ async function init() {
 
   const readDocument = await CSVParser.parse(resolve(__dirname, CSV_FILE_PATH));
 
-  const sanitizedCSV = CSVSanitizer.sanitizeArray<SanitizedCSVRecord>(readDocument, sanitizeConfig);
-  const { rows, uniqueEntries } = mapToValidDBObjects(sanitizedCSV);
+  const csvSanitizer = new CSVSanitizer<SanitizedOlympiadEventRecord>(sanitizeConfig);
+
+  const sanitizedCSV = csvSanitizer.sanitizeArray(readDocument);
+
+  const olympiadEventRows = BulkObjectExtractor.extract<OlympicEventInitParams>(
+    [
+      new ExtractionDescriptor(athletesDuplicateManager.register.bind(athletesDuplicateManager), 'athlete'),
+      new ExtractionDescriptor(eventsDuplicateManager.register.bind(eventsDuplicateManager), 'event'),
+      new ExtractionDescriptor(resultDuplicateManager.register.bind(resultDuplicateManager), 'result'),
+      new ExtractionDescriptor(sportDuplicateManager.register.bind(sportDuplicateManager), 'sport'),
+      new ExtractionDescriptor(teamDuplicateManager.register.bind(teamDuplicateManager), 'team'),
+      new ExtractionDescriptor(gameDuplicateManager.register.bind(gameDuplicateManager), 'game'),
+    ],
+    sanitizedCSV,
+  );
+
+  const olympiadEvents: Array<OlympicEvent> = olympiadEventRows.map(OEInitParams => new OlympicEvent(OEInitParams));
 
   console.timeEnd('Parsing document');
-
-  const { teams, sports, games, events, athletes } = uniqueEntries;
 
   console.time('No dependency entries document');
 
   // drop tables
   await dropTables();
 
-  await resolveAllAsChunks([...sports, ...events, ...games, ...teams] as Model[]);
+  await resolveAllAsChunks([
+    ...sportDuplicateManager.getUnique(),
+    ...eventsDuplicateManager.getUnique(),
+    ...gameDuplicateManager.getUnique(),
+    ...teamDuplicateManager.getUnique(),
+  ]);
 
   console.timeEnd('No dependency entries document');
 
   console.time('Inserting results');
 
-  rows.forEach(({ athlete, team }, index) => {
+  olympiadEvents.forEach(({ athlete, team }, index) => {
     athlete.teamId = team.id;
     athlete.id = index;
   });
 
-  for await (const athletesChunk of chunk(athletes, CHUNK_SIZE)) {
-    await DB('athletes').insert(
-      athletesChunk.map(({ teamId, birthYear, fullName, sex, params, id }) => ({
-        id,
-        full_name: fullName,
-        sex,
-        team_id: teamId,
-        params: JSON.stringify(params),
-        year_of_birth: birthYear,
-      })),
-    );
-  }
+  await insertValues<Athlete>(Table.ATHLETES, athletesDuplicateManager.getUnique(), athlete =>
+    athlete.getInsertParams(),
+  );
 
-  for await (const rowsChunk of chunk(rows, CHUNK_SIZE)) {
-    await DB('results').insert(
-      rowsChunk.map(row => {
-        const { result, event, sport, athlete, game } = row;
+  olympiadEvents.forEach(({ result, event, sport, athlete, game }) => {
+    result.gameId = game.id;
+    result.athleteId = athlete.id;
+    result.eventId = event.id;
+    result.sportId = sport.id;
+  });
 
-        result.gameId = game.id;
-        result.athleteId = athlete.id;
-        result.eventId = event.id;
-        result.sportId = sport.id;
+  await insertValues<OlympicEvent>(Table.RESULTS, olympiadEvents, ({ result }) => result.getInsertParams());
 
-        return {
-          athlete_id: result.athleteId,
-          game_id: result.gameId,
-          sport_id: result.sportId,
-          event_id: result.eventId,
-          medal: result.medal,
-        };
-      }),
-    );
-  }
   console.timeEnd('Inserting results');
 
   DB.destroy(function() {
